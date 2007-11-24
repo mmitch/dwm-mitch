@@ -1,5 +1,5 @@
 VERSION = 3.3cvs
-DWM_VERSION = 4.4.1
+DWM_VERSION = 4.7
 DMENU_VERSION = 3.4
 PREFIX = /usr/local
 
