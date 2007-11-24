@@ -1,0 +1,79 @@
+diff -Narup 06_dwm-4.4.1_patchversion/main.c 07_dwm-4.4.1_reload/main.c
+--- 06_dwm-4.4.1_patchversion/main.c	2007-09-04 20:58:04.000000000 +0200
++++ 07_dwm-4.4.1_reload/main.c	2007-09-04 21:00:21.000000000 +0200
+@@ -6,6 +6,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
++#include <signal.h>
+ #include <sys/select.h>
+ #include <X11/cursorfont.h>
+ #include <X11/keysym.h>
+@@ -13,6 +14,8 @@
+ #include <X11/Xproto.h>
+ #include <X11/Xutil.h>
+ 
++extern char **environ;
++
+ /* extern */
+ 
+ char stext[256];
+@@ -37,10 +40,13 @@ Window root, barwin;
+ static int (*xerrorxlib)(Display *, XErrorEvent *);
+ static Bool otherwm, readin;
+ static Bool running = True;
++static Bool reload = False;
++static char **cargv;
+ 
+ static void
+ cleanup(void) {
+-	close(STDIN_FILENO);
++	if (!reload)
++		close(STDIN_FILENO);
+ 	while(stack) {
+ 		unban(stack);
+ 		unmanage(stack);
+@@ -60,6 +66,18 @@ cleanup(void) {
+ 	XSync(dpy, False);
+ }
+ 
++static void
++sigusr1(int notused) {
++	quit(NULL);
++	reload = True;
++}
++
++static void
++doreload(void) {
++	execvp(cargv[0], cargv);
++	eprint("Can't exec: %s\n", strerror(errno));
++}
++
+ static unsigned long
+ initcolor(const char *colstr) {
+ 	Colormap cmap = DefaultColormap(dpy, screen);
+@@ -227,6 +245,9 @@ setup(void) {
+ 		XSetFont(dpy, dc.gc, dc.font.xfont->fid);
+ 	/* multihead support */
+ 	selscreen = XQueryPointer(dpy, root, &w, &w, &i, &i, &i, &i, &mask);
++	/* restart support */
++	if (signal(SIGUSR1, sigusr1) == SIG_ERR) 
++		eprint("Can't bind to signal USR1\n");
+ 	/* check initial parameters */
+ 	if (workspaces < 1)
+ 		workspaces = 1;
+@@ -309,6 +330,7 @@ main(int argc, char *argv[]) {
+ 		eprint("dwm-"VERSION", © 2006-2007 A. R. Garbe, S. van Dijk, J. Salmi, P. Hruby, S. Nagy\n");
+ 	else if(argc != 1)
+ 		eprint("usage: dwm [-v]\n");
++	cargv = argv;
+ 	setlocale(LC_CTYPE, "");
+ 	if(!(dpy = XOpenDisplay(0)))
+ 		eprint("dwm: cannot open display\n");
+@@ -372,5 +394,6 @@ main(int argc, char *argv[]) {
+ 	}
+ 	cleanup();
+ 	XCloseDisplay(dpy);
++	if (reload) doreload();
+ 	return 0;
+ }

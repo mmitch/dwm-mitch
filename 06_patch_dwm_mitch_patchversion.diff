@@ -1,0 +1,13 @@
+diff -Narup 05_dwm-4.4.1_utf8widechars/config.mk 06_dwm-4.4.1_patchversion/config.mk
+--- 05_dwm-4.4.1_utf8widechars/config.mk	2007-09-04 20:58:04.000000000 +0200
++++ 06_dwm-4.4.1_patchversion/config.mk	2007-09-04 20:58:04.000000000 +0200
+@@ -6,6 +6,9 @@ VERSION = 4.4.1
+ # additional layouts beside floating
+ SRC = tile.c
+ 
++# dwm-mitch patchlevel
++VERSION := ${VERSION}+${PATCHVERSION}
++
+ # paths
+ PREFIX = /usr/local
+ MANPREFIX = ${PREFIX}/share/man

@@ -1,0 +1,141 @@
+diff -Narup dwm-4.4.1/config.default.h 99_dwm-4.4.1_personal_configuration.andy/config.default.h
+--- dwm-4.4.1/config.default.h	2007-09-04 22:20:49.000000000 +0200
++++ 99_dwm-4.4.1_personal_configuration.andy/config.default.h	2007-09-04 22:20:49.000000000 +0200
+@@ -2,15 +2,15 @@
+ 
+ /* appearance */
+ #define BARPOS			BarTop /* BarBot, BarOff */
+-#define BORDERPX		1
+-#define FLOATBORDERPX		1
+-#define FONT			"-*-fixed-medium-r-normal-*-13-*-*-*-*-*-*-*"
+-#define NORMBORDERCOLOR		"#dddddd"
+-#define NORMBGCOLOR		"#eeeeee"
+-#define NORMFGCOLOR		"#222222"
+-#define SELBORDERCOLOR		"#ff0000"
+-#define SELBGCOLOR		"#006699"
+-#define SELFGCOLOR		"#ffffff"
++#define BORDERPX		0
++#define FLOATBORDERPX		0
++#define FONT			"-misc-fixed-medium-r-normal-*-13-*-*-*-*-*-*-*"
++#define NORMBORDERCOLOR		"#080"
++#define NORMBGCOLOR		"#222"
++#define NORMFGCOLOR		"#0c0"
++#define SELBORDERCOLOR		"#9cf"
++#define SELBGCOLOR		"#555"
++#define SELFGCOLOR		"#080"
+ 
+ /* Query class:instance:title for regex matching info with following command:
+  * xprop | awk -F '"' '/^WM_CLASS/ { printf("%s:%s:",$4,$2) }; /^WM_NAME/ { printf("%s\n",$2) }' */
+@@ -20,6 +20,7 @@ static Rule rules[] = { \
+ 	{ "Gimp",			True,	0 }, \
+ 	{ "MPlayer",			True,	0 }, \
+ 	{ "Acroread",			True,	0 }, \
++ 	{ "[lL]opster",			True,	0 }, \
+ };
+ 
+ /* layout(s) */
+@@ -27,9 +28,9 @@ static Rule rules[] = { \
+ #define LAYOUTS \
+ static Layout layouts[] = { \
+ 	/* symbol		function */ \
+-	{ "[]=",		tile }, /* first entry is default */ \
+-	{ "><>",		floating }, \
+-	{ "TTT",		bstack }, \
++	{ "TTT",		bstack }, /* first entry is default */ \
++	{ "[]=",		tile }, \
++	{ "<><",		floating }, \
+ 	{ "[ ]",		maximize }, \
+ };
+ #define MWFACT			0.6	/* master width factor [0.1 .. 0.9] */
+@@ -41,54 +42,34 @@ static Layout layouts[] = { \
+ 
+ /* key definitions */
+ #define MODKEY			Mod1Mask
++/*#define SUPERKEY		Super1Mask*/
+ #define KEYS \
+ Key keys[] = { \
+ 	/* modifier			key		function	argument */ \
+-	{ MODKEY|ShiftMask,		XK_Return,	spawn,		"exec xterm" }, \
+-	{ MODKEY,			XK_p,		spawn, 		"exe=`dmenu_path | dmenu` && exec $exe" }, \
+-	{ MODKEY,			XK_space,	setlayout,	NULL }, \
++	{ MODKEY,			XK_t,		spawn,		"exec xterm-terminal-emulator" }, \
++	{ MODKEY|ShiftMask,		XK_y,		spawn, 		"exec dwm-choose" }, \
++	{ MODKEY,			XK_Tab,		focusnext,	NULL }, \
++	{ MODKEY|ShiftMask,		XK_Tab,		focusprev,	NULL }, \
++	{ MODKEY,			XK_Return,	zoom,		NULL }, \
+ 	{ MODKEY,			XK_b,		togglebar,	NULL }, \
+-	{ MODKEY,			XK_g,		setmwfact,	"-0.05" }, \
+-	{ MODKEY,			XK_s,		setmwfact,	"+0.05" }, \
+-/*	{ MODKEY|ShiftMask,		XK_g,		incnmaster,	"1" }, */ \
+-/*	{ MODKEY|ShiftMask,		XK_s,		incnmaster,	"-1" }, */ \
+-	{ MODKEY,			XK_j,		focusprev,	NULL }, \
+- 	{ MODKEY,			XK_k,		focusnext,	NULL }, \
+-	{ MODKEY,			XK_a,		popstack,	NULL }, \
+-	{ MODKEY,			XK_d,		pushstack,	NULL }, \
++	{ MODKEY|ControlMask,		XK_e,		setmwfact,	"+0.05" }, \
++	{ MODKEY|ControlMask,		XK_d,		setmwfact,	"-0.05" }, \
++/*	{ MODKEY|ControlMask|ShiftMask,	XK_e,		incnmaster,	"1" }, */ \
++/*	{ MODKEY|ControlMask|ShiftMask,	XK_d,		incnmaster,	"-1" }, */ \
++	{ MODKEY|ShiftMask,		XK_a,		popstack,	NULL }, \
++	{ MODKEY|ShiftMask,		XK_d,		pushstack,	NULL }, \
+ 	{ MODKEY|ControlMask,		XK_y,		wscount,	"1" }, \
+-	{ MODKEY|ControlMask,		XK_r,		wscount,	"-1" }, \
+-	{ MODKEY,			XK_m,		togglemax,	NULL }, \
+-	{ MODKEY,			XK_Return,	zoom,		NULL }, \
+-	{ MODKEY|ShiftMask,		XK_space,	togglefloating,	NULL }, \
+-	{ MODKEY|ShiftMask,		XK_c,		killclient,	NULL }, \
+-	{ MODKEY,			XK_1,		view,		"1" }, \
+-	{ MODKEY,			XK_2,		view,		"2" }, \
+-	{ MODKEY,			XK_3,		view,		"3" }, \
+-	{ MODKEY,			XK_4,		view,		"4" }, \
+-	{ MODKEY,			XK_5,		view,		"5" }, \
+-	{ MODKEY,			XK_6,		view,		"6" }, \
+-	{ MODKEY,			XK_7,		view,		"7" }, \
+-	{ MODKEY,			XK_8,		view,		"8" }, \
+-	{ MODKEY,			XK_9,		view,		"9" }, \
+-	{ MODKEY,			XK_0,		view,		"10" }, \
+-	{ MODKEY|ShiftMask,		XK_1,		moveto,		"1" }, \
+-	{ MODKEY|ShiftMask,		XK_2,		moveto,		"2" }, \
+-	{ MODKEY|ShiftMask,		XK_3,		moveto,		"3" }, \
+-	{ MODKEY|ShiftMask,		XK_4,		moveto,		"4" }, \
+-	{ MODKEY|ShiftMask,		XK_5,		moveto,		"5" }, \
+-	{ MODKEY|ShiftMask,		XK_6,		moveto,		"6" }, \
+-	{ MODKEY|ShiftMask,		XK_7,		moveto,		"7" }, \
+-	{ MODKEY|ShiftMask,		XK_8,		moveto,		"8" }, \
+-	{ MODKEY|ShiftMask,		XK_9,		moveto,		"9" }, \
+-	{ MODKEY|ShiftMask,		XK_0,		moveto,		"10" }, \
+-	{ MODKEY,			XK_l,		viewrel,	"1" }, \
+-	{ MODKEY,			XK_h,		viewrel,	"-1" }, \
+-	{ MODKEY|ShiftMask,		XK_l,		pushstack,	NULL }, \
+-	{ MODKEY|ShiftMask,		XK_l,		viewrel,	"1" }, \
+-	{ MODKEY|ShiftMask,		XK_l,		popstack,	NULL }, \
+-	{ MODKEY|ShiftMask,		XK_h,		pushstack,	NULL }, \
+-	{ MODKEY|ShiftMask,		XK_h,		viewrel,	"-1" }, \
+-	{ MODKEY|ShiftMask,		XK_h,		popstack,	NULL }, \
+-	{ MODKEY|ShiftMask,		XK_q,		quit,		NULL }, \
++	{ MODKEY|ControlMask,		XK_x,		wscount,	"-1" }, \
++	{ MODKEY|ControlMask,		XK_c,		killclient,	NULL }, \
++/*	{ MODKEY|ShiftMask,		XK_s,		togglestacklayout,	{ 0 } }, */ \
++	{ MODKEY|ShiftMask,		XK_f,		togglefloating,	NULL }, \
++	{ MODKEY,			XK_f,		viewrel,	"1" }, \
++	{ MODKEY,			XK_s,		viewrel,	"-1" }, \
++	{ MODKEY|ShiftMask|ControlMask,	XK_q,		quit,		NULL }, \
++	{ MODKEY|ShiftMask,    		XK_1,		setlayout,	"TTT" }, \
++	{ MODKEY|ShiftMask,    		XK_2,		setlayout,	"[ ]" }, \
++	{ MODKEY|ShiftMask,    		XK_3,		setlayout,	"<><" }, \
++	{ MODKEY|ShiftMask,    		XK_4,		setlayout,	"[]=" }, \
++	{ MODKEY|ShiftMask,    		XK_5,		setlayout,	"(@)" }, \
++	{ MODKEY|ShiftMask,    		XK_6,		setlayout,	"[\\]" }, \
+ };
+diff -Narup dwm-4.4.1/config.mk 99_dwm-4.4.1_personal_configuration.andy/config.mk
+--- dwm-4.4.1/config.mk	2007-09-04 22:20:49.000000000 +0200
++++ 99_dwm-4.4.1_personal_configuration.andy/config.mk	2007-09-04 22:20:49.000000000 +0200
+@@ -7,7 +7,7 @@ VERSION = 4.4.1
+ SRC = tile.c
+ 
+ # dwm-mitch patchlevel
+-VERSION := ${VERSION}+${PATCHVERSION}
++VERSION := ${VERSION}+${PATCHVERSION}+pa
+ 
+ # paths
+ PREFIX = /usr/local

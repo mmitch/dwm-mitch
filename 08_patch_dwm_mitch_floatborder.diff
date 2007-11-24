@@ -1,0 +1,94 @@
+diff -Narup 07_dwm-4.4.1_reload/client.c 08_dwm-4.4.1_floatborder/client.c
+--- 07_dwm-4.4.1_reload/client.c	2007-09-12 14:32:00.000000000 +0200
++++ 08_dwm-4.4.1_floatborder/client.c	2007-09-12 14:32:20.000000000 +0200
+@@ -176,12 +176,29 @@ killclient(const char *arg) {
+ }
+ 
+ void
++setborderbyfloat(Client *c, Bool configurewindow) {
++	XWindowChanges wc;
++	unsigned int newborder;
++	
++	newborder = ((c->isfloating && ! c->ismax) || isfloating()) ? FLOATBORDERPX : BORDERPX;
++	if (c->border == newborder)
++		return;
++
++	c->border = newborder;
++
++	if (! configurewindow)
++		return;
++	wc.border_width = c->border;
++	XConfigureWindow(dpy, c->win, CWBorderWidth, &wc);
++	configure(c);
++}
++
++void
+ manage(Window w, XWindowAttributes *wa) {
+ 	unsigned int i;
+ 	Client *c, *t = NULL;
+ 	Window trans;
+ 	Status rettrans;
+-	XWindowChanges wc;
+ 
+ 	c = emallocz(sizeof(Client));
+ 	c->win = w;
+@@ -207,10 +224,7 @@ manage(Window w, XWindowAttributes *wa) 
+ 			c->y = way;
+ 		c->border = BORDERPX;
+ 	}
+-	wc.border_width = c->border;
+-	XConfigureWindow(dpy, w, CWBorderWidth, &wc);
+ 	XSetWindowBorder(dpy, w, dc.norm[ColBorder]);
+-	configure(c); /* propagates border_width, if size doesn't change */
+ 	updatesizehints(c);
+ 	XSelectInput(dpy, w,
+ 		StructureNotifyMask | PropertyChangeMask | EnterWindowMask);
+@@ -221,6 +235,7 @@ manage(Window w, XWindowAttributes *wa) 
+ 	applyrules(c);
+ 	if(!c->isfloating)
+ 		c->isfloating = (rettrans == Success) || c->isfixed;
++	setborderbyfloat(c, True);
+ 	attach(c);
+ 	attachstack(c);
+ 	XMoveResizeWindow(dpy, c->win, c->x, c->y, c->w, c->h); /* some windows require this */
+@@ -282,6 +297,7 @@ resize(Client *c, int x, int y, int w, i
+ 	if(y + h + 2 * c->border < sy)
+ 		y = sy;
+ 	if(c->x != x || c->y != y || c->w != w || c->h != h) {
++		setborderbyfloat(c, False);
+ 		c->x = wc.x = x;
+ 		c->y = wc.y = y;
+ 		c->w = wc.width = w;
+diff -Narup 07_dwm-4.4.1_reload/config.default.h 08_dwm-4.4.1_floatborder/config.default.h
+--- 07_dwm-4.4.1_reload/config.default.h	2007-09-12 14:32:00.000000000 +0200
++++ 08_dwm-4.4.1_floatborder/config.default.h	2007-09-12 14:32:20.000000000 +0200
+@@ -3,6 +3,7 @@
+ /* appearance */
+ #define BARPOS			BarTop /* BarBot, BarOff */
+ #define BORDERPX		1
++#define FLOATBORDERPX		1
+ #define FONT			"-*-fixed-medium-r-normal-*-13-*-*-*-*-*-*-*"
+ #define NORMBORDERCOLOR		"#dddddd"
+ #define NORMBGCOLOR		"#eeeeee"
+diff -Narup 07_dwm-4.4.1_reload/dwm.h 08_dwm-4.4.1_floatborder/dwm.h
+--- 07_dwm-4.4.1_reload/dwm.h	2007-09-12 14:32:00.000000000 +0200
++++ 08_dwm-4.4.1_floatborder/dwm.h	2007-09-12 14:32:20.000000000 +0200
+@@ -100,6 +100,7 @@ void killclient(const char *arg);	/* kil
+ void manage(Window w, XWindowAttributes *wa);	/* manage new client */
+ void resize(Client *c, int x, int y,
+ 		int w, int h, Bool sizehints);	/* resize with given coordinates c*/
++void setborderbyfloat(Client *c, Bool configurewindow);	/* set border of client */
+ void unban(Client *c);			/* unbans c */
+ void unmanage(Client *c);		/* unmanage c */
+ void updatesizehints(Client *c);	/* update the size hint variables of c */
+diff -Narup 07_dwm-4.4.1_reload/screen.c 08_dwm-4.4.1_floatborder/screen.c
+--- 07_dwm-4.4.1_reload/screen.c	2007-09-12 14:32:00.000000000 +0200
++++ 08_dwm-4.4.1_floatborder/screen.c	2007-09-12 14:32:20.000000000 +0200
+@@ -291,6 +291,7 @@ togglefloating(const char *arg) {
+ 	if(!sel)
+ 		return;
+ 	sel->isfloating = !sel->isfloating;
++	setborderbyfloat(sel, True);
+ 	if(sel->isfloating)
+ 		resize(sel, sel->x, sel->y, sel->w, sel->h, True);
+ 	arrange();

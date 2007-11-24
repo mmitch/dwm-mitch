@@ -1,0 +1,21 @@
+diff -Narup 04_dwm-4.4.1_clientstyle/draw.c 05_dwm-4.4.1_utf8widechars/draw.c
+--- 04_dwm-4.4.1_clientstyle/draw.c	2007-09-04 20:56:32.000000000 +0200
++++ 05_dwm-4.4.1_utf8widechars/draw.c	2007-09-04 20:58:04.000000000 +0200
+@@ -9,7 +9,7 @@ textnw(const char *text, unsigned int le
+ 	XRectangle r;
+ 
+ 	if(dc.font.set) {
+-		XmbTextExtents(dc.font.set, text, len, NULL, &r);
++		Xutf8TextExtents(dc.font.set, text, len, NULL, &r);
+ 		return r.width;
+ 	}
+ 	return XTextWidth(dc.font.xfont, text, len);
+@@ -82,7 +82,7 @@ drawtext(const char *text, unsigned long
+ 		return; /* too long */
+ 	XSetForeground(dpy, dc.gc, invert ? col[ColBG] : col[ColFG]);
+ 	if(dc.font.set)
+-		XmbDrawString(dpy, dc.drawable, dc.font.set, dc.gc, x, y, buf, len);
++		Xutf8DrawString(dpy, dc.drawable, dc.font.set, dc.gc, x, y, buf, len);
+ 	else
+ 		XDrawString(dpy, dc.drawable, dc.gc, x, y, buf, len);
+ }

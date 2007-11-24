@@ -1,0 +1,20 @@
+#!/bin/bash
+STATUS_SCRIPT=~/.dwm-status
+DWM=/usr/local/bin/dwm
+DWMCHOOSE=/usr/local/bin/dwm-choose
+
+# refresh cache
+${DWMCHOOSE} --clearcache
+${DWMCHOOSE} --createcache &
+
+if [ -x "${STATUS_SCRIPT}" ] ; then
+	# personalized status script
+	if [ $(( 0$(stat -c %a "${STATUS_SCRIPT}") & 0022 )) -gt 0 ] ; then
+		exec ${DWM} < <(echo "${STATUS_SCRIPT} is insecure: writeable by group or other"; sleep 3600)
+	else
+		exec ${DWM} < <(exec "${STATUS_SCRIPT}")
+	fi
+else
+	# default status with time and load
+	exec ${DWM} < <(while sleep 2; do echo $(/bin/date +%H:%M:%S) $(cut -d ' ' -f -3 /proc/loadavg); done)
+fi

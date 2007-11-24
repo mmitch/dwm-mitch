@@ -1,0 +1,23 @@
+diff -Narup 00_dmenu-3.4_history/dmenu.c 01_dmenu-3.4_fixemptylines/dmenu.c
+--- 00_dmenu-3.4_history/dmenu.c	2007-10-28 19:40:46.000000000 +0100
++++ 01_dmenu-3.4_fixemptylines/dmenu.c	2007-10-28 19:41:41.000000000 +0100
+@@ -166,8 +166,9 @@ writehistory(char *command) {
+     if( (f = fopen(histfile, "w")) ) {
+         fputs(command, f); fputc('\n', f);
+         for(; i<HIST_SIZE && i<j; i++) {
+-            if(strcmp(command, hist[i]) != 0) 
++	    if(strcmp(command, hist[i]) != 0) {
+                 fputs(hist[i], f); fputc('\n', f);
++	    }
+         }
+         fclose(f);
+         return 1;
+@@ -186,7 +187,7 @@ readhistory (void) {
+         return 0;
+ 
+     if( (f = fopen(histfile, "r+")) ) {
+-        while(fgets(buf, sizeof buf, f))  
++        while(fgets(buf, sizeof buf, f) && (hcnt < HIST_SIZE))  
+             strncpy(hist[hcnt++], buf, (strlen(buf) <= 1024) ? strlen(buf): 1024 );
+         fclose(f);
+     }

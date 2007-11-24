@@ -1,0 +1,126 @@
+
+This is my patchset for the dynamic window manager (http://dwm.suckless.org).
+Get the most current version from http://www.cgarbs.de/dwm-mitch.en.html
+
+I was a big fan of wmii-2.  I liked the dynamic workspaces, but I did
+not like the tags-approach of wmii-3.  Then I came upon dwm, which had
+all the core functionality of wmii - unluckily of wmii-3 and not of
+wmii-2.  But because dwm is easy to extend, I was able to make dwm
+behave like my beloved wmii-2.
+
+The included file "dwm-mitch" is a start script that initializes a
+dmenu-cache, starts a loop for the status line (showing current time
+and system load) and runs dwm.  If it finds an executable file in
+"$HOME/.dwm-status", it will be run and used as input for the dwm
+status line instead of the default status line.
+
+The environment variable DMENU_COLORS is used for changing the
+colors of dmenu on the dwm-choose script.  Set it like this:
+DMENU_COLORS="-fn fixed -nb #336 -nf #ccc -sb #669 -sf #eee"
+
+dmenu uses "$HOME/.dmenu-history" to save its history.
+dmenu uses "$HOME/.dmenu-cache" to cache the list of executables.  The
+list is regenerated with every new dwm session.  If you want it to be
+updated sooner, just delete the cache file.  The next dmenu call will
+regenerate it.
+
+The build process looks for the environment variables $DWM_PERSOCON
+and $DMENU_PERSOCON.  They should point to a .diff that contains your
+personal configuration which will automatically be applied to the
+sources after all other patches have been applied.
+
+Use "make" or "make install" to install everything.
+Use "make uninstall" to remove installed files.
+Installation propably needs root privileges.
+
+A running dwm can be restarted by "kill -s USR1 $pid_of_dwm".  Use this
+if you have changed some configuration and did a "make install" to see
+your changes without having to restart your X session.
+
+
+Included DWM patches:
+
+
+ *  00_patch_dwm_rossmohn_bstack.diff
+    add bottom stack layout
+    written by: Ross Mohn <rpmohn@waxandwane.org>
+
+
+ *  01_patch_dwm_mitch_maximize.diff
+    add fullscreen layout
+    written by: Christian Garbs <mitch@cgarbs.de>
+
+
+ *  02_patch_dwm_mitch_workspace.diff
+    remove tagging and add dynamic workspaces
+    written by: Christian Garbs <mitch@cgarbs.de>
+
+
+ *  03_patch_dwm_mitch_perworkspace.diff
+    allow a different layout on every workspace
+    written by: Christian Garbs <mitch@cgarbs.de>
+
+
+ *  04_patch_dwm_mitch_clientstyle.diff
+    remove square boxes in status line
+    written by: Christian Garbs <mitch@cgarbs.de>
+
+
+ *  05_patch_dwm_mitch_utf8widechars.diff
+    fix display of wide characters
+    written by: Christian Garbs <mitch@cgarbs.de>
+
+
+ *  06_patch_dwm_mitch_patchversion.diff
+    add dwm-mitch patchlevel to dwm version
+    written by: Christian Garbs <mitch@cgarbs.de>
+
+
+ *  07_patch_dwm_anydot_reload.diff
+    add dwm reload via SIGUSR1
+    written by: anydot <dfenze@gmail.com>
+    also applied suggestions by: Jukka Salmi <j+dwm@2007.salmi.ch>
+
+
+ *  08_patch_dwm_mitch_floatborder.diff
+    allow different border sizes for floating and non-floating clients
+    written by: Christian Garbs <mitch@cgarbs.de>
+
+
+ (optional: personal configuration settings)
+  * dwm_personal_configuration.mitch.diff
+    written by: Christian Garbs <mitch@cgarbs.de>
+  * dwm_personal_configuration.andy.diff
+    written by: Andreas Geisenhainer <psycorama@opensecure.de>
+
+
+
+Included DMENU patches:
+
+
+ *  00_patch_dmenu_robmanea_history.diff
+    add a history file to dmenu
+    written by: Rob Manea <rob.manea@googlemail.com>
+    (changed to apply against current dmenu version)
+
+
+ *  01_patch_dmenu_mitch_fixemptylines.diff
+    fix empty lines in dmenu history
+    written by: Christian Garbs <mitch@cgarbs.de>
+
+
+ *  02_patch_dmenu_mitch_utf8widechars.diff
+    fix display of wide characters
+    written by: Christian Garbs <mitch@cgarbs.de>
+
+
+ *  03_patch_dmenu_mitch_patchversion.diff
+    add dmenu-mitch patchlevel to dmenu version
+    written by: Christian Garbs <mitch@cgarbs.de>
+
+
+ (optional: personal configuration settings)
+  * dmenu_personal_configuration.mitch.diff
+    written by: Christian Garbs <mitch@cgarbs.de>
+  * dmenu_personal_configuration.andy.diff
+    written by: Andreas Geisenhainer <psycorama@opensecure.de>

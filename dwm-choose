@@ -1,0 +1,34 @@
+#!/bin/bash
+cachefile=~/.dmenu-cache
+histfile=~/.dmenu-history
+
+if [ "$1" = "--help" ]; then
+	echo "dwm-choose [--clearcache|--clearhistory|--createcache|--help]";
+	exit 0
+fi
+
+if [ "$1" = "--clearcache" ]; then
+	rm "$cachefile"
+	exit 0
+fi
+
+if [ "$1" = "--clearhistory" ]; then
+	rm "$histfile"
+	exit 0
+fi
+
+# create cache if needed
+if [ ! -r "$cachefile" ] ; then
+	dmenu_path > "$cachefile"
+fi
+
+if [ "$1" = "--createcache" ] ; then
+	exit 0;
+fi
+
+# run dmenu
+if [ "$DMENU_COLORS" ] ; then
+    exec $(dmenu -hist "$histfile" $DMENU_COLORS < "$cachefile")
+else
+    exec $(dmenu -hist "$histfile" < "$cachefile")
+fi

@@ -1,0 +1,169 @@
+dwm-mitch history
+
+  TODO: togglebar setting per workspace or global?
+        dmenu_path creates a cache that we don't need and want, use own script
+
+Fehler?
+Standardgröße neues Fenster nicht korrekt
+- ausgeschaltete Windowbar nicht berücksichtigt
+- dicker Rand (nach rechts?) nicht brücksichtigt
+
+
+### v3.3  
+
+ - update to dmenu 3.4
+
+### v3.2  2007-09-18
+
+ - bugfix: layout and mwfact got screwed up between workspaces when a
+           workspace was created or removed
+
+### v3.1  2007-09-06
+
+ - update to dwm 4.4.1
+   - nmaster can't be changed any more
+   - tileleft and bstacklandscape layouts are no longer included
+     in bottom stack patch
+
+### v3.0  2007-07-22
+
+ - update to dwm 4.3
+   - update maximize patch to ban/unban
+ - update to dmenu 3.2
+ - add floatborder patch:
+   allow different border sizes for floating and non-floating clients
+
+### v2.9  2007-05-24
+
+ - update to dwm 4.1
+   - xrandr support is now included
+   - new togglebar command is bound to Mod-b 
+ - update to dmenu 3.1
+
+### v2.8  2007-04-22
+
+ - update to dmenu 3.0
+   - numpad patch is now included
+ - bugfix: unmanaging windows on the detached stack caused dwm to hang
+ - bugfix: xrandr: broken barwin when initial width was surpassed
+
+### v2.7  2007-04-15
+
+ - update to dwm 3.9
+ - fix possible overflow on reading the dmenu history
+ - add xrandr support
+ - correctly include dwm restart patch
+
+### v2.6  2007-04-03
+
+ - update to dwm 3.8
+ - include numpad patch for dmenu
+ - include restart patch for dwm (does not seem to work yet)
+
+### v2.5  2007-03-10
+
+ - update to dmenu 2.8
+ - add macro keybinding to move a client to another workspace and follow it
+   (pushstack + viewnext/viewprev + popstack, bound to M-S-h and M-S-l)
+
+### v2.4  2007-03-03
+
+ - update to dmenu 2.6
+ - initial number of workspaces is configurable
+ - rule-based workspace selection for new clients
+ - bugfix: when removing a workspace, only the first client of the removed
+           workspace was detached
+ - bugfix: when removing a workspace, bstacklayout and stackside of the
+           following workspaces got mixed up
+
+### v2.3  2007-02-24
+
+ - update to dmenu 2.5
+
+### v2.2  2007-02-14
+
+ - update to dwm 3.5
+ - update to dmenu 2.2
+ - fix float regexps (did not work for ages!)
+
+### v2.1  2007-02-13
+
+ - update bottom stack patch to dwm-3.4-bstack-2.diff
+
+### v2.0  2007-02-12
+
+ - update to dwm 3.4
+
+### v1.9  2007-02-10
+
+ - swapped landscape and portrait mode keybindings
+ - add version of dwm-mitch to dmenu and dwm version number
+ - add Makefile target "personal" for easier handling of
+   personal configurations
+ - personal configuration:
+   * switch dwm keybindings
+   * increment MASTER
+   * add andy's configuration
+
+### v1.8  2007-01-21
+
+ - update to dwm 3.1
+   - nmaster keys are M-S-g and M-S-s
+ - update to dmenu 2.1
+
+### v1.7  2007-01-14
+
+ - update to dwm 2.8
+ - update to dmenu 1.9
+
+### v1.6  2006-12-27
+
+ - update to dmenu 1.8
+ - set dmenu colors via $DMENU_COLOR
+
+### v1.5  2006-12-17
+
+ - update to dwm 2.7
+ - update to dmenu 1.7.1
+ - fix display of wide characters in dmenu selection
+ - fix display of load in statusbar for higher loads
+ - dwm-chooser: set dmenu color back to default to make it
+   easily distinguishable from the default status bar
+
+### v1.4  2006-12-09
+
+ - update to dwm 2.6
+ - update to dmenu 1.6
+ - fix display of wide characters in dwm status bar
+
+### v1.3  2006-12-06
+
+ - update to dwm 2.4
+ - fill dmenu cache on dwm startup
+ - add commandline arguments to dwm-choose:
+   * clear cache
+   * clear history
+   * create cache
+   * print help
+ - personal configuration:
+   * invert title texts of deselected clients
+
+### v1.2  2006-11-30
+
+ - update to dmenu 1.5
+ - fix empty lines in dmenu history
+ - make personal configuration user-specific
+ - documentation updates
+
+### v1.1  2006-11-11
+
+ - change dmenu cache from ~/.dwm-menu.cache to ~/.dmenu-cache
+ - include history patch for dmenu
+ - personal configuration:
+   * set default layout to tiled/vertical
+   * disable number-keys (view/moveto)
+   * change font
+
+### v1.0  2006-11-04
+
+ - first public release, no changes to v0.9

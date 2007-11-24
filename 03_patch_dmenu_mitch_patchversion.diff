@@ -1,0 +1,13 @@
+diff -Narup 02_dmenu-3.0_utf8widechars/config.mk 03_dmenu-3.0_patchversion/config.mk
+--- 02_dmenu-3.0_utf8widechars/config.mk	2007-04-21 11:23:31.000000000 +0200
++++ 03_dmenu-3.0_patchversion/config.mk	2007-04-21 11:23:31.000000000 +0200
+@@ -3,6 +3,9 @@ VERSION = 3.0
+ 
+ # Customize below to fit your system
+ 
++# dwm-mitch patchlevel
++VERSION := ${VERSION}+${PATCHVERSION}
++
+ # paths
+ PREFIX = /usr/local
+ MANPREFIX = ${PREFIX}/share/man
