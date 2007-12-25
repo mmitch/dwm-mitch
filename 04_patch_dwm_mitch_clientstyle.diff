@@ -1,11 +1,26 @@
-diff -Narup 03_dwm-4.4.1_perworkspace/draw.c 04_dwm-4.4.1_clientstyle/draw.c
---- 03_dwm-4.4.1_perworkspace/draw.c	2007-09-12 14:30:28.000000000 +0200
-+++ 04_dwm-4.4.1_clientstyle/draw.c	2007-09-12 14:30:28.000000000 +0200
-@@ -4,27 +4,6 @@
+diff -Narup 03_dwm-4.7_perworkspace/dwm.c 04_dwm-4.7_clientstyle/dwm.c
+--- 03_dwm-4.7_perworkspace/dwm.c	2007-12-25 13:24:48.000000000 +0100
++++ 04_dwm-4.7_clientstyle/dwm.c	2007-12-25 13:27:35.000000000 +0100
+@@ -130,7 +130,6 @@ void detach(Client *c);
+ void detachstack(Client *c);
+ void detachhiddenstack(Client *c);
+ void drawbar(void);
+-void drawsquare(Bool filled, Bool empty, unsigned long col[ColLast]);
+ void drawtext(const char *text, unsigned long col[ColLast]);
+ void enternotify(XEvent *e);
+ void eprint(const char *errstr, ...);
+@@ -563,7 +562,6 @@ drawbar(void) {
+ 		dc.x = x;
+ 		if(sel) {
+ 			drawtext(sel->name, dc.sel);
+-			drawsquare(sel->ismax, sel->isfloating, dc.sel);
+ 		}
+ 		else
+ 			drawtext(NULL, dc.norm);
+@@ -573,27 +571,6 @@ drawbar(void) {
+ }
  
- /* static */
- 
--static void
+ void
 -drawsquare(Bool filled, Bool empty, unsigned long col[ColLast]) {
 -	int x;
 -	XGCValues gcv;
@@ -26,74 +41,7 @@ diff -Narup 03_dwm-4.4.1_perworkspace/draw.c 04_dwm-4.4.1_clientstyle/draw.c
 -	}
 -}
 -
- static unsigned int
- textnw(const char *text, unsigned int len) {
- 	XRectangle r;
-@@ -44,10 +23,10 @@ drawstatus(void) {
- 
- 	dc.x = dc.y = 0;
- 	dc.w = wstextwidth;
--	drawtext(wstext, dc.norm);
-+	drawtext(wstext, dc.norm, False);
- 	dc.x = dc.w;
- 	dc.w = blw;
--	drawtext(getsymbol(), dc.norm);
-+	drawtext(getsymbol(), dc.norm, False);
- 	x = dc.x + dc.w;
- 	dc.w = textw(stext);
- 	dc.x = sw - dc.w;
-@@ -55,28 +34,27 @@ drawstatus(void) {
- 		dc.x = x;
- 		dc.w = sw - x;
- 	}
--	drawtext(stext, dc.norm);
-+	drawtext(stext, dc.norm, False);
- 	if((dc.w = dc.x - x) > bh) {
- 		dc.x = x;
- 		if(sel) {
--			drawtext(sel->name, dc.sel);
--			drawsquare(sel->ismax, sel->isfloating, dc.sel);
-+			drawtext(sel->name, dc.sel, False);
- 		}
- 		else
--			drawtext(NULL, dc.norm);
-+			drawtext(NULL, dc.norm, False);
- 	}
- 	XCopyArea(dpy, dc.drawable, barwin, dc.gc, 0, 0, sw, bh, 0, 0);
- 	XSync(dpy, False);
- }
- 
- void
--drawtext(const char *text, unsigned long col[ColLast]) {
-+drawtext(const char *text, unsigned long col[ColLast], Bool invert) {
+-void
+ drawtext(const char *text, unsigned long col[ColLast]) {
  	int x, y, w, h;
  	static char buf[256];
- 	unsigned int len, olen;
- 	XRectangle r = { dc.x, dc.y, dc.w, dc.h };
- 
--	XSetForeground(dpy, dc.gc, col[ColBG]);
-+	XSetForeground(dpy, dc.gc, invert ? col[ColFG] : col[ColBG]);
- 	XFillRectangles(dpy, dc.drawable, dc.gc, &r, 1);
- 	if(!text)
- 		return;
-@@ -102,7 +80,7 @@ drawtext(const char *text, unsigned long
- 	}
- 	if(w > dc.w)
- 		return; /* too long */
--	XSetForeground(dpy, dc.gc, col[ColFG]);
-+	XSetForeground(dpy, dc.gc, invert ? col[ColBG] : col[ColFG]);
- 	if(dc.font.set)
- 		XmbDrawString(dpy, dc.drawable, dc.font.set, dc.gc, x, y, buf, len);
- 	else
-diff -Narup 03_dwm-4.4.1_perworkspace/dwm.h 04_dwm-4.4.1_clientstyle/dwm.h
---- 03_dwm-4.4.1_perworkspace/dwm.h	2007-09-12 14:30:28.000000000 +0200
-+++ 04_dwm-4.4.1_clientstyle/dwm.h	2007-09-12 14:30:28.000000000 +0200
-@@ -107,7 +107,7 @@ void updatetitle(Client *c);		/* update 
- 
- /* draw.c */
- void drawstatus(void);			/* draw the bar */
--void drawtext(const char *text, unsigned long col[ColLast]);	/* draw text */
-+void drawtext(const char *text, unsigned long col[ColLast], Bool invert);	/* draw text */
- unsigned int textw(const char *text);	/* return the width of text in px*/
- 
- /* event.c */
