@@ -1,6 +1,6 @@
 diff -Narup 01_dwm-4.7_maximize/config.def.h 02_dwm-4.7_workspace/config.def.h
 --- 01_dwm-4.7_maximize/config.def.h	2007-12-24 17:52:08.000000000 +0100
-+++ 02_dwm-4.7_workspace/config.def.h	2007-12-25 02:04:56.000000000 +0100
++++ 02_dwm-4.7_workspace/config.def.h	2007-12-25 13:02:47.000000000 +0100
 @@ -11,16 +11,19 @@
  #define SELBGCOLOR		"#0066ff"
  #define SELFGCOLOR		"#ffffff"
@@ -29,7 +29,7 @@ diff -Narup 01_dwm-4.7_maximize/config.def.h 02_dwm-4.7_workspace/config.def.h
  
  /* layout(s) */
  #define MWFACT			0.6	/* master width factor [0.1 .. 0.9] */
-@@ -48,50 +51,46 @@ Key keys[] = {
+@@ -48,50 +51,47 @@ Key keys[] = {
  	{ MODKEY,			XK_b,		togglebar,	NULL },
  	{ MODKEY,			XK_j,		focusnext,	NULL },
  	{ MODKEY,			XK_k,		focusprev,	NULL },
@@ -45,7 +45,9 @@ diff -Narup 01_dwm-4.7_maximize/config.def.h 02_dwm-4.7_workspace/config.def.h
 +	{ MODKEY|ControlMask,		XK_r,		wscount,	"-1" },
  	{ MODKEY,			XK_m,		togglemax,	NULL },
  	{ MODKEY,			XK_Return,	zoom,		NULL },
- 	{ MODKEY,			XK_Tab,		viewprevtag,	NULL },
+-	{ MODKEY,			XK_Tab,		viewprevtag,	NULL },
++	{ MODKEY,			XK_Tab,		focusnext,	NULL },
++	{ MODKEY|ShiftMask,		XK_Tab,		focusprev,	NULL },
  	{ MODKEY|ShiftMask,		XK_space,	togglefloating,	NULL },
  	{ MODKEY|ShiftMask,		XK_c,		killclient,	NULL },
 -	{ MODKEY,			XK_0,		view,		NULL },
@@ -116,109 +118,9 @@ diff -Narup 01_dwm-4.7_maximize/config.def.h 02_dwm-4.7_workspace/config.def.h
 +	{ MODKEY|ShiftMask,		XK_h,		popstack,	NULL },
  	{ MODKEY|ShiftMask,		XK_q,		quit,		NULL },
  };
-diff -Narup 01_dwm-4.7_maximize/config.h 02_dwm-4.7_workspace/config.h
---- 01_dwm-4.7_maximize/config.h	1970-01-01 01:00:00.000000000 +0100
-+++ 02_dwm-4.7_workspace/config.h	2007-12-25 02:05:09.000000000 +0100
-@@ -0,0 +1,96 @@
-+/* See LICENSE file for copyright and license details. */
-+
-+/* appearance */
-+#define BARPOS			BarTop /* BarBot, BarOff */
-+#define BORDERPX		1
-+#define FONT			"-*-terminus-medium-*-*-*-*-*-*-*-*-*-*-*"
-+#define NORMBORDERCOLOR		"#cccccc"
-+#define NORMBGCOLOR		"#cccccc"
-+#define NORMFGCOLOR		"#000000"
-+#define SELBORDERCOLOR		"#0066ff"
-+#define SELBGCOLOR		"#0066ff"
-+#define SELFGCOLOR		"#ffffff"
-+
-+/* workspaces */
-+/* Query class:instance:title for regex matching info with following command:
-+ * xprop | awk -F '"' '/^WM_CLASS/ { printf("%s:%s:",$4,$2) }; /^WM_NAME/ { printf("%s\n",$2) }' */
-+Rule rules[] = {
-+	/* class:instance:title regex	isfloating	workspace (0=current)*/
-+	{ "Firefox",			False,		0 },
-+	{ "Gimp",			True,		0 },
-+	{ "MPlayer",			True,		0 },
-+	{ "Acroread",			True,		0 },
-+};
-+#define INITIALWORKSPACES	 1
-+#define MAXWORKSPACES		99
-+#define MAXWSTEXTWIDTH		 6	/* must be 2*(strlen(MAXWORKSPACES)+1)  */
-+
-+/* layout(s) */
-+#define MWFACT			0.6	/* master width factor [0.1 .. 0.9] */
-+#define RESIZEHINTS		True	/* False - respect size hints in tiled resizals */
-+#define SNAP			32	/* snap pixel */
-+#include "bstack.c"
-+#include "maximize.c"
-+Layout layouts[] = {
-+	/* symbol		function */
-+	{ "[]=",		tile }, /* first entry is default */
-+	{ "><>",		floating },
-+	{ "TTT",		bstack },
-+	{ "[ ]",		maximize },
-+};
-+
-+/* key definitions */
-+#define MODKEY			Mod1Mask
-+Key keys[] = {
-+	/* modifier			key		function	argument */
-+	{ MODKEY,			XK_p,		spawn,
-+		"exe=`dmenu_path | dmenu -fn '"FONT"' -nb '"NORMBGCOLOR"' -nf '"NORMFGCOLOR"'"
-+		" -sb '"SELBGCOLOR"' -sf '"SELFGCOLOR"'` && exec $exe" },
-+	{ MODKEY|ShiftMask,		XK_Return,	spawn, "exec uxterm" },
-+	{ MODKEY,			XK_space,	setlayout,	NULL },
-+	{ MODKEY,			XK_b,		togglebar,	NULL },
-+	{ MODKEY,			XK_j,		focusnext,	NULL },
-+	{ MODKEY,			XK_k,		focusprev,	NULL },
-+	{ MODKEY,			XK_g,		setmwfact,	"-0.05" },
-+	{ MODKEY,			XK_s,		setmwfact,	"+0.05" },
-+/*	{ MODKEY|ShiftMask,		XK_g,		incnmaster,	"1" }, */
-+/*	{ MODKEY|ShiftMask,		XK_s,		incnmaster,	"-1" }, */
-+	{ MODKEY,			XK_a,		popstack,	NULL },
-+	{ MODKEY,			XK_d,		pushstack,	NULL },
-+	{ MODKEY|ControlMask,		XK_y,		wscount,	"1" },
-+	{ MODKEY|ControlMask,		XK_r,		wscount,	"-1" },
-+	{ MODKEY,			XK_m,		togglemax,	NULL },
-+	{ MODKEY,			XK_Return,	zoom,		NULL },
-+	{ MODKEY,			XK_Tab,		viewprevtag,	NULL },
-+	{ MODKEY|ShiftMask,		XK_space,	togglefloating,	NULL },
-+	{ MODKEY|ShiftMask,		XK_c,		killclient,	NULL },
-+	{ MODKEY,			XK_1,		view,		"1" },
-+	{ MODKEY,			XK_2,		view,		"2" },
-+	{ MODKEY,			XK_3,		view,		"3" },
-+	{ MODKEY,			XK_4,		view,		"4" },
-+	{ MODKEY,			XK_5,		view,		"5" },
-+	{ MODKEY,			XK_6,		view,		"6" },
-+	{ MODKEY,			XK_7,		view,		"7" },
-+	{ MODKEY,			XK_8,		view,		"8" },
-+	{ MODKEY,			XK_9,		view,		"9" },
-+	{ MODKEY|ShiftMask,		XK_0,		moveto,		"10" },
-+	{ MODKEY|ShiftMask,		XK_1,		moveto,		"1" },
-+	{ MODKEY|ShiftMask,		XK_2,		moveto,		"2" },
-+	{ MODKEY|ShiftMask,		XK_3,		moveto,		"3" },
-+	{ MODKEY|ShiftMask,		XK_4,		moveto,		"4" },
-+	{ MODKEY|ShiftMask,		XK_5,		moveto,		"5" },
-+	{ MODKEY|ShiftMask,		XK_6,		moveto,		"6" },
-+	{ MODKEY|ShiftMask,		XK_7,		moveto,		"7" },
-+	{ MODKEY|ShiftMask,		XK_8,		moveto,		"8" },
-+	{ MODKEY|ShiftMask,		XK_9,		moveto,		"9" },
-+	{ MODKEY|ShiftMask,		XK_0,		moveto,		"10" },
-+	{ MODKEY,			XK_l,		viewrel,	"1" },
-+	{ MODKEY,			XK_h,		viewrel,	"-1" },
-+	{ MODKEY|ShiftMask,		XK_l,		pushstack,	NULL },
-+	{ MODKEY|ShiftMask,		XK_l,		viewrel,	"1" },
-+	{ MODKEY|ShiftMask,		XK_l,		popstack,	NULL },
-+	{ MODKEY|ShiftMask,		XK_h,		pushstack,	NULL },
-+	{ MODKEY|ShiftMask,		XK_h,		viewrel,	"-1" },
-+	{ MODKEY|ShiftMask,		XK_h,		popstack,	NULL },
-+	{ MODKEY|ShiftMask,		XK_q,		quit,		NULL },
-+};
 diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
 --- 01_dwm-4.7_maximize/dwm.c	2007-12-24 17:52:07.000000000 +0100
-+++ 02_dwm-4.7_workspace/dwm.c	2007-12-25 02:10:03.000000000 +0100
++++ 02_dwm-4.7_workspace/dwm.c	2007-12-25 13:06:45.000000000 +0100
 @@ -65,9 +65,8 @@ struct Client {
  	int basew, baseh, incw, inch, maxw, maxh, minw, minh;
  	int minax, maxax, minay, maxay;
@@ -230,7 +132,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  	Client *next;
  	Client *prev;
  	Client *snext;
-@@ -103,16 +102,22 @@ typedef struct {
+@@ -103,20 +102,21 @@ typedef struct {
  
  typedef struct {
  	const char *prop;
@@ -244,18 +146,21 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
 -	regex_t *tagregex;
  } Regs;
  
-+typedef struct Stack Stack;
-+struct Stack {
-+	Client *client;   
-+	Stack *next;  
-+};
-+
  /* function declarations */
 +void *emallocz(unsigned int size);
  void applyrules(Client *c);
  void arrange(void);
  void attach(Client *c);
-@@ -131,7 +136,6 @@ void detachstack(Client *c);
+ void attachstack(Client *c);
++void attachhiddenstack(Client *c);
+ void ban(Client *c);
+ void buttonpress(XEvent *e);
+ void checkotherwm(void);
+@@ -128,10 +128,10 @@ void configurerequest(XEvent *e);
+ void destroynotify(XEvent *e);
+ void detach(Client *c);
+ void detachstack(Client *c);
++void detachhiddenstack(Client *c);
  void drawbar(void);
  void drawsquare(Bool filled, Bool empty, unsigned long col[ColLast]);
  void drawtext(const char *text, unsigned long col[ColLast]);
@@ -263,7 +168,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  void enternotify(XEvent *e);
  void eprint(const char *errstr, ...);
  void expose(XEvent *e);
-@@ -146,9 +150,7 @@ long getstate(Window w);
+@@ -146,9 +146,7 @@ long getstate(Window w);
  Bool gettextprop(Window w, Atom atom, char *text, unsigned int size);
  void grabbuttons(Client *c, Bool focused);
  void grabkeys(void);
@@ -273,7 +178,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  Bool isprotodel(Client *c);
  Bool isvisible(Client *c);
  void keypress(XEvent *e);
-@@ -157,10 +159,17 @@ void leavenotify(XEvent *e);
+@@ -157,9 +155,14 @@ void leavenotify(XEvent *e);
  void manage(Window w, XWindowAttributes *wa);
  void mappingnotify(XEvent *e);
  void maprequest(XEvent *e);
@@ -287,12 +192,9 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  void propertynotify(XEvent *e);
 +void pushstack(const char *arg);
  void quit(const char *arg);
-+void removefromstack(Client *c);
-+void removefromstack(Client *c);
  void resize(Client *c, int x, int y, int w, int h, Bool sizehints);
  void resizemouse(Client *c);
- void restack(void);
-@@ -171,23 +180,22 @@ void setlayout(const char *arg);
+@@ -171,23 +174,22 @@ void setlayout(const char *arg);
  void setmwfact(const char *arg);
  void setup(void);
  void spawn(const char *arg);
@@ -319,7 +221,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  int xerror(Display *dpy, XErrorEvent *ee);
  int xerrordummy(Display *dsply, XErrorEvent *ee);
  int xerrorstart(Display *dsply, XErrorEvent *ee);
-@@ -200,7 +208,9 @@ int screen, sx, sy, sw, sh, wax, way, wa
+@@ -200,7 +202,9 @@ int screen, sx, sy, sw, sh, wax, way, wa
  int (*xerrorxlib)(Display *, XErrorEvent *);
  unsigned int bh, bpos;
  unsigned int blw = 0;
@@ -329,12 +231,15 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  void (*handler[LASTEvent]) (XEvent *) = {
  	[ButtonPress] = buttonpress,
  	[ConfigureRequest] = configurerequest,
-@@ -231,19 +241,21 @@ DC dc = {0};
- Layout *layout = NULL;
- Window barwin, root;
- Regs *regs = NULL;
-+Stack *stack_detach = NULL;
- 
+@@ -225,6 +229,7 @@ Bool selscreen = True;
+ Client *clients = NULL;
+ Client *sel = NULL;
+ Client *stack = NULL;
++Client *hiddenstack = NULL;
+ Cursor cursor[CurLast];
+ Display *dpy;
+ DC dc = {0};
+@@ -235,15 +240,16 @@ Regs *regs = NULL;
  /* configuration, allows nested code to access above variables */
  #include "config.h"
  
@@ -354,7 +259,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  	XClassHint ch = { 0 };
  
  	/* rule matching */
-@@ -254,19 +266,13 @@ applyrules(Client *c) {
+@@ -254,19 +260,13 @@ applyrules(Client *c) {
  	for(i = 0; i < LENGTH(rules); i++)
  		if(regs[i].propregex && !regexec(regs[i].propregex, buf, 1, &tmp, 0)) {
  			c->isfloating = rules[i].isfloating;
@@ -376,7 +281,20 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  }
  
  void
-@@ -307,32 +313,31 @@ ban(Client *c) {
+@@ -298,6 +298,12 @@ attachstack(Client *c) {
+ }
+ 
+ void
++attachhiddenstack(Client *c) {
++	c->snext = hiddenstack;
++	hiddenstack = c;
++}
++
++void
+ ban(Client *c) {
+ 	if(c->isbanned)
+ 		return;
+@@ -307,32 +313,32 @@ ban(Client *c) {
  
  void
  buttonpress(XEvent *e) {
@@ -392,7 +310,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
 -			if(ev->x < x) {
 +		x = textw(wstext);
 +		if(ev->x < x) {
-+			if(ev->button == Button1)
++			if(ev->button == Button1) {
  				if(ev->button == Button1) {
  					if(ev->state & MODKEY)
 -						tag(tags[i]);
@@ -411,7 +329,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
 +						wscount("1");
  				}
 -				return;
--			}
+ 			}
 +			return;
  		}
 -		if((ev->x < x + blw) && ev->button == Button1)
@@ -422,7 +340,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  	}
  	else if((c = getclient(ev->window))) {
  		focus(c);
-@@ -415,13 +420,6 @@ compileregs(void) {
+@@ -415,13 +421,6 @@ compileregs(void) {
  			else
  				regs[i].propregex = reg;
  		}
@@ -436,9 +354,18 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  	}
  }
  
-@@ -533,21 +531,12 @@ detachstack(Client *c) {
+@@ -532,22 +531,21 @@ detachstack(Client *c) {
+ }
  
  void
++detachhiddenstack(Client *c) {
++	Client **tc;
++
++	for(tc=&hiddenstack; *tc && *tc != c; tc=&(*tc)->snext);
++	*tc = c->snext;
++}
++
++void
  drawbar(void) {
 -	int i, x;
 +	int x;
@@ -462,7 +389,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  	dc.w = blw;
  	drawtext(layout->symbol, dc.norm);
  	x = dc.x + dc.w;
-@@ -869,14 +858,6 @@ grabkeys(void)  {
+@@ -869,14 +867,6 @@ grabkeys(void)  {
  	}
  }
  
@@ -477,7 +404,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  void
  initfont(const char *fontstr) {
  	char *def, **missing;
-@@ -920,16 +901,6 @@ initfont(const char *fontstr) {
+@@ -920,16 +910,6 @@ initfont(const char *fontstr) {
  }
  
  Bool
@@ -494,7 +421,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  isprotodel(Client *c) {
  	int i, n;
  	Atom *protocols;
-@@ -946,12 +917,7 @@ isprotodel(Client *c) {
+@@ -946,12 +926,7 @@ isprotodel(Client *c) {
  
  Bool
  isvisible(Client *c) {
@@ -508,7 +435,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  }
  
  void
-@@ -1008,8 +974,8 @@ manage(Window w, XWindowAttributes *wa) 
+@@ -1008,8 +983,8 @@ manage(Window w, XWindowAttributes *wa) 
  	XWindowChanges wc;
  
  	c = emallocz(sizeof(Client));
@@ -518,7 +445,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  	c->x = wa->x;
  	c->y = wa->y;
  	c->w = wa->width;
-@@ -1041,8 +1007,6 @@ manage(Window w, XWindowAttributes *wa) 
+@@ -1041,8 +1016,6 @@ manage(Window w, XWindowAttributes *wa) 
  	updatetitle(c);
  	if((rettrans = XGetTransientForHint(dpy, w, &trans) == Success))
  		for(t = clients; t && t->win != trans; t = t->next);
@@ -527,25 +454,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  	applyrules(c);
  	if(!c->isfloating)
  		c->isfloating = (rettrans == Success) || c->isfixed;
-@@ -1154,6 +1118,17 @@ propertynotify(XEvent *e) {
- 	}
- }
- 
-+static void
-+pushtostack(Client *c) {
-+	Stack *new;
-+	
-+	new = emallocz(sizeof(Stack));
-+	c->workspace = 0;
-+	new->client = c;
-+	new->next = detachstack;
-+	detachstack = new;
-+}
-+
- void
- quit(const char *arg) {
- 	readin = running = False;
-@@ -1480,8 +1455,7 @@ setup(void) {
+@@ -1480,8 +1453,7 @@ setup(void) {
  	/* grab keys */
  	grabkeys();
  
@@ -555,7 +464,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  	compileregs();
  
  	/* init appearance */
-@@ -1524,6 +1498,12 @@ setup(void) {
+@@ -1524,6 +1496,12 @@ setup(void) {
  	/* multihead support */
  	selscreen = XQueryPointer(dpy, root, &w, &w, &d, &d, &d, &d, &mask);
  
@@ -568,7 +477,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  }
  
  void
-@@ -1551,15 +1531,27 @@ spawn(const char *arg) {
+@@ -1551,15 +1529,27 @@ spawn(const char *arg) {
  }
  
  void
@@ -604,7 +513,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  }
  
  unsigned int
-@@ -1671,28 +1663,77 @@ togglemax(const char *arg) {
+@@ -1671,28 +1661,73 @@ togglemax(const char *arg) {
  }
  
  void
@@ -631,7 +540,8 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
 -	for(j = 0; j < LENGTH(tags) && !sel->tags[j]; j++);
 -	if(j == LENGTH(tags))
 -		sel->tags[i] = True; /* at least one tag must be enabled */
-+	pushtostack(sel);
++	detachstack(sel);
++	attachhiddenstack(sel);
  	arrange();
  }
  
@@ -639,20 +549,13 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
 -toggleview(const char *arg) {
 -	unsigned int i, j;
 +popstack(const char *arg) {
-+	Stack *top;
-+	
-+	if (!detachstack)
++	if (!hiddenstack)
 +		return;
-+	top = detachstack;
-+	detachstack = top->next;   
-+	sel = top->client;
-+	free(top);
++	
++	sel = hiddenstack;
++	attachstack(sel);
++	detachhiddenstack(sel);
 +	sel->workspace = selws;
-+	detach(sel);
-+	if (clients)
-+		clients->prev = sel;
-+	sel->next = clients;
-+	clients = sel;
 +	focus(sel);
 +	arrange();
 +}
@@ -686,8 +589,10 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
 +			for(c = clients; c; c = c->next)
 +				if (c->workspace > selws)
 +					c->workspace--;
-+				else if (c->workspace == selws)
-+					pushtostack(c);
++				else if (c->workspace == selws) {
++					detachstack(c);
++					attachhiddenstack(c);
++				}
 +			if (selws == workspaces)
 +				selws--;
 +			workspaces--;
@@ -697,11 +602,11 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  	arrange();
  }
  
-@@ -1715,11 +1756,11 @@ unmanage(Client *c) {
+@@ -1715,11 +1750,11 @@ unmanage(Client *c) {
  	XConfigureWindow(dpy, c->win, CWBorderWidth, &wc); /* restore border */
  	detach(c);
  	detachstack(c);
-+	removefromstack(c);
++	detachhiddenstack(c);
  	if(sel == c)
  		focus(NULL);
  	XUngrabButton(dpy, AnyButton, AnyModifier, c->win);
@@ -710,7 +615,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  	free(c);
  	XSync(dpy, False);
  	XSetErrorHandler(xerror);
-@@ -1853,24 +1894,47 @@ xerrorstart(Display *dsply, XErrorEvent 
+@@ -1853,24 +1888,16 @@ xerrorstart(Display *dsply, XErrorEvent 
  }
  
  void
@@ -723,6 +628,16 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
 -		seltags[i] = (NULL == arg);
 -	seltags[idxoftag(arg)] = True;
 -	arrange();
+-}
+-
+-void
+-viewprevtag(const char *arg) {
+-	static Bool tmp[LENGTH(tags)];
+-
+-	memcpy(tmp, seltags, sizeof seltags);
+-	memcpy(seltags, prevtags, sizeof seltags);
+-	memcpy(prevtags, tmp, sizeof seltags);
+-	arrange();
 +	
 +	if (!sel)
 +		return;
@@ -734,45 +649,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  }
  
  void
--viewprevtag(const char *arg) {
--	static Bool tmp[LENGTH(tags)];
--
--	memcpy(tmp, seltags, sizeof seltags);
--	memcpy(seltags, prevtags, sizeof seltags);
--	memcpy(prevtags, tmp, sizeof seltags);
--	arrange();
-+removefromstack(Client *c) {
-+	Stack *s, *tmp; 
-+	
-+	/* not on stack */
-+	if (c->workspace != 0)
-+		return;
-+	/* empty stack --> should not be on stack then! */
-+	if (!detachstack)
-+		return;   
-+	
-+	/* first element on stack */
-+	if (detachstack->client == c) {
-+		tmp = detachstack;
-+		detachstack = tmp->next;
-+		free(tmp);
-+		return;
-+	}
-+	
-+	/* somewhere else on the stack */
-+	tmp = detachstack;
-+	for(s = detachstack->next; s; s = s->next) {
-+		if (s->client == c) {
-+			tmp->next = s->next;
-+			free(s);
-+			return;
-+		}
-+		tmp = s;
-+	}
- }
- 
- void
-@@ -1904,6 +1968,7 @@ main(int argc, char *argv[]) {
+@@ -1904,6 +1931,7 @@ main(int argc, char *argv[]) {
  
  	checkotherwm();
  	setup();
