@@ -1,31 +1,49 @@
-diff -Narup 06_dwm-4.4.1_patchversion/main.c 07_dwm-4.4.1_reload/main.c
---- 06_dwm-4.4.1_patchversion/main.c	2007-09-04 20:58:04.000000000 +0200
-+++ 07_dwm-4.4.1_reload/main.c	2007-09-04 21:00:21.000000000 +0200
-@@ -6,6 +6,7 @@
+diff -Narup 06_dwm-4.7_patchversion/dwm.c 07_dwm-4.7_reload/dwm.c
+--- 06_dwm-4.7_patchversion/dwm.c	2007-12-25 13:33:36.000000000 +0100
++++ 07_dwm-4.7_reload/dwm.c	2007-12-25 14:18:30.000000000 +0100
+@@ -30,6 +30,7 @@
  #include <stdlib.h>
  #include <string.h>
  #include <unistd.h>
 +#include <signal.h>
  #include <sys/select.h>
- #include <X11/cursorfont.h>
- #include <X11/keysym.h>
-@@ -13,6 +14,8 @@
- #include <X11/Xproto.h>
- #include <X11/Xutil.h>
+ #include <sys/types.h>
+ #include <sys/wait.h>
+@@ -129,6 +130,7 @@ void destroynotify(XEvent *e);
+ void detach(Client *c);
+ void detachstack(Client *c);
+ void detachhiddenstack(Client *c);
++void doreload(void);
+ void drawbar(void);
+ void drawtext(const char *text, unsigned long col[ColLast]);
+ void enternotify(XEvent *e);
+@@ -172,6 +174,7 @@ void setclientstate(Client *c, long stat
+ void setlayout(const char *arg);
+ void setmwfact(const char *arg);
+ void setup(void);
++void sigusr1(int notused);
+ void spawn(const char *arg);
+ unsigned int textnw(const char *text, unsigned int len);
+ unsigned int textw(const char *text);
+@@ -223,6 +226,7 @@ Bool domwfact = True;
+ Bool dozoom = True;
+ Bool otherwm, readin;
+ Bool running = True;
++Bool reload = False;
+ Bool selscreen = True;
+ Client *clients = NULL;
+ Client *sel = NULL;
+@@ -233,6 +237,7 @@ Display *dpy;
+ DC dc = {0};
+ Window barwin, root;
+ Regs *regs = NULL;
++char **cargv;
  
-+extern char **environ;
-+
- /* extern */
+ /* predefine variables depending on config.h */
+ extern double mwfact[];
+@@ -387,7 +392,8 @@ checkotherwm(void) {
  
- char stext[256];
-@@ -37,10 +40,13 @@ Window root, barwin;
- static int (*xerrorxlib)(Display *, XErrorEvent *);
- static Bool otherwm, readin;
- static Bool running = True;
-+static Bool reload = False;
-+static char **cargv;
- 
- static void
+ void
  cleanup(void) {
 -	close(STDIN_FILENO);
 +	if (!reload)
@@ -33,47 +51,56 @@ diff -Narup 06_dwm-4.4.1_patchversion/main.c 07_dwm-4.4.1_reload/main.c
  	while(stack) {
  		unban(stack);
  		unmanage(stack);
-@@ -60,6 +66,18 @@ cleanup(void) {
- 	XSync(dpy, False);
+@@ -541,6 +547,12 @@ detachhiddenstack(Client *c) {
  }
  
-+static void
-+sigusr1(int notused) {
-+	quit(NULL);
-+	reload = True;
-+}
-+
-+static void
+ void
 +doreload(void) {
 +	execvp(cargv[0], cargv);
 +	eprint("Can't exec: %s\n", strerror(errno));
 +}
 +
- static unsigned long
- initcolor(const char *colstr) {
- 	Colormap cmap = DefaultColormap(dpy, screen);
-@@ -227,6 +245,9 @@ setup(void) {
- 		XSetFont(dpy, dc.gc, dc.font.xfont->fid);
++void
+ drawbar(void) {
+ 	int x;
+ 
+@@ -1478,6 +1490,10 @@ setup(void) {
  	/* multihead support */
- 	selscreen = XQueryPointer(dpy, root, &w, &w, &i, &i, &i, &i, &mask);
+ 	selscreen = XQueryPointer(dpy, root, &w, &w, &d, &d, &d, &d, &mask);
+ 
 +	/* restart support */
 +	if (signal(SIGUSR1, sigusr1) == SIG_ERR) 
 +		eprint("Can't bind to signal USR1\n");
++
  	/* check initial parameters */
  	if (workspaces < 1)
  		workspaces = 1;
-@@ -309,6 +330,7 @@ main(int argc, char *argv[]) {
- 		eprint("dwm-"VERSION", © 2006-2007 A. R. Garbe, S. van Dijk, J. Salmi, P. Hruby, S. Nagy\n");
+@@ -1487,6 +1503,12 @@ setup(void) {
+ }
+ 
+ void
++sigusr1(int notused) {
++	quit(NULL);
++	reload = True;
++}
++
++void
+ spawn(const char *arg) {
+ 	static char *shell = NULL;
+ 
+@@ -1914,6 +1936,7 @@ main(int argc, char *argv[]) {
+ 		       "Jukka Salmi, Premysl Hruby, Szabolcs Nagy\n");
  	else if(argc != 1)
  		eprint("usage: dwm [-v]\n");
 +	cargv = argv;
+ 
  	setlocale(LC_CTYPE, "");
  	if(!(dpy = XOpenDisplay(0)))
- 		eprint("dwm: cannot open display\n");
-@@ -372,5 +394,6 @@ main(int argc, char *argv[]) {
- 	}
+@@ -1930,5 +1953,7 @@ main(int argc, char *argv[]) {
  	cleanup();
+ 
  	XCloseDisplay(dpy);
-+	if (reload) doreload();
++	if (reload)
++		doreload();
  	return 0;
  }
