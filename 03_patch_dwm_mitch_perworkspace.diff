@@ -1,6 +1,6 @@
 diff -Narup 02_dwm-4.7_workspace/bstack.c 03_dwm-4.7_perworkspace/bstack.c
---- 02_dwm-4.7_workspace/bstack.c	2007-12-25 13:11:16.000000000 +0100
-+++ 03_dwm-4.7_perworkspace/bstack.c	2007-12-25 13:20:39.000000000 +0100
+--- 02_dwm-4.7_workspace/bstack.c	2007-12-26 11:53:43.000000000 +0100
++++ 03_dwm-4.7_perworkspace/bstack.c	2007-12-26 11:53:43.000000000 +0100
 @@ -7,7 +7,7 @@ bstack(void) {
      for(n = 0, c = nexttiled(clients); c; c = nexttiled(c->next))
          n++;
@@ -11,9 +11,9 @@ diff -Narup 02_dwm-4.7_workspace/bstack.c 03_dwm-4.7_perworkspace/bstack.c
  
      nx = wax;
 diff -Narup 02_dwm-4.7_workspace/dwm.c 03_dwm-4.7_perworkspace/dwm.c
---- 02_dwm-4.7_workspace/dwm.c	2007-12-25 13:11:16.000000000 +0100
-+++ 03_dwm-4.7_perworkspace/dwm.c	2007-12-25 13:22:59.000000000 +0100
-@@ -197,7 +197,6 @@ void zoom(const char *arg);
+--- 02_dwm-4.7_workspace/dwm.c	2007-12-26 11:53:43.000000000 +0100
++++ 03_dwm-4.7_perworkspace/dwm.c	2007-12-26 11:53:43.000000000 +0100
+@@ -195,7 +195,6 @@ void zoom(const char *arg);
  
  /* variables */
  char stext[256];
@@ -21,7 +21,7 @@ diff -Narup 02_dwm-4.7_workspace/dwm.c 03_dwm-4.7_perworkspace/dwm.c
  int screen, sx, sy, sw, sh, wax, way, waw, wah;
  int (*xerrorxlib)(Display *, XErrorEvent *);
  unsigned int bh, bpos;
-@@ -233,16 +232,20 @@ Client *hiddenstack = NULL;
+@@ -230,16 +229,20 @@ Client *stack = NULL;
  Cursor cursor[CurLast];
  Display *dpy;
  DC dc = {0};
@@ -44,7 +44,7 @@ diff -Narup 02_dwm-4.7_workspace/dwm.c 03_dwm-4.7_perworkspace/dwm.c
  
  /* function implementations */
  void
-@@ -278,7 +281,7 @@ arrange(void) {
+@@ -275,7 +278,7 @@ arrange(void) {
  			unban(c);
  		else
  			ban(c);
@@ -53,7 +53,7 @@ diff -Narup 02_dwm-4.7_workspace/dwm.c 03_dwm-4.7_perworkspace/dwm.c
  	focus(NULL);
  	restack();
  }
-@@ -345,20 +348,20 @@ buttonpress(XEvent *e) {
+@@ -336,20 +339,20 @@ buttonpress(XEvent *e) {
  		if(CLEANMASK(ev->state) != MODKEY)
  			return;
  		if(ev->button == Button1) {
@@ -77,7 +77,7 @@ diff -Narup 02_dwm-4.7_workspace/dwm.c 03_dwm-4.7_perworkspace/dwm.c
  				restack();
  			else
  				togglefloating(NULL);
-@@ -467,7 +470,7 @@ configurerequest(XEvent *e) {
+@@ -458,7 +461,7 @@ configurerequest(XEvent *e) {
  		c->ismax = False;
  		if(ev->value_mask & CWBorderWidth)
  			c->border = ev->border_width;
@@ -86,7 +86,7 @@ diff -Narup 02_dwm-4.7_workspace/dwm.c 03_dwm-4.7_perworkspace/dwm.c
  			if(ev->value_mask & CWX)
  				c->x = ev->x;
  			if(ev->value_mask & CWY)
-@@ -547,7 +550,7 @@ drawbar(void) {
+@@ -530,7 +533,7 @@ drawbar(void) {
  	drawtext(wstext, dc.norm);
  	dc.x = dc.w;
  	dc.w = blw;
@@ -95,7 +95,7 @@ diff -Narup 02_dwm-4.7_workspace/dwm.c 03_dwm-4.7_perworkspace/dwm.c
  	x = dc.x + dc.w;
  	dc.w = textw(stext);
  	dc.x = sw - dc.w;
-@@ -1246,9 +1249,9 @@ restack(void) {
+@@ -1229,9 +1232,9 @@ restack(void) {
  	drawbar();
  	if(!sel)
  		return;
@@ -107,7 +107,7 @@ diff -Narup 02_dwm-4.7_workspace/dwm.c 03_dwm-4.7_perworkspace/dwm.c
  		wc.stack_mode = Below;
  		wc.sibling = barwin;
  		if(!sel->isfloating) {
-@@ -1366,8 +1369,8 @@ setlayout(const char *arg) {
+@@ -1349,8 +1352,8 @@ setlayout(const char *arg) {
  	unsigned int i;
  
  	if(!arg) {
@@ -118,7 +118,7 @@ diff -Narup 02_dwm-4.7_workspace/dwm.c 03_dwm-4.7_perworkspace/dwm.c
  	}
  	else {
  		for(i = 0; i < LENGTH(layouts); i++)
-@@ -1375,7 +1378,7 @@ setlayout(const char *arg) {
+@@ -1358,7 +1361,7 @@ setlayout(const char *arg) {
  				break;
  		if(i == LENGTH(layouts))
  			return;
@@ -127,7 +127,7 @@ diff -Narup 02_dwm-4.7_workspace/dwm.c 03_dwm-4.7_perworkspace/dwm.c
  	}
  	if(sel)
  		arrange();
-@@ -1391,16 +1394,16 @@ setmwfact(const char *arg) {
+@@ -1374,16 +1377,16 @@ setmwfact(const char *arg) {
  		return;
  	/* arg handling, manipulate mwfact */
  	if(arg == NULL)
@@ -151,7 +151,7 @@ diff -Narup 02_dwm-4.7_workspace/dwm.c 03_dwm-4.7_perworkspace/dwm.c
  	}
  	arrange();
  }
-@@ -1467,8 +1470,10 @@ setup(void) {
+@@ -1450,8 +1453,10 @@ setup(void) {
  	dc.h = bh = dc.font.height + 2;
  
  	/* init layouts */
@@ -164,7 +164,7 @@ diff -Narup 02_dwm-4.7_workspace/dwm.c 03_dwm-4.7_perworkspace/dwm.c
  	for(blw = i = 0; i < LENGTH(layouts); i++) {
  		j = textw(layouts[i].symbol);
  		if(j > blw)
-@@ -1578,7 +1583,7 @@ tile(void) {
+@@ -1561,7 +1566,7 @@ tile(void) {
  		n++;
  
  	/* window geoms */
@@ -173,7 +173,7 @@ diff -Narup 02_dwm-4.7_workspace/dwm.c 03_dwm-4.7_perworkspace/dwm.c
  	th = (n > 1) ? wah / (n - 1) : 0;
  	if(n > 1 && th < bh)
  		th = wah;
-@@ -1639,7 +1644,7 @@ togglemax(const char *arg) {
+@@ -1622,7 +1627,7 @@ togglemax(const char *arg) {
  	if(!sel || sel->isfixed)
  		return;
  	if((sel->ismax = !sel->ismax)) {
@@ -182,7 +182,7 @@ diff -Narup 02_dwm-4.7_workspace/dwm.c 03_dwm-4.7_perworkspace/dwm.c
  			sel->wasfloating = True;
  		else {
  			togglefloating(NULL);
-@@ -1698,6 +1703,7 @@ void
+@@ -1678,6 +1683,7 @@ void
  wscount(const char *arg) {
  	Client *c;
  	int i;
@@ -190,7 +190,7 @@ diff -Narup 02_dwm-4.7_workspace/dwm.c 03_dwm-4.7_perworkspace/dwm.c
  	
  	i = arg ? atoi(arg) : 0;
  	if (i == 0 )
-@@ -1705,9 +1711,14 @@ wscount(const char *arg) {
+@@ -1685,9 +1691,14 @@ wscount(const char *arg) {
  	if (i > 0) {
  		if (workspaces == MAXWORKSPACES)
  			return;
@@ -208,9 +208,9 @@ diff -Narup 02_dwm-4.7_workspace/dwm.c 03_dwm-4.7_perworkspace/dwm.c
  		selws = workspaces; 
  	}
  	else {
-@@ -1722,6 +1733,10 @@ wscount(const char *arg) {
- 					detachstack(c);
- 					attachhiddenstack(c);
+@@ -1701,6 +1712,10 @@ wscount(const char *arg) {
+ 				else if (c->workspace == selws) {
+ 					c->workspace = 0;
  				}
 +			for(j = selws; j < workspaces; j++) {
 +				layout[j-1] = layout[j];

@@ -1,6 +1,6 @@
 diff -Narup 06_dwm-4.7_patchversion/dwm.c 07_dwm-4.7_reload/dwm.c
---- 06_dwm-4.7_patchversion/dwm.c	2007-12-25 13:33:36.000000000 +0100
-+++ 07_dwm-4.7_reload/dwm.c	2007-12-25 14:18:30.000000000 +0100
+--- 06_dwm-4.7_patchversion/dwm.c	2007-12-26 11:55:38.000000000 +0100
++++ 07_dwm-4.7_reload/dwm.c	2007-12-26 11:56:13.000000000 +0100
 @@ -30,6 +30,7 @@
  #include <stdlib.h>
  #include <string.h>
@@ -9,15 +9,15 @@ diff -Narup 06_dwm-4.7_patchversion/dwm.c 07_dwm-4.7_reload/dwm.c
  #include <sys/select.h>
  #include <sys/types.h>
  #include <sys/wait.h>
-@@ -129,6 +130,7 @@ void destroynotify(XEvent *e);
+@@ -127,6 +128,7 @@ void configurerequest(XEvent *e);
+ void destroynotify(XEvent *e);
  void detach(Client *c);
  void detachstack(Client *c);
- void detachhiddenstack(Client *c);
 +void doreload(void);
  void drawbar(void);
  void drawtext(const char *text, unsigned long col[ColLast]);
  void enternotify(XEvent *e);
-@@ -172,6 +174,7 @@ void setclientstate(Client *c, long stat
+@@ -170,6 +172,7 @@ void setclientstate(Client *c, long stat
  void setlayout(const char *arg);
  void setmwfact(const char *arg);
  void setup(void);
@@ -25,7 +25,7 @@ diff -Narup 06_dwm-4.7_patchversion/dwm.c 07_dwm-4.7_reload/dwm.c
  void spawn(const char *arg);
  unsigned int textnw(const char *text, unsigned int len);
  unsigned int textw(const char *text);
-@@ -223,6 +226,7 @@ Bool domwfact = True;
+@@ -221,6 +224,7 @@ Bool domwfact = True;
  Bool dozoom = True;
  Bool otherwm, readin;
  Bool running = True;
@@ -33,7 +33,7 @@ diff -Narup 06_dwm-4.7_patchversion/dwm.c 07_dwm-4.7_reload/dwm.c
  Bool selscreen = True;
  Client *clients = NULL;
  Client *sel = NULL;
-@@ -233,6 +237,7 @@ Display *dpy;
+@@ -230,6 +234,7 @@ Display *dpy;
  DC dc = {0};
  Window barwin, root;
  Regs *regs = NULL;
@@ -41,7 +41,7 @@ diff -Narup 06_dwm-4.7_patchversion/dwm.c 07_dwm-4.7_reload/dwm.c
  
  /* predefine variables depending on config.h */
  extern double mwfact[];
-@@ -387,7 +392,8 @@ checkotherwm(void) {
+@@ -378,7 +383,8 @@ checkotherwm(void) {
  
  void
  cleanup(void) {
@@ -51,7 +51,7 @@ diff -Narup 06_dwm-4.7_patchversion/dwm.c 07_dwm-4.7_reload/dwm.c
  	while(stack) {
  		unban(stack);
  		unmanage(stack);
-@@ -541,6 +547,12 @@ detachhiddenstack(Client *c) {
+@@ -524,6 +530,12 @@ detachstack(Client *c) {
  }
  
  void
@@ -64,7 +64,7 @@ diff -Narup 06_dwm-4.7_patchversion/dwm.c 07_dwm-4.7_reload/dwm.c
  drawbar(void) {
  	int x;
  
-@@ -1478,6 +1490,10 @@ setup(void) {
+@@ -1461,6 +1473,10 @@ setup(void) {
  	/* multihead support */
  	selscreen = XQueryPointer(dpy, root, &w, &w, &d, &d, &d, &d, &mask);
  
@@ -75,7 +75,7 @@ diff -Narup 06_dwm-4.7_patchversion/dwm.c 07_dwm-4.7_reload/dwm.c
  	/* check initial parameters */
  	if (workspaces < 1)
  		workspaces = 1;
-@@ -1487,6 +1503,12 @@ setup(void) {
+@@ -1470,6 +1486,12 @@ setup(void) {
  }
  
  void
@@ -88,7 +88,7 @@ diff -Narup 06_dwm-4.7_patchversion/dwm.c 07_dwm-4.7_reload/dwm.c
  spawn(const char *arg) {
  	static char *shell = NULL;
  
-@@ -1914,6 +1936,7 @@ main(int argc, char *argv[]) {
+@@ -1892,6 +1914,7 @@ main(int argc, char *argv[]) {
  		       "Jukka Salmi, Premysl Hruby, Szabolcs Nagy\n");
  	else if(argc != 1)
  		eprint("usage: dwm [-v]\n");
@@ -96,7 +96,7 @@ diff -Narup 06_dwm-4.7_patchversion/dwm.c 07_dwm-4.7_reload/dwm.c
  
  	setlocale(LC_CTYPE, "");
  	if(!(dpy = XOpenDisplay(0)))
-@@ -1930,5 +1953,7 @@ main(int argc, char *argv[]) {
+@@ -1908,5 +1931,7 @@ main(int argc, char *argv[]) {
  	cleanup();
  
  	XCloseDisplay(dpy);

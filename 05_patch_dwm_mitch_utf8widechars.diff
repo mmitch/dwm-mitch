@@ -1,7 +1,7 @@
 diff -Narup 04_dwm-4.7_clientstyle/dwm.c 05_dwm-4.7_utf8widechars/dwm.c
---- 04_dwm-4.7_clientstyle/dwm.c	2007-12-25 13:29:44.000000000 +0100
-+++ 05_dwm-4.7_utf8widechars/dwm.c	2007-12-25 13:30:25.000000000 +0100
-@@ -605,7 +605,7 @@ drawtext(const char *text, unsigned long
+--- 04_dwm-4.7_clientstyle/dwm.c	2007-12-26 11:55:02.000000000 +0100
++++ 05_dwm-4.7_utf8widechars/dwm.c	2007-12-26 11:55:02.000000000 +0100
+@@ -588,7 +588,7 @@ drawtext(const char *text, unsigned long
  		return; /* too long */
  	XSetForeground(dpy, dc.gc, col[ColFG]);
  	if(dc.font.set)
@@ -10,7 +10,7 @@ diff -Narup 04_dwm-4.7_clientstyle/dwm.c 05_dwm-4.7_utf8widechars/dwm.c
  	else
  		XDrawString(dpy, dc.drawable, dc.gc, x, y, buf, len);
  }
-@@ -780,7 +780,7 @@ gettextprop(Window w, Atom atom, char *t
+@@ -763,7 +763,7 @@ gettextprop(Window w, Atom atom, char *t
  	if(name.encoding == XA_STRING)
  		strncpy(text, (char *)name.value, size - 1);
  	else {
@@ -19,7 +19,7 @@ diff -Narup 04_dwm-4.7_clientstyle/dwm.c 05_dwm-4.7_utf8widechars/dwm.c
  		&& n > 0 && *list) {
  			strncpy(text, *list, size - 1);
  			XFreeStringList(list);
-@@ -1539,7 +1539,7 @@ textnw(const char *text, unsigned int le
+@@ -1522,7 +1522,7 @@ textnw(const char *text, unsigned int le
  	XRectangle r;
  
  	if(dc.font.set) {
