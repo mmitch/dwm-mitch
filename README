@@ -57,7 +57,7 @@ Included DWM patches:
 
 
  *  03_patch_dwm_mitch_perworkspace.diff
-    allow a different layout on every workspace
+    allow a different settings (layout, mwidth) on every workspace
     written by: Christian Garbs <mitch@cgarbs.de>
 
 
@@ -84,6 +84,13 @@ Included DWM patches:
 
  *  08_patch_dwm_mitch_floatborder.diff
     allow different border sizes for floating and non-floating clients
+    written by: Christian Garbs <mitch@cgarbs.de>
+
+
+ *  09_patch_dwm_mitch_maxfloat.diff
+    togglemax only works for floating clients
+    (this allows the same key for zoom and togglemax and it does the
+    right thing[tm] depending on whether the client is floating or not)
     written by: Christian Garbs <mitch@cgarbs.de>
 
 

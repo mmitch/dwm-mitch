@@ -11,7 +11,14 @@ Standardgröße neues Fenster nicht korrekt
 
 ### v3.3  
 
+ - update to dwm 4.7
  - update to dmenu 3.4
+ - add togglemax patch:
+   togglemax only works for floating clients
+   this allows the same key for zoom and togglemax and it does the 
+   right thing[tm] depending on whether the client is floating or not
+ - a public git repository is available at
+   http://www.cgarbs.de/git/dwm-mitch.git
 
 ### v3.2  2007-09-18
 
