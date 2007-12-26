@@ -1,6 +1,6 @@
 diff -Narup 03_dwm-4.7_perworkspace/dwm.c 04_dwm-4.7_clientstyle/dwm.c
---- 03_dwm-4.7_perworkspace/dwm.c	2007-12-26 11:54:32.000000000 +0100
-+++ 04_dwm-4.7_clientstyle/dwm.c	2007-12-26 11:54:33.000000000 +0100
+--- 03_dwm-4.7_perworkspace/dwm.c	2007-12-26 12:21:08.000000000 +0100
++++ 04_dwm-4.7_clientstyle/dwm.c	2007-12-26 12:21:08.000000000 +0100
 @@ -128,7 +128,6 @@ void destroynotify(XEvent *e);
  void detach(Client *c);
  void detachstack(Client *c);
@@ -9,7 +9,7 @@ diff -Narup 03_dwm-4.7_perworkspace/dwm.c 04_dwm-4.7_clientstyle/dwm.c
  void drawtext(const char *text, unsigned long col[ColLast]);
  void enternotify(XEvent *e);
  void eprint(const char *errstr, ...);
-@@ -546,7 +545,6 @@ drawbar(void) {
+@@ -545,7 +544,6 @@ drawbar(void) {
  		dc.x = x;
  		if(sel) {
  			drawtext(sel->name, dc.sel);
@@ -17,7 +17,7 @@ diff -Narup 03_dwm-4.7_perworkspace/dwm.c 04_dwm-4.7_clientstyle/dwm.c
  		}
  		else
  			drawtext(NULL, dc.norm);
-@@ -556,27 +554,6 @@ drawbar(void) {
+@@ -555,27 +553,6 @@ drawbar(void) {
  }
  
  void
