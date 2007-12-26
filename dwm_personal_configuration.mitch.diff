@@ -1,6 +1,6 @@
 diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.mitch/config.def.h
---- dwm-4.7/config.def.h	2007-12-25 14:42:19.000000000 +0100
-+++ 99_dwm-4.7_personal_configuration.mitch/config.def.h	2007-12-25 14:57:26.000000000 +0100
+--- dwm-4.7/config.def.h	2007-12-26 12:00:24.000000000 +0100
++++ 99_dwm-4.7_personal_configuration.mitch/config.def.h	2007-12-26 12:01:57.000000000 +0100
 @@ -2,97 +2,85 @@
  
  /* appearance */
@@ -54,8 +54,9 @@ diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.mitch/config.
  
  /* layout(s) */
 -#define MWFACT			0.6	/* master width factor [0.1 .. 0.9] */
+-#define RESIZEHINTS		True	/* False - respect size hints in tiled resizals */
 +#define MWFACT			0.65	/* master width factor [0.1 .. 0.9] */
- #define RESIZEHINTS		True	/* False - respect size hints in tiled resizals */
++#define RESIZEHINTS		False	/* False - respect size hints in tiled resizals */
  #define SNAP			32	/* snap pixel */
  #include "bstack.c"
  #include "maximize.c"
@@ -142,10 +143,10 @@ diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.mitch/config.
 +	{ MODKEY|ShiftMask,		XK_w,		viewrel,	"1" },
 +	{ MODKEY|ShiftMask,		XK_q,		viewrel,	"-1" },
 +	{ MODKEY|ShiftMask|ControlMask,	XK_q,		quit,		NULL },
-+	{ MODKEY|ShiftMask,		XK_1,		setlayout,	NULL },
-+	{ MODKEY|ShiftMask,		XK_2,		setlayout,	NULL },
-+	{ MODKEY|ShiftMask,		XK_3,		setlayout,	NULL },
-+	{ MODKEY|ShiftMask,		XK_4,		setlayout,	NULL },
++	{ MODKEY|ShiftMask,		XK_1,		setlayout,	"TTT" },
++	{ MODKEY|ShiftMask,		XK_2,		setlayout,	"[ ]" },
++	{ MODKEY|ShiftMask,		XK_3,		setlayout,	"<><" },
++	{ MODKEY|ShiftMask,		XK_4,		setlayout,	" |-" },
 +	{ MODKEY|ControlMask,		XK_w,		pushstack,	NULL },
 +	{ MODKEY|ControlMask,		XK_w,		viewrel,	"1" },
 +	{ MODKEY|ControlMask,		XK_w,		popstack,	NULL },
@@ -154,8 +155,8 @@ diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.mitch/config.
 +	{ MODKEY|ControlMask,		XK_q,		popstack,	NULL },
  };
 diff -Narup dwm-4.7/config.mk 99_dwm-4.7_personal_configuration.mitch/config.mk
---- dwm-4.7/config.mk	2007-12-25 14:42:19.000000000 +0100
-+++ 99_dwm-4.7_personal_configuration.mitch/config.mk	2007-12-25 14:57:47.000000000 +0100
+--- dwm-4.7/config.mk	2007-12-26 12:00:24.000000000 +0100
++++ 99_dwm-4.7_personal_configuration.mitch/config.mk	2007-12-26 12:00:24.000000000 +0100
 @@ -4,7 +4,7 @@ VERSION = 4.7
  # Customize below to fit your system
  
