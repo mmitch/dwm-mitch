@@ -3,6 +3,9 @@ dwm-mitch history
   TODO: togglebar setting per workspace or global?
         dmenu_path creates a cache that we don't need and want, use own script
 
+### v3.4  
+
+ - 
 
 ### v3.3  2007-12-28
 
