@@ -3,11 +3,6 @@ dwm-mitch history
   TODO: togglebar setting per workspace or global?
         dmenu_path creates a cache that we don't need and want, use own script
 
-Fehler?
-Standardgröße neues Fenster nicht korrekt
-- ausgeschaltete Windowbar nicht berücksichtigt
-- dicker Rand (nach rechts?) nicht brücksichtigt
-
 
 ### v3.3  
 

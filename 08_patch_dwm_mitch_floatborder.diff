@@ -1,6 +1,6 @@
 diff -Narup 07_dwm-4.7_reload/config.def.h 08_dwm-4.7_floatborder/config.def.h
---- 07_dwm-4.7_reload/config.def.h	2007-12-26 12:22:17.000000000 +0100
-+++ 08_dwm-4.7_floatborder/config.def.h	2007-12-26 12:22:17.000000000 +0100
+--- 07_dwm-4.7_reload/config.def.h	2007-12-28 21:16:48.000000000 +0100
++++ 08_dwm-4.7_floatborder/config.def.h	2007-12-28 21:16:48.000000000 +0100
 @@ -3,6 +3,7 @@
  /* appearance */
  #define BARPOS			BarTop /* BarBot, BarOff */
@@ -10,8 +10,8 @@ diff -Narup 07_dwm-4.7_reload/config.def.h 08_dwm-4.7_floatborder/config.def.h
  #define NORMBORDERCOLOR		"#cccccc"
  #define NORMBGCOLOR		"#cccccc"
 diff -Narup 07_dwm-4.7_reload/dwm.c 08_dwm-4.7_floatborder/dwm.c
---- 07_dwm-4.7_reload/dwm.c	2007-12-26 12:22:17.000000000 +0100
-+++ 08_dwm-4.7_floatborder/dwm.c	2007-12-26 12:22:17.000000000 +0100
+--- 07_dwm-4.7_reload/dwm.c	2007-12-28 21:16:48.000000000 +0100
++++ 08_dwm-4.7_floatborder/dwm.c	2007-12-28 21:23:16.000000000 +0100
 @@ -168,6 +168,7 @@ void resizemouse(Client *c);
  void restack(void);
  void run(void);
@@ -88,3 +88,12 @@ diff -Narup 07_dwm-4.7_reload/dwm.c 08_dwm-4.7_floatborder/dwm.c
  	if(sel->isfloating)
  		resize(sel, sel->x, sel->y, sel->w, sel->h, True);
  	arrange();
+@@ -1635,7 +1653,7 @@ togglemax(const char *arg) {
+ 		sel->ry = sel->y;
+ 		sel->rw = sel->w;
+ 		sel->rh = sel->h;
+-		resize(sel, wax, way, waw - 2 * sel->border, wah - 2 * sel->border, True);
++		resize(sel, wax + sel->border, way + sel->border, waw - 2 * sel->border, wah - 2 * sel->border, True);
+ 	}
+ 	else {
+ 		resize(sel, sel->rx, sel->ry, sel->rw, sel->rh, True);
