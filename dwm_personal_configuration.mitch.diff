@@ -101,8 +101,8 @@ diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.mitch/config.
 +	{ MODKEY,			XK_Return,	zoom,		NULL },
 +	{ MODKEY,			XK_Return,	togglemax,	NULL },
 +	{ MODKEY|ControlMask,		XK_c,		togglebar,	NULL },
-+	{ MODKEY|ControlMask,		XK_d,		setmwfact,	"-0.032" },
-+	{ MODKEY|ControlMask,		XK_e,		setmwfact,	"+0.032" },
++	{ MODKEY|ControlMask,		XK_e,		setmwfact,	"-0.032" },
++	{ MODKEY|ControlMask,		XK_d,		setmwfact,	"+0.032" },
 +/*	{ MODKEY|ShiftMask,		XK_e,		incnmaster,	"1" }, */
 +/*	{ MODKEY|ShiftMask,		XK_d,		incnmaster,	"-1" }, */
 +	{ MODKEY|ShiftMask,		XK_e,		popstack,	NULL },
