@@ -1,7 +1,7 @@
 diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.mitch/config.def.h
---- dwm-4.7/config.def.h	2007-12-26 12:00:24.000000000 +0100
-+++ 99_dwm-4.7_personal_configuration.mitch/config.def.h	2007-12-26 12:01:57.000000000 +0100
-@@ -2,97 +2,85 @@
+--- dwm-4.7/config.def.h	2008-01-20 10:22:29.000000000 +0100
++++ 99_dwm-4.7_personal_configuration.mitch/config.def.h	2008-01-20 10:23:20.000000000 +0100
+@@ -2,97 +2,86 @@
  
  /* appearance */
  #define BARPOS			BarTop /* BarBot, BarOff */
@@ -37,6 +37,8 @@ diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.mitch/config.
 +	{ ":galeon:Download",			True,	0 }, \
 +	{ "MPlayer:",				True,	0 }, \
 +	{ "[Vv]ncviewer:",			True,	0 }, \
++	{ ":Galeon Absturz-Wiederherstellung",	True,	2 }, \
++	{ ":Galeon Crash Recovery",		True,	2 }, \
 +	{ ":Xdialog:",				True,	0 }, \
 +	{ ":kanatest:",				True,	0 }, \
 +	{ "Gimp",				True,	0 }, \
@@ -44,8 +46,7 @@ diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.mitch/config.
 +	{ ":xli:",				True,	0 }, \
 +	{ "sun-applet-AppletViewer",		True,	0 }, \
 +	{ ":VICE:",				True,	0 }, \
-+	{ ":Galeon Absturz-Wiederherstellung",	True,	2 }, \
-+	{ ":Galeon Crash Recovery",		True,	2 }, \
++	{ "Xnest",				True,	0 }, \
  };
 -#define INITIALWORKSPACES	 1
 +#define INITIALWORKSPACES	 2
@@ -155,8 +156,8 @@ diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.mitch/config.
 +	{ MODKEY|ControlMask,		XK_q,		popstack,	NULL },
  };
 diff -Narup dwm-4.7/config.mk 99_dwm-4.7_personal_configuration.mitch/config.mk
---- dwm-4.7/config.mk	2007-12-26 12:00:24.000000000 +0100
-+++ 99_dwm-4.7_personal_configuration.mitch/config.mk	2007-12-26 12:00:24.000000000 +0100
+--- dwm-4.7/config.mk	2008-01-20 10:22:29.000000000 +0100
++++ 99_dwm-4.7_personal_configuration.mitch/config.mk	2008-01-20 10:22:29.000000000 +0100
 @@ -4,7 +4,7 @@ VERSION = 4.7
  # Customize below to fit your system
  
