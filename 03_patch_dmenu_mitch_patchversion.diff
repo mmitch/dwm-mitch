@@ -1,7 +1,7 @@
-diff -Narup 02_dmenu-3.0_utf8widechars/config.mk 03_dmenu-3.0_patchversion/config.mk
---- 02_dmenu-3.0_utf8widechars/config.mk	2007-04-21 11:23:31.000000000 +0200
-+++ 03_dmenu-3.0_patchversion/config.mk	2007-04-21 11:23:31.000000000 +0200
-@@ -3,6 +3,9 @@ VERSION = 3.0
+diff -Narup 02_dmenu-3.6_utf8widechars/config.mk 03_dmenu-3.6_patchversion/config.mk
+--- 02_dmenu-3.6_utf8widechars/config.mk	2008-04-16 21:36:19.000000000 +0200
++++ 03_dmenu-3.6_patchversion/config.mk	2008-04-16 21:36:19.000000000 +0200
+@@ -3,6 +3,9 @@ VERSION = 3.6
  
  # Customize below to fit your system
  

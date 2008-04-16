@@ -1,15 +1,15 @@
-diff -Narup dmenu-3.4/config.h 00_dmenu-3.4_history/config.h
---- dmenu-3.4/config.h	2007-10-25 20:26:14.000000000 +0200
-+++ 00_dmenu-3.4_history/config.h	2007-10-28 19:40:46.000000000 +0100
+diff -Narup dmenu-3.6/config.h 00_dmenu-3.6_history/config.h
+--- dmenu-3.6/config.h	2008-04-03 22:56:07.000000000 +0200
++++ 00_dmenu-3.6_history/config.h	2008-04-16 21:34:55.000000000 +0200
 @@ -8,3 +8,4 @@
  #define SELFGCOLOR              "#ffffff"
  /* next macro defines the space between menu items */
  #define SPACE			30 /* px */
 +#define HIST_SIZE       	20
-diff -Narup dmenu-3.4/dmenu.c 00_dmenu-3.4_history/dmenu.c
---- dmenu-3.4/dmenu.c	2007-10-25 20:26:14.000000000 +0200
-+++ 00_dmenu-3.4_history/dmenu.c	2007-10-28 19:40:46.000000000 +0100
-@@ -73,6 +73,9 @@ char *prompt = NULL;
+diff -Narup dmenu-3.6/dmenu.c 00_dmenu-3.6_history/dmenu.c
+--- dmenu-3.6/dmenu.c	2008-04-03 22:56:07.000000000 +0200
++++ 00_dmenu-3.6_history/dmenu.c	2008-04-16 21:34:55.000000000 +0200
+@@ -72,6 +72,9 @@ char *prompt = NULL;
  char *selbg = SELBGCOLOR;
  char *selfg = SELFGCOLOR;
  char text[4096];
@@ -19,7 +19,7 @@ diff -Narup dmenu-3.4/dmenu.c 00_dmenu-3.4_history/dmenu.c
  int screen;
  int ret = 0;
  unsigned int cmdw = 0;
-@@ -152,6 +155,46 @@ cleanup(void) {
+@@ -171,6 +174,46 @@ cleanup(void) {
  	XUngrabKeyboard(dpy, CurrentTime);
  }
  
@@ -66,7 +66,7 @@ diff -Narup dmenu-3.4/dmenu.c 00_dmenu-3.4_history/dmenu.c
  void
  drawmenu(void) {
  	Item *i;
-@@ -474,6 +517,7 @@ kpress(XKeyEvent * e) {
+@@ -491,6 +534,7 @@ kpress(XKeyEvent * e) {
  			fprintf(stdout, "%s", sel->text);
  		else if(text)
  			fprintf(stdout, "%s", text);
@@ -74,7 +74,7 @@ diff -Narup dmenu-3.4/dmenu.c 00_dmenu-3.4_history/dmenu.c
  		fflush(stdout);
  		running = False;
  		break;
-@@ -527,8 +571,32 @@ readstdin(void) {
+@@ -559,8 +603,32 @@ readstdin(void) {
  	char *p, buf[1024];
  	unsigned int len = 0, max = 0;
  	Item *i, *new;
@@ -107,13 +107,13 @@ diff -Narup dmenu-3.4/dmenu.c 00_dmenu-3.4_history/dmenu.c
  	while(fgets(buf, sizeof buf, stdin)) {
  		len = strlen(buf);
  		if (buf[len - 1] == '\n')
-@@ -699,6 +767,9 @@ main(int argc, char *argv[]) {
- 		else if(!strcmp(argv[i], "-sf")) {
- 			if(++i < argc) selfg = argv[i];
+@@ -717,6 +785,9 @@ main(int argc, char *argv[]) {
+ 		else if(!strcmp(argv[i], "-w")) {
+ 			if(++i < argc) w = atoi(argv[i]);
  		}
 +		else if(!strcmp(argv[i], "-hist")) {
 +			if(++i < argc) histfile = argv[i];
 +		}
  		else if(!strcmp(argv[i], "-v"))
- 			eprint("dmenu-"VERSION", © 2006-2007 Anselm R. Garbe, Sander van Dijk, Michał Janeczek\n");
+ 			eprint("dmenu-"VERSION", © 2006-2008 dmenu engineers, see LICENSE for details\n");
  		else
