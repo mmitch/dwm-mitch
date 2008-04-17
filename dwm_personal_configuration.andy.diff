@@ -94,7 +94,7 @@ diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.andy/config.d
 -	{ MODKEY,			XK_7,		view,		"7" },
 -	{ MODKEY,			XK_8,		view,		"8" },
 -	{ MODKEY,			XK_9,		view,		"9" },
--	{ MODKEY|ShiftMask,		XK_0,		moveto,		"10" },
+-	{ MODKEY,			XK_0,		view,		"10" },
 -	{ MODKEY|ShiftMask,		XK_1,		moveto,		"1" },
 -	{ MODKEY|ShiftMask,		XK_2,		moveto,		"2" },
 -	{ MODKEY|ShiftMask,		XK_3,		moveto,		"3" },
