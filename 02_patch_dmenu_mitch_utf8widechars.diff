@@ -1,7 +1,7 @@
-diff -Narup 01_dmenu-3.6_fixemptylines/dmenu.c 02_dmenu-3.6_utf8widechars/dmenu.c
---- 01_dmenu-3.6_fixemptylines/dmenu.c	2008-04-16 21:36:19.000000000 +0200
-+++ 02_dmenu-3.6_utf8widechars/dmenu.c	2008-04-16 21:36:19.000000000 +0200
-@@ -291,7 +291,7 @@ drawtext(const char *text, unsigned long
+diff -Narup 01_dmenu-3.7_fixemptylines/dmenu.c 02_dmenu-3.7_utf8widechars/dmenu.c
+--- 01_dmenu-3.7_fixemptylines/dmenu.c	2008-06-19 10:07:04.000000000 +0200
++++ 02_dmenu-3.7_utf8widechars/dmenu.c	2008-06-19 10:07:04.000000000 +0200
+@@ -291,7 +291,7 @@ drawtext(const char *text, ulong col[Col
  		return; /* too long */
  	XSetForeground(dpy, dc.gc, col[ColFG]);
  	if(dc.font.set)
@@ -10,7 +10,7 @@ diff -Narup 01_dmenu-3.6_fixemptylines/dmenu.c 02_dmenu-3.6_utf8widechars/dmenu.
  	else
  		XDrawString(dpy, dc.drawable, dc.gc, x, y, buf, len);
  }
-@@ -733,7 +733,7 @@ textnw(const char *text, unsigned int le
+@@ -741,7 +741,7 @@ textnw(const char *text, uint len) {
  	XRectangle r;
  
  	if(dc.font.set) {

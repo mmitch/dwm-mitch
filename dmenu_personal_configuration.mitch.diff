@@ -1,17 +1,18 @@
-diff -Narup dmenu-3.6/config.h 99_dmenu-3.6_personal_configuration.mitch/config.h
---- dmenu-3.6/config.h	2008-04-16 21:39:06.000000000 +0200
-+++ 99_dmenu-3.6_personal_configuration.mitch/config.h	2008-04-16 21:39:40.000000000 +0200
-@@ -1,11 +1,11 @@
+diff -Narup dmenu-3.7/config.h 99_dmenu-3.7_personal_configuration.mitch/config.h
+--- dmenu-3.7/config.h	2008-06-19 10:02:57.000000000 +0200
++++ 99_dmenu-3.7_personal_configuration.mitch/config.h	2008-06-19 10:04:22.000000000 +0200
+@@ -1,7 +1,7 @@
  /* See LICENSE file for copyright and license details. */
  
  /* appearance */
--#define FONT			"-*-terminus-medium-r-normal-*-14-*-*-*-*-*-*-*"
-+#define FONT			"-misc-fixed-medium-r-*-*-13-*-*-*-*-*-*-*"
- #define NORMBGCOLOR             "#cccccc"
- #define NORMFGCOLOR             "#000000"
- #define SELBGCOLOR              "#0066ff"
- #define SELFGCOLOR              "#ffffff"
- /* next macro defines the space between menu items */
- #define SPACE			30 /* px */
--#define HIST_SIZE       	20
-+#define HIST_SIZE       	35
+-static const char *font        = "-*-terminus-medium-r-normal-*-14-*-*-*-*-*-*-*";
++static const char *font        = "-misc-fixed-medium-r-*-*-13-*-*-*-*-*-*-*";
+ static const char *normbgcolor = "#cccccc";
+ static const char *normfgcolor = "#000000";
+ static const char *selbgcolor  = "#0066ff";
+@@ -13,4 +13,4 @@ static uint spaceitem          = 30; /* 
+ static uint xidx               = 0;  /* Xinerama screen index to use */
+ #endif
+ 
+-#define HIST_SIZE              20
++#define HIST_SIZE              35
