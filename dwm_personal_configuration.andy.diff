@@ -1,6 +1,6 @@
 diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.andy/config.def.h
---- dwm-4.7/config.def.h	2007-12-25 14:31:04.000000000 +0100
-+++ 99_dwm-4.7_personal_configuration.andy/config.def.h	2007-12-25 14:41:36.000000000 +0100
+--- dwm-4.7/config.def.h	2008-06-27 23:59:56.506216195 +0200
++++ 99_dwm-4.7_personal_configuration.andy/config.def.h	2008-06-28 00:01:13.546463222 +0200
 @@ -2,15 +2,15 @@
  
  /* appearance */
@@ -34,16 +34,15 @@ diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.andy/config.d
  };
  #define INITIALWORKSPACES	 1
  #define MAXWORKSPACES		99
-@@ -34,65 +35,42 @@ Rule rules[] = {
+@@ -34,65 +35,46 @@ Rule rules[] = {
  #include "maximize.c"
  Layout layouts[] = {
  	/* symbol		function */
 -	{ "[]=",		tile }, /* first entry is default */
 -	{ "><>",		floating },
--	{ "TTT",		bstack },
-+	{ "TTT",		bstack }, /* first entry is default */
++	{ "<><",		floating }, /* first entry is default */
 +	{ "[]=",		tile },
-+	{ "<><",		floating },
+ 	{ "TTT",		bstack },
  	{ "[ ]",		maximize },
  };
  
@@ -57,7 +56,7 @@ diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.andy/config.d
 -		" -sb '"SELBGCOLOR"' -sf '"SELFGCOLOR"'` && exec $exe" },
 -	{ MODKEY|ShiftMask,		XK_Return,	spawn, "exec uxterm" },
 -	{ MODKEY,			XK_space,	setlayout,	NULL },
-+	{ MODKEY,			XK_t,		spawn,		"exec xterm-terminal-emulator" }, \
++	{ MODKEY,			XK_t,		spawn,		"exec x-terminal-emulator" }, \
 +	{ MODKEY|ShiftMask,		XK_y,		spawn,		"exec dwm-choose" }, \
 +	{ MODKEY,			XK_Tab,		focusnext,	NULL }, \
 +	{ MODKEY|ShiftMask,		XK_Tab,		focusprev,	NULL }, \
@@ -71,8 +70,8 @@ diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.andy/config.d
 -/*	{ MODKEY|ShiftMask,		XK_s,		incnmaster,	"-1" }, */
 -	{ MODKEY,			XK_a,		popstack,	NULL },
 -	{ MODKEY,			XK_d,		pushstack,	NULL },
-+	{ MODKEY|ControlMask,		XK_e,		setmwfact,	"-0.05" },
-+	{ MODKEY|ControlMask,		XK_d,		setmwfact,	"+0.05" },
++	{ MODKEY|ControlMask,		XK_e,		setmwfact,	"+0.05" },
++	{ MODKEY|ControlMask,		XK_d,		setmwfact,	"-0.05" },
 +/*	{ MODKEY|ShiftMask,		XK_e,		incnmaster,	"1" }, */
 +/*	{ MODKEY|ShiftMask,		XK_d,		incnmaster,	"-1" }, */
 +	{ MODKEY|ShiftMask,		XK_a,		popstack,	NULL },
@@ -120,16 +119,20 @@ diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.andy/config.d
 +	{ MODKEY,			XK_f,		viewrel,	"1" },
 +	{ MODKEY,			XK_s,		viewrel,	"-1" },
 +	{ MODKEY|ShiftMask|ControlMask,	XK_q,		quit,		NULL },
-+	{ MODKEY|ShiftMask,		XK_1,		setlayout,	"TTT" },
++	{ MODKEY|ShiftMask,		XK_1,		setlayout,	"<><" },
 +	{ MODKEY|ShiftMask,		XK_2,		setlayout,	"[ ]" },
-+	{ MODKEY|ShiftMask,		XK_3,		setlayout,	"<><" },
++	{ MODKEY|ShiftMask,		XK_3,		setlayout,	"TTT" },
 +	{ MODKEY|ShiftMask,		XK_4,		setlayout,	"[]=" },
 +	{ MODKEY|ShiftMask,		XK_5,		setlayout,	"(@)" },
 +	{ MODKEY|ShiftMask,		XK_6,		setlayout,	"[\\]" },
++	/*	defining some global privat shortcuts	*/
++	{ MODKEY,			XK_Up,		spawn, 		"exec aumix -w +2"},
++	{ MODKEY,			XK_Down,	spawn, 		"exec aumix -w -2"},
++	{ MODKEY|ControlMask,		XK_KP_Enter,	spawn, 		"exec xlock -mode blank"},
  };
 diff -Narup dwm-4.7/config.mk 99_dwm-4.7_personal_configuration.andy/config.mk
---- dwm-4.7/config.mk	2007-12-25 14:31:04.000000000 +0100
-+++ 99_dwm-4.7_personal_configuration.andy/config.mk	2007-12-25 14:40:11.000000000 +0100
+--- dwm-4.7/config.mk	2008-06-27 23:59:56.495217874 +0200
++++ 99_dwm-4.7_personal_configuration.andy/config.mk	2008-06-27 23:59:56.561207806 +0200
 @@ -4,7 +4,7 @@ VERSION = 4.7
  # Customize below to fit your system
  
