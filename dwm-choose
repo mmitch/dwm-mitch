@@ -18,8 +18,14 @@ if [ "$1" = "--clearhistory" ]; then
 fi
 
 # create cache if needed
-if [ ! -r "$cachefile" ] ; then
-	dmenu_path > "$cachefile"
+if [ ! -r "$cachefile" ]; then
+	IFS=:
+	for dir in $PATH ; do
+		cd "$dir" &&
+		for file in * ; do
+			test -x "$file" && echo "$file"
+		done
+	done | sort | uniq > "$cachefile"
 fi
 
 if [ "$1" = "--createcache" ] ; then
