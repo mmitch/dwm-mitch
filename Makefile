@@ -25,8 +25,8 @@ patch:	stamp-patched
 build:	stamp-built
 
 stamp-fetched:
-	wget -q -O$(DWM_TAR)   http://www.suckless.org/download/$(DWM_TAR)
-	wget -q -O$(DMENU_TAR) http://www.suckless.org/download/$(DMENU_TAR)
+	wget -q -O$(DWM_TAR)   http://code.suckless.org/dl/dwm/$(DWM_TAR)
+	wget -q -O$(DMENU_TAR) http://code.suckless.org/dl/tools/$(DMENU_TAR)
 	touch $@
 
 stamp-expanded:	stamp-fetched
