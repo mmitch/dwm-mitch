@@ -1,7 +1,7 @@
 diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.mitch/config.def.h
---- dwm-4.7/config.def.h	2008-04-12 13:19:35.000000000 +0200
-+++ 99_dwm-4.7_personal_configuration.mitch/config.def.h	2008-04-12 13:27:21.000000000 +0200
-@@ -2,97 +2,90 @@
+--- dwm-4.7/config.def.h	2008-07-20 20:11:10.000000000 +0200
++++ 99_dwm-4.7_personal_configuration.mitch/config.def.h	2008-07-20 20:12:47.000000000 +0200
+@@ -2,97 +2,91 @@
  
  /* appearance */
  #define BARPOS			BarTop /* BarBot, BarOff */
@@ -40,6 +40,7 @@ diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.mitch/config.
 +	{ ":Galeon Absturz-Wiederherstellung",	True,	2 }, \
 +	{ ":Galeon Crash Recovery",		True,	2 }, \
 +	{ "Gecko:Session Manager",		True,	2 }, \
++	{ "Session Manager - Mozilla Firefox",	True,   2 }, \
 +	{ "Gecko:Downloads",			True,	0 }, \
 +	{ "Gecko:Iceweasel Preferences",	True,	0 }, \
 +	{ "Gecko:Add-ons",			True,	0 }, \
@@ -160,8 +161,8 @@ diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.mitch/config.
 +	{ MODKEY|ControlMask,		XK_q,		popstack,	NULL },
  };
 diff -Narup dwm-4.7/config.mk 99_dwm-4.7_personal_configuration.mitch/config.mk
---- dwm-4.7/config.mk	2008-04-12 13:19:35.000000000 +0200
-+++ 99_dwm-4.7_personal_configuration.mitch/config.mk	2008-04-12 13:19:36.000000000 +0200
+--- dwm-4.7/config.mk	2008-07-20 20:11:10.000000000 +0200
++++ 99_dwm-4.7_personal_configuration.mitch/config.mk	2008-07-20 20:11:10.000000000 +0200
 @@ -4,7 +4,7 @@ VERSION = 4.7
  # Customize below to fit your system
  
