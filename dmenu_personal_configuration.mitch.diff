@@ -1,7 +1,7 @@
-diff -Narup dmenu-3.7/config.h 99_dmenu-3.7_personal_configuration.mitch/config.h
---- dmenu-3.7/config.h	2008-06-19 10:02:57.000000000 +0200
-+++ 99_dmenu-3.7_personal_configuration.mitch/config.h	2008-06-19 10:04:22.000000000 +0200
-@@ -1,7 +1,7 @@
+diff -Narup dmenu-3.8/config.h 99_dmenu-3.8_personal_configuration.mitch/config.h
+--- dmenu-3.8/config.h	2008-07-31 20:16:33.000000000 +0200
++++ 99_dmenu-3.8_personal_configuration.mitch/config.h	2008-07-31 20:16:33.000000000 +0200
+@@ -1,11 +1,11 @@
  /* See LICENSE file for copyright and license details. */
  
  /* appearance */
@@ -10,9 +10,8 @@ diff -Narup dmenu-3.7/config.h 99_dmenu-3.7_personal_configuration.mitch/config.
  static const char *normbgcolor = "#cccccc";
  static const char *normfgcolor = "#000000";
  static const char *selbgcolor  = "#0066ff";
-@@ -13,4 +13,4 @@ static uint spaceitem          = 30; /* 
- static uint xidx               = 0;  /* Xinerama screen index to use */
- #endif
+ static const char *selfgcolor  = "#ffffff";
+ static unsigned int spaceitem  = 30; /* px between menu items */
  
 -#define HIST_SIZE              20
 +#define HIST_SIZE              35

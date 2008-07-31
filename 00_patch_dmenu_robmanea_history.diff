@@ -1,16 +1,16 @@
-diff -Narup dmenu-3.7/config.h 00_dmenu-3.7_history/config.h
---- dmenu-3.7/config.h	2008-06-18 19:20:41.000000000 +0200
-+++ 00_dmenu-3.7_history/config.h	2008-06-19 09:52:53.000000000 +0200
-@@ -12,3 +12,5 @@ static uint spaceitem          = 30; /* 
- #ifdef XINERAMA
- static uint xidx               = 0;  /* Xinerama screen index to use */
- #endif
+diff -Narup dmenu-3.8/config.h 00_dmenu-3.8_history/config.h
+--- dmenu-3.8/config.h	2008-07-29 20:20:48.000000000 +0200
++++ 00_dmenu-3.8_history/config.h	2008-07-31 20:13:40.000000000 +0200
+@@ -7,3 +7,5 @@ static const char *normfgcolor = "#00000
+ static const char *selbgcolor  = "#0066ff";
+ static const char *selfgcolor  = "#ffffff";
+ static unsigned int spaceitem  = 30; /* px between menu items */
 +
 +#define HIST_SIZE              20
-diff -Narup dmenu-3.7/dmenu.c 00_dmenu-3.7_history/dmenu.c
---- dmenu-3.7/dmenu.c	2008-06-18 19:20:41.000000000 +0200
-+++ 00_dmenu-3.7_history/dmenu.c	2008-06-19 10:00:43.000000000 +0200
-@@ -71,6 +71,9 @@ static int textw(const char *text);
+diff -Narup dmenu-3.8/dmenu.c 00_dmenu-3.8_history/dmenu.c
+--- dmenu-3.8/dmenu.c	2008-07-29 20:20:48.000000000 +0200
++++ 00_dmenu-3.8_history/dmenu.c	2008-07-31 20:12:05.000000000 +0200
+@@ -70,6 +70,9 @@ static int textw(const char *text);
  static char *maxname = NULL;
  static char *prompt = NULL;
  static char text[4096];
@@ -20,7 +20,7 @@ diff -Narup dmenu-3.7/dmenu.c 00_dmenu-3.7_history/dmenu.c
  static int cmdw = 0;
  static int promptw = 0;
  static int ret = 0;
-@@ -171,6 +174,46 @@ cleanup(void) {
+@@ -170,6 +173,46 @@ cleanup(void) {
  	XUngrabKeyboard(dpy, CurrentTime);
  }
  
@@ -67,17 +67,17 @@ diff -Narup dmenu-3.7/dmenu.c 00_dmenu-3.7_history/dmenu.c
  void
  drawmenu(void) {
  	Item *i;
-@@ -483,6 +526,7 @@ kpress(XKeyEvent * e) {
+@@ -473,6 +516,7 @@ kpress(XKeyEvent * e) {
  			fprintf(stdout, "%s", sel->text);
- 		else if(text)
+ 		else if(*text)
  			fprintf(stdout, "%s", text);
 +                writehistory( (sel == NULL) ? text : sel->text);
  		fflush(stdout);
  		running = False;
  		break;
-@@ -551,8 +595,33 @@ readstdin(void) {
+@@ -541,8 +585,33 @@ readstdin(void) {
  	char *p, buf[1024];
- 	uint len = 0, max = 0;
+ 	unsigned int len = 0, max = 0;
  	Item *i, *new;
 +	int k;
  
@@ -109,7 +109,7 @@ diff -Narup dmenu-3.7/dmenu.c 00_dmenu-3.7_history/dmenu.c
  	while(fgets(buf, sizeof buf, stdin)) {
  		len = strlen(buf);
  		if (buf[len - 1] == '\n')
-@@ -713,6 +782,9 @@ main(int argc, char *argv[]) {
+@@ -714,6 +783,9 @@ main(int argc, char *argv[]) {
  		else if(!strcmp(argv[i], "-sf")) {
  			if(++i < argc) selfgcolor = argv[i];
  		}
