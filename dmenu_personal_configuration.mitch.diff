@@ -6,7 +6,7 @@ diff -Narup dmenu-3.8/config.h 99_dmenu-3.8_personal_configuration.mitch/config.
  
  /* appearance */
 -static const char *font        = "-*-terminus-medium-r-normal-*-14-*-*-*-*-*-*-*";
-+static const char *font        = "-misc-fixed-medium-r-*-*-13-*-*-*-*-*-*-*";
++static const char *font        = "-misc-fixed-medium-r-normal-*-13-*-*-*-*-*-*-*";
  static const char *normbgcolor = "#cccccc";
  static const char *normfgcolor = "#000000";
  static const char *selbgcolor  = "#0066ff";
