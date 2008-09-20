@@ -1,6 +1,6 @@
-diff -Narup dmenu-3.8/config.h 99_dmenu-3.8_personal_configuration.mitch/config.h
---- dmenu-3.8/config.h	2008-07-31 20:16:33.000000000 +0200
-+++ 99_dmenu-3.8_personal_configuration.mitch/config.h	2008-07-31 20:16:33.000000000 +0200
+diff -Narup dmenu-3.9/config.h 99_dmenu-3.9_personal_configuration.mitch/config.h
+--- dmenu-3.9/config.h	2008-09-20 23:29:01.000000000 +0200
++++ 99_dmenu-3.9_personal_configuration.mitch/config.h	2008-09-20 23:29:01.000000000 +0200
 @@ -1,11 +1,11 @@
  /* See LICENSE file for copyright and license details. */
  

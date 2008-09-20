@@ -4,7 +4,7 @@ dwm-mitch history
 
 ### v3.5
 
- - update to dmenu 3.8
+ - update to dmenu 3.9
  - don't use dmenu_path in dwm-choose
  - update download URLs from suckless.org
 
