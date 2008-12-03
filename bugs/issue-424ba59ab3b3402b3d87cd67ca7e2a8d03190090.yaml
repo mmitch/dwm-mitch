@@ -1,0 +1,18 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: don't use dmenu_path in dwm-choose
+desc: ""
+type: :feature
+component: dwm-mitch
+release: "3.5"
+reporter: Christian Garbs <mitch@cgarbs.de>
+status: :unstarted
+disposition: 
+creation_time: 2008-12-03 20:23:09.306067 Z
+references: []
+
+id: 424ba59ab3b3402b3d87cd67ca7e2a8d03190090
+log_events: 
+- - 2008-12-03 20:23:09.845156 Z
+  - Christian Garbs <mitch@cgarbs.de>
+  - created
+  - ""
