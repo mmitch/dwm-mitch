@@ -4,5 +4,13 @@ version: "0.5"
 components: 
 - !ditz.rubyforge.org,2008-03-06/component 
   name: dwm-mitch
-releases: []
-
+releases: 
+- !ditz.rubyforge.org,2008-03-06/release 
+  name: "3.5"
+  status: :unreleased
+  release_time: 
+  log_events: 
+  - - 2008-12-03 20:22:00.637799 Z
+    - Christian Garbs <mitch@cgarbs.de>
+    - created
+    - ""
