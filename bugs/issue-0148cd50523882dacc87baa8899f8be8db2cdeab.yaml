@@ -1,0 +1,18 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: update download URLs from suckless.org
+desc: ""
+type: :bugfix
+component: dwm-mitch
+release: "3.5"
+reporter: Christian Garbs <mitch@cgarbs.de>
+status: :unstarted
+disposition: 
+creation_time: 2008-12-03 20:22:31.296809 Z
+references: []
+
+id: 0148cd50523882dacc87baa8899f8be8db2cdeab
+log_events: 
+- - 2008-12-03 20:22:32.139371 Z
+  - Christian Garbs <mitch@cgarbs.de>
+  - created
+  - ""
