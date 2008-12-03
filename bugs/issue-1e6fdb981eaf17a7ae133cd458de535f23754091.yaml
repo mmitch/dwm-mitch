@@ -5,7 +5,7 @@ type: :feature
 component: dwm-mitch
 release: 
 reporter: Christian Garbs <mitch@cgarbs.de>
-status: :unstarted
+status: :in_progress
 disposition: 
 creation_time: 2008-12-03 19:54:24.529338 Z
 references: []
@@ -15,4 +15,8 @@ log_events:
 - - 2008-12-03 19:54:25.598188 Z
   - Christian Garbs <mitch@cgarbs.de>
   - created
+  - ""
+- - 2008-12-03 19:56:17.550364 Z
+  - Christian Garbs <mitch@cgarbs.de>
+  - changed status from unstarted to in_progress
   - ""
