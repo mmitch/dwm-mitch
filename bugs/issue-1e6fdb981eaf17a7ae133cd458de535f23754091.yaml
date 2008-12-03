@@ -1,0 +1,18 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: spawn new workspaces in-place
+desc: when on workspace n, spawn a new workspace at n+1, not at max(workspaces)+1
+type: :feature
+component: dwm-mitch
+release: 
+reporter: Christian Garbs <mitch@cgarbs.de>
+status: :unstarted
+disposition: 
+creation_time: 2008-12-03 19:54:24.529338 Z
+references: []
+
+id: 1e6fdb981eaf17a7ae133cd458de535f23754091
+log_events: 
+- - 2008-12-03 19:54:25.598188 Z
+  - Christian Garbs <mitch@cgarbs.de>
+  - created
+  - ""
