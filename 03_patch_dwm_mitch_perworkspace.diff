@@ -1,6 +1,6 @@
 diff -Narup 02_dwm-4.7_workspace/bstack.c 03_dwm-4.7_perworkspace/bstack.c
---- 02_dwm-4.7_workspace/bstack.c	2007-12-26 12:20:41.000000000 +0100
-+++ 03_dwm-4.7_perworkspace/bstack.c	2007-12-26 12:20:41.000000000 +0100
+--- 02_dwm-4.7_workspace/bstack.c	2008-12-03 21:13:08.000000000 +0100
++++ 03_dwm-4.7_perworkspace/bstack.c	2008-12-03 21:13:08.000000000 +0100
 @@ -7,7 +7,7 @@ bstack(void) {
      for(n = 0, c = nexttiled(clients); c; c = nexttiled(c->next))
          n++;
@@ -11,8 +11,8 @@ diff -Narup 02_dwm-4.7_workspace/bstack.c 03_dwm-4.7_perworkspace/bstack.c
  
      nx = wax;
 diff -Narup 02_dwm-4.7_workspace/dwm.c 03_dwm-4.7_perworkspace/dwm.c
---- 02_dwm-4.7_workspace/dwm.c	2007-12-26 12:20:41.000000000 +0100
-+++ 03_dwm-4.7_perworkspace/dwm.c	2007-12-26 12:20:41.000000000 +0100
+--- 02_dwm-4.7_workspace/dwm.c	2008-12-03 21:13:08.000000000 +0100
++++ 03_dwm-4.7_perworkspace/dwm.c	2008-12-03 21:16:37.000000000 +0100
 @@ -195,7 +195,6 @@ void zoom(const char *arg);
  
  /* variables */
@@ -190,25 +190,18 @@ diff -Narup 02_dwm-4.7_workspace/dwm.c 03_dwm-4.7_perworkspace/dwm.c
  	
  	i = arg ? atoi(arg) : 0;
  	if (i == 0 )
-@@ -1684,9 +1690,14 @@ wscount(const char *arg) {
- 	if (i > 0) {
- 		if (workspaces == MAXWORKSPACES)
- 			return;
--		workspaces += i;
--		if (workspaces > MAXWORKSPACES)
--			workspaces = MAXWORKSPACES;
-+		i = workspaces + i;
-+		if (i > MAXWORKSPACES)
-+			i = MAXWORKSPACES;
-+		while (i > workspaces) { 
-+			layout[workspaces] = layout[selws-1];
-+			mwfact[workspaces] = mwfact[selws-1];
-+			workspaces++;
+@@ -1690,6 +1696,10 @@ wscount(const char *arg) {
+ 		for(c = clients; c; c = c->next)
+ 			if (c->workspace > selws)
+ 				c->workspace += i;
++		for(j = 0; j < i; j++) {
++			layout[selws+j] = layout[selws-1];
++			mwfact[selws+j] = mwfact[selws-1];
 +		}
- 		selws = workspaces; 
+ 		selws++; 
+ 		workspaces += i;
  	}
- 	else {
-@@ -1700,6 +1711,10 @@ wscount(const char *arg) {
+@@ -1704,6 +1714,10 @@ wscount(const char *arg) {
  				else if (c->workspace == selws) {
  					c->workspace = 0;
  				}

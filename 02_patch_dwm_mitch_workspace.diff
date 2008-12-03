@@ -1,6 +1,6 @@
 diff -Narup 01_dwm-4.7_maximize/config.def.h 02_dwm-4.7_workspace/config.def.h
---- 01_dwm-4.7_maximize/config.def.h	2007-12-26 12:07:36.000000000 +0100
-+++ 02_dwm-4.7_workspace/config.def.h	2007-12-26 12:12:54.000000000 +0100
+--- 01_dwm-4.7_maximize/config.def.h	2008-12-03 21:09:29.000000000 +0100
++++ 02_dwm-4.7_workspace/config.def.h	2008-12-03 21:09:29.000000000 +0100
 @@ -11,16 +11,19 @@
  #define SELBGCOLOR		"#0066ff"
  #define SELFGCOLOR		"#ffffff"
@@ -119,8 +119,8 @@ diff -Narup 01_dwm-4.7_maximize/config.def.h 02_dwm-4.7_workspace/config.def.h
  	{ MODKEY|ShiftMask,		XK_q,		quit,		NULL },
  };
 diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
---- 01_dwm-4.7_maximize/dwm.c	2007-12-26 12:07:36.000000000 +0100
-+++ 02_dwm-4.7_workspace/dwm.c	2007-12-26 12:15:31.000000000 +0100
+--- 01_dwm-4.7_maximize/dwm.c	2008-12-03 21:09:29.000000000 +0100
++++ 02_dwm-4.7_workspace/dwm.c	2008-12-03 21:12:46.000000000 +0100
 @@ -65,9 +65,8 @@ struct Client {
  	int basew, baseh, incw, inch, maxw, maxh, minw, minh;
  	int minax, maxax, minay, maxay;
@@ -298,13 +298,13 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
 +					viewrel("-1");
 +				else
 +					viewrel("1");
- 			}
++			}
 +			else if(ev->button == Button3) {
 +				if(ev->state & MODKEY)  
 +					wscount("-1");  
 +				else
 +					wscount("1");
-+			}
+ 			}
 +			return;
  		}
 -		if((ev->x < x + blw) && ev->button == Button1)
@@ -479,7 +479,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  }
  
  unsigned int
-@@ -1671,28 +1643,69 @@ togglemax(const char *arg) {
+@@ -1671,28 +1643,73 @@ togglemax(const char *arg) {
  }
  
  void
@@ -537,12 +537,16 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
 +	if (i == 0 )
 +		return;   
 +	if (i > 0) {
-+		if (workspaces == MAXWORKSPACES)
-+			return;
++		if (workspaces + i > MAXWORKSPACES) {
++			i = MAXWORKSPACES - workspaces;
++			if (i == 0)
++				return;
++		}
++		for(c = clients; c; c = c->next)
++			if (c->workspace > selws)
++				c->workspace += i;
++		selws++; 
 +		workspaces += i;
-+		if (workspaces > MAXWORKSPACES)
-+			workspaces = MAXWORKSPACES;
-+		selws = workspaces; 
 +	}
 +	else {
 +		i = workspaces + i;
@@ -564,7 +568,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  	arrange();
  }
  
-@@ -1719,7 +1732,6 @@ unmanage(Client *c) {
+@@ -1719,7 +1736,6 @@ unmanage(Client *c) {
  		focus(NULL);
  	XUngrabButton(dpy, AnyButton, AnyModifier, c->win);
  	setclientstate(c, WithdrawnState);
@@ -572,7 +576,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  	free(c);
  	XSync(dpy, False);
  	XSetErrorHandler(xerror);
-@@ -1853,24 +1865,16 @@ xerrorstart(Display *dsply, XErrorEvent 
+@@ -1853,24 +1869,16 @@ xerrorstart(Display *dsply, XErrorEvent 
  }
  
  void
@@ -606,7 +610,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  }
  
  void
-@@ -1904,6 +1908,7 @@ main(int argc, char *argv[]) {
+@@ -1904,6 +1912,7 @@ main(int argc, char *argv[]) {
  
  	checkotherwm();
  	setup();
