@@ -5,8 +5,8 @@ type: :feature
 component: dwm-mitch
 release: "3.5"
 reporter: Christian Garbs <mitch@cgarbs.de>
-status: :unstarted
-disposition: 
+status: :closed
+disposition: :fixed
 creation_time: 2008-12-03 20:23:09.306067 Z
 references: []
 
@@ -15,4 +15,8 @@ log_events:
 - - 2008-12-03 20:23:09.845156 Z
   - Christian Garbs <mitch@cgarbs.de>
   - created
+  - ""
+- - 2008-12-03 20:23:18.058445 Z
+  - Christian Garbs <mitch@cgarbs.de>
+  - closed with disposition fixed
   - ""
