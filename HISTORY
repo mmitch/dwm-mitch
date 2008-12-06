@@ -2,11 +2,12 @@ dwm-mitch history
 
   TODO: togglebar setting per workspace or global?
 
-### v3.5
+### v3.5  2008-12-06
 
  - update to dmenu 3.9
  - don't use dmenu_path in dwm-choose
  - update download URLs from suckless.org
+ - spawn new workspaces next to current workspace, not at end of list
 
 ### v3.4  2008-06-28
 
