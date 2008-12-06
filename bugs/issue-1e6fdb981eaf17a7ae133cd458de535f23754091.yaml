@@ -3,7 +3,7 @@ title: spawn new workspaces in-place
 desc: when on workspace n, spawn a new workspace at n+1, not at max(workspaces)+1
 type: :feature
 component: dwm-mitch
-release: 
+release: "3.5"
 reporter: Christian Garbs <mitch@cgarbs.de>
 status: :closed
 disposition: :fixed
@@ -23,4 +23,8 @@ log_events:
 - - 2008-12-03 20:21:24.250737 Z
   - Christian Garbs <mitch@cgarbs.de>
   - closed with disposition fixed
+  - ""
+- - 2008-12-06 09:14:06.436408 Z
+  - Christian Garbs <mitch@cgarbs.de>
+  - assigned to release 3.5 from unassigned
   - ""
