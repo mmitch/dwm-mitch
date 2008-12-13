@@ -1,6 +1,6 @@
 diff -Narup 06_dwm-4.7_patchversion/dwm.c 07_dwm-4.7_reload/dwm.c
---- 06_dwm-4.7_patchversion/dwm.c	2008-12-03 21:17:29.000000000 +0100
-+++ 07_dwm-4.7_reload/dwm.c	2008-12-03 21:17:29.000000000 +0100
+--- 06_dwm-4.7_patchversion/dwm.c	2008-12-13 13:02:28.000000000 +0100
++++ 07_dwm-4.7_reload/dwm.c	2008-12-13 13:02:28.000000000 +0100
 @@ -30,6 +30,7 @@
  #include <stdlib.h>
  #include <string.h>
@@ -88,7 +88,7 @@ diff -Narup 06_dwm-4.7_patchversion/dwm.c 07_dwm-4.7_reload/dwm.c
  spawn(const char *arg) {
  	static char *shell = NULL;
  
-@@ -1894,6 +1916,7 @@ main(int argc, char *argv[]) {
+@@ -1898,6 +1920,7 @@ main(int argc, char *argv[]) {
  		       "Jukka Salmi, Premysl Hruby, Szabolcs Nagy\n");
  	else if(argc != 1)
  		eprint("usage: dwm [-v]\n");
@@ -96,7 +96,7 @@ diff -Narup 06_dwm-4.7_patchversion/dwm.c 07_dwm-4.7_reload/dwm.c
  
  	setlocale(LC_CTYPE, "");
  	if(!(dpy = XOpenDisplay(0)))
-@@ -1910,5 +1933,7 @@ main(int argc, char *argv[]) {
+@@ -1914,5 +1937,7 @@ main(int argc, char *argv[]) {
  	cleanup();
  
  	XCloseDisplay(dpy);
