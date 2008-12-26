@@ -1,0 +1,18 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: add links to ditz page
+desc: add links to ditz page on project homepage and in git repository
+type: :task
+component: dwm-mitch
+release: 
+reporter: Christian Garbs <mitch@cgarbs.de>
+status: :unstarted
+disposition: 
+creation_time: 2008-12-26 22:37:58.218329 Z
+references: []
+
+id: 3a4aafd8cbb951ef53c9073047f7535765bc4f46
+log_events: 
+- - 2008-12-26 22:37:58.795827 Z
+  - Christian Garbs <mitch@cgarbs.de>
+  - created
+  - ""
