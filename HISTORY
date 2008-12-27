@@ -2,9 +2,9 @@ dwm-mitch history
 
   TODO: togglebar setting per workspace or global?
 
-### v3.6
+### v3.5.1  2008-12-27
 
- -
+ - bugfix: layouts broke on workspace creation
 
 ### v3.5  2008-12-06
 
