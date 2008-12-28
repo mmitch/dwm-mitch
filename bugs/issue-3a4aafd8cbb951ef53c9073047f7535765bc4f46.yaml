@@ -5,8 +5,8 @@ type: :task
 component: dwm-mitch
 release: 
 reporter: Christian Garbs <mitch@cgarbs.de>
-status: :unstarted
-disposition: 
+status: :closed
+disposition: :fixed
 creation_time: 2008-12-26 22:37:58.218329 Z
 references: []
 
@@ -15,4 +15,8 @@ log_events:
 - - 2008-12-26 22:37:58.795827 Z
   - Christian Garbs <mitch@cgarbs.de>
   - created
+  - ""
+- - 2008-12-28 09:26:32.640846 Z
+  - Christian Garbs <mitch@cgarbs.de>
+  - closed with disposition fixed
   - ""
