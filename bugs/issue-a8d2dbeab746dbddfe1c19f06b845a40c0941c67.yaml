@@ -1,0 +1,18 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: client stack reorder on mouse movement in maximized layout
+desc: when in maximized layout, the mouse movement of a floating layer results in the stack being changes.  another client pops up to the top.
+type: :bugfix
+component: dwm-mitch
+release: 
+reporter: Christian Garbs <mitch@cgarbs.de>
+status: :unstarted
+disposition: 
+creation_time: 2009-01-13 22:38:11.666168 Z
+references: []
+
+id: a8d2dbeab746dbddfe1c19f06b845a40c0941c67
+log_events: 
+- - 2009-01-13 22:38:13.178396 Z
+  - Christian Garbs <mitch@cgarbs.de>
+  - created
+  - ""
