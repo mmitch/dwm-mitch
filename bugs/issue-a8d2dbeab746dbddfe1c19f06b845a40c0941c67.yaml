@@ -3,7 +3,7 @@ title: client stack reorder on mouse movement in maximized layout
 desc: when in maximized layout, the mouse movement of a floating layer results in the stack being changes.  another client pops up to the top.
 type: :bugfix
 component: dwm-mitch
-release: 
+release: "3.6"
 reporter: Christian Garbs <mitch@cgarbs.de>
 status: :unstarted
 disposition: 
@@ -15,4 +15,8 @@ log_events:
 - - 2009-01-13 22:38:13.178396 Z
   - Christian Garbs <mitch@cgarbs.de>
   - created
+  - ""
+- - 2009-01-13 22:38:38.817890 Z
+  - Christian Garbs <mitch@cgarbs.de>
+  - assigned to release 3.6 from unassigned
   - ""
