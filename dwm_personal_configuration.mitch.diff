@@ -1,7 +1,7 @@
 diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.mitch/config.def.h
---- dwm-4.7/config.def.h	2009-03-01 13:41:46.000000000 +0100
-+++ 99_dwm-4.7_personal_configuration.mitch/config.def.h	2009-03-01 13:44:59.000000000 +0100
-@@ -2,97 +2,89 @@
+--- dwm-4.7/config.def.h	2009-04-11 23:24:36.000000000 +0200
++++ 99_dwm-4.7_personal_configuration.mitch/config.def.h	2009-04-11 23:25:42.000000000 +0200
+@@ -2,97 +2,90 @@
  
  /* appearance */
  #define BARPOS			BarTop /* BarBot, BarOff */
@@ -45,6 +45,7 @@ diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.mitch/config.
 +	{ "Gimp",				True,	0 }, \
 +	{ ":xsane:",				True,	0 }, \
 +	{ ":Xdialog:",				True,	0 }, \
++	{ ":qjackctl:",				True,	0 }, \
 +	{ ":kanatest:",				True,	0 }, \
 +	{ ":xli:",				True,	0 }, \
 +	{ "sun-applet-AppletViewer",		True,	0 }, \
@@ -159,8 +160,8 @@ diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.mitch/config.
 +	{ MODKEY|ControlMask,		XK_q,		popstack,	NULL },
  };
 diff -Narup dwm-4.7/config.mk 99_dwm-4.7_personal_configuration.mitch/config.mk
---- dwm-4.7/config.mk	2009-03-01 13:41:46.000000000 +0100
-+++ 99_dwm-4.7_personal_configuration.mitch/config.mk	2009-03-01 13:41:46.000000000 +0100
+--- dwm-4.7/config.mk	2009-04-11 23:24:36.000000000 +0200
++++ 99_dwm-4.7_personal_configuration.mitch/config.mk	2009-04-11 23:24:37.000000000 +0200
 @@ -4,7 +4,7 @@ VERSION = 4.7
  # Customize below to fit your system
  
