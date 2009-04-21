@@ -1,0 +1,21 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: update to dmenu 4.0
+desc: |-
+  http://code.suckless.org/dl/tools/dmenu-4.0.tar.gz
+  The new dmenu release also contains various bugfixes appeared during
+  the last months.
+type: :feature
+component: dwm-mitch
+release: "3.6"
+reporter: Christian Garbs <mitch@cgarbs.de>
+status: :unstarted
+disposition: 
+creation_time: 2009-04-21 22:41:16.000691 Z
+references: []
+
+id: 99955b9967beac0294f95198b4b3eda604211914
+log_events: 
+- - 2009-04-21 22:41:17.187841 Z
+  - Christian Garbs <mitch@cgarbs.de>
+  - created
+  - ""
