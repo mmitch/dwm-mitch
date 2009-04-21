@@ -1,6 +1,6 @@
 VERSION = 3.6+git
 DWM_VERSION = 4.7
-DMENU_VERSION = 3.9
+DMENU_VERSION = 4.0
 PREFIX = /usr/local
 
 DWM = dwm-$(DWM_VERSION)
