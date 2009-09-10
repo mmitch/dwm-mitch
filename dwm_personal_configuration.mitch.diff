@@ -1,7 +1,7 @@
 diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.mitch/config.def.h
---- dwm-4.7/config.def.h	2009-06-14 15:42:19.000000000 +0200
-+++ 99_dwm-4.7_personal_configuration.mitch/config.def.h	2009-06-14 15:43:36.000000000 +0200
-@@ -2,97 +2,91 @@
+--- dwm-4.7/config.def.h	2009-09-10 20:20:53.000000000 +0200
++++ 99_dwm-4.7_personal_configuration.mitch/config.def.h	2009-09-10 20:24:29.000000000 +0200
+@@ -2,97 +2,100 @@
  
  /* appearance */
  #define BARPOS			BarTop /* BarBot, BarOff */
@@ -159,10 +159,19 @@ diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.mitch/config.
 +	{ MODKEY|ControlMask,		XK_q,		pushstack,	NULL },
 +	{ MODKEY|ControlMask,		XK_q,		viewrel,	"-1" },
 +	{ MODKEY|ControlMask,		XK_q,		popstack,	NULL },
++/* Thinkpad special keys mapped to F33/F34 */
++	{ 0,				XK_F33,		viewrel,	"1" },
++	{ 0,				XK_F34,		viewrel,	"-1" },
++	{ ControlMask,			XK_F33,		pushstack,	NULL },
++	{ ControlMask,			XK_F33,		viewrel,	"1" },
++	{ ControlMask,			XK_F33,		popstack,	NULL },
++	{ ControlMask,			XK_F34,		pushstack,	NULL },
++	{ ControlMask,			XK_F34,		viewrel,	"-1" },
++	{ ControlMask,			XK_F34,		popstack,	NULL },
  };
 diff -Narup dwm-4.7/config.mk 99_dwm-4.7_personal_configuration.mitch/config.mk
---- dwm-4.7/config.mk	2009-06-14 15:42:19.000000000 +0200
-+++ 99_dwm-4.7_personal_configuration.mitch/config.mk	2009-06-14 15:42:20.000000000 +0200
+--- dwm-4.7/config.mk	2009-09-10 20:20:53.000000000 +0200
++++ 99_dwm-4.7_personal_configuration.mitch/config.mk	2009-09-10 20:20:53.000000000 +0200
 @@ -4,7 +4,7 @@ VERSION = 4.7
  # Customize below to fit your system
  
