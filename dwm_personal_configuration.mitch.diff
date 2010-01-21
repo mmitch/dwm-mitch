@@ -1,7 +1,7 @@
 diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.mitch/config.def.h
 --- dwm-4.7/config.def.h	2009-09-10 20:20:53.000000000 +0200
 +++ 99_dwm-4.7_personal_configuration.mitch/config.def.h	2009-09-10 20:24:29.000000000 +0200
-@@ -2,97 +2,100 @@
+@@ -2,98 +2,102 @@
  
  /* appearance */
  #define BARPOS			BarTop /* BarBot, BarOff */
@@ -68,11 +68,13 @@ diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.mitch/config.
  Layout layouts[] = {
  	/* symbol		function */
 -	{ "[]=",		tile }, /* first entry is default */
+-	{ "=[]",		tileleft },
 -	{ "><>",		floating },
  	{ "TTT",		bstack },
  	{ "[ ]",		maximize },
 +	{ "<><",		floating },
 +	{ " |-",		tile },
++	{ "-| ",		tileleft },
  };
  
  /* key definitions */
@@ -153,6 +155,7 @@ diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.mitch/config.
 +	{ MODKEY|ShiftMask,		XK_2,		setlayout,	"[ ]" },
 +	{ MODKEY|ShiftMask,		XK_3,		setlayout,	"<><" },
 +	{ MODKEY|ShiftMask,		XK_4,		setlayout,	" |-" },
++	{ MODKEY|ShiftMask,		XK_5,		setlayout,	"-| " },
 +	{ MODKEY|ControlMask,		XK_w,		pushstack,	NULL },
 +	{ MODKEY|ControlMask,		XK_w,		viewrel,	"1" },
 +	{ MODKEY|ControlMask,		XK_w,		popstack,	NULL },

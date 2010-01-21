@@ -94,6 +94,11 @@ Included DWM patches:
     written by: Christian Garbs <mitch@cgarbs.de>
 
 
+ *  10_patch_dwm_mitch_tileleft.diff
+    add tile layout with stack on the left side
+    written by: Christian Garbs <mitch@cgarbs.de>
+
+
  (optional: personal configuration settings)
   * dwm_personal_configuration.mitch.diff
     written by: Christian Garbs <mitch@cgarbs.de>

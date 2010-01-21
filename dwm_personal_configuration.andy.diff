@@ -33,12 +33,13 @@ diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.andy/config.d
  };
  #define INITIALWORKSPACES	 1
  #define MAXWORKSPACES		99
-@@ -33,66 +36,53 @@ Rule rules[] = {
+@@ -33,67 +36,53 @@ Rule rules[] = {
  #include "bstack.c"
  #include "maximize.c"
  Layout layouts[] = {
 -	/* symbol		function */
 -	{ "[]=",		tile }, /* first entry is default */
+-	{ "=[]",		tileleft },
 -	{ "><>",		floating },
 +	/* symbol		function || first entry is default */
  	{ "TTT",		bstack },
