@@ -1,7 +1,7 @@
 diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.mitch/config.def.h
---- dwm-4.7/config.def.h	2009-09-10 20:20:53.000000000 +0200
-+++ 99_dwm-4.7_personal_configuration.mitch/config.def.h	2009-09-10 20:24:29.000000000 +0200
-@@ -2,98 +2,102 @@
+--- dwm-4.7/config.def.h	2010-02-18 20:16:05.000000000 +0100
++++ 99_dwm-4.7_personal_configuration.mitch/config.def.h	2010-02-18 20:18:39.000000000 +0100
+@@ -2,103 +2,107 @@
  
  /* appearance */
  #define BARPOS			BarTop /* BarBot, BarOff */
@@ -56,6 +56,12 @@ diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.mitch/config.
 +#define INITIALWORKSPACES	 2
  #define MAXWORKSPACES		99
  #define MAXWSTEXTWIDTH		 6	/* must be 2*(strlen(MAXWORKSPACES)+1)  */
+-#define MAXXINERAMASCREENS	 2
++#define MAXXINERAMASCREENS     2
+ 
+ /* ugly: depending on constants above but needed by layouts below */
+ unsigned int bpos[MAXXINERAMASCREENS];
+ int wax[MAXXINERAMASCREENS], way[MAXXINERAMASCREENS], waw[MAXXINERAMASCREENS], wah[MAXXINERAMASCREENS];
  
  /* layout(s) */
 -#define MWFACT			0.6	/* master width factor [0.1 .. 0.9] */
@@ -173,8 +179,8 @@ diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.mitch/config.
 +	{ ControlMask,			XK_F34,		popstack,	NULL },
  };
 diff -Narup dwm-4.7/config.mk 99_dwm-4.7_personal_configuration.mitch/config.mk
---- dwm-4.7/config.mk	2009-09-10 20:20:53.000000000 +0200
-+++ 99_dwm-4.7_personal_configuration.mitch/config.mk	2009-09-10 20:20:53.000000000 +0200
+--- dwm-4.7/config.mk	2010-02-18 20:16:05.000000000 +0100
++++ 99_dwm-4.7_personal_configuration.mitch/config.mk	2010-02-18 20:16:05.000000000 +0100
 @@ -4,7 +4,7 @@ VERSION = 4.7
  # Customize below to fit your system
  
