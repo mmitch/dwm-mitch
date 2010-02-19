@@ -1,6 +1,6 @@
 diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.andy/config.def.h
---- dwm-4.7/config.def.h	2010-02-18 20:16:05.000000000 +0100
-+++ 99_dwm-4.7_personal_configuration.andy/config.def.h	2010-02-18 20:16:05.000000000 +0100
+--- dwm-4.7/config.def.h	2010-02-19 22:33:18.000000000 +0100
++++ 99_dwm-4.7_personal_configuration.andy/config.def.h	2010-02-19 22:33:18.000000000 +0100
 @@ -4,13 +4,13 @@
  #define BARPOS			BarTop /* BarBot, BarOff */
  #define BORDERPX		1
@@ -33,7 +33,7 @@ diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.andy/config.d
  };
  #define INITIALWORKSPACES	 1
  #define MAXWORKSPACES		99
-@@ -38,67 +42,53 @@ int wax[MAXXINERAMASCREENS], way[MAXXINE
+@@ -37,67 +41,53 @@ int wax[MAXXINERAMASCREENS], way[MAXXINE
  #include "bstack.c"
  #include "maximize.c"
  Layout layouts[] = {
@@ -139,8 +139,8 @@ diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.andy/config.d
 +	{ MODKEY|ControlMask,		XK_Return,	spawn, 		"exec xlock -mode blank"},
  };
 diff -Narup dwm-4.7/config.mk 99_dwm-4.7_personal_configuration.andy/config.mk
---- dwm-4.7/config.mk	2010-02-18 20:16:05.000000000 +0100
-+++ 99_dwm-4.7_personal_configuration.andy/config.mk	2010-02-18 20:16:05.000000000 +0100
+--- dwm-4.7/config.mk	2010-02-19 22:33:18.000000000 +0100
++++ 99_dwm-4.7_personal_configuration.andy/config.mk	2010-02-19 22:33:18.000000000 +0100
 @@ -4,7 +4,7 @@ VERSION = 4.7
  # Customize below to fit your system
  

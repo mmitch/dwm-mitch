@@ -1,7 +1,7 @@
 diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.mitch/config.def.h
 --- dwm-4.7/config.def.h	2010-02-18 20:16:05.000000000 +0100
 +++ 99_dwm-4.7_personal_configuration.mitch/config.def.h	2010-02-18 20:18:39.000000000 +0100
-@@ -2,103 +2,107 @@
+@@ -2,102 +2,106 @@
  
  /* appearance */
  #define BARPOS			BarTop /* BarBot, BarOff */
@@ -60,7 +60,6 @@ diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.mitch/config.
 +#define MAXXINERAMASCREENS     2
  
  /* ugly: depending on constants above but needed by layouts below */
- unsigned int bpos[MAXXINERAMASCREENS];
  int wax[MAXXINERAMASCREENS], way[MAXXINERAMASCREENS], waw[MAXXINERAMASCREENS], wah[MAXXINERAMASCREENS];
  
  /* layout(s) */

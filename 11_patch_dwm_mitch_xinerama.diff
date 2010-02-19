@@ -1,6 +1,6 @@
 diff -Narup 10_dwm-4.7_tileleft/bstack.c 11_dwm-4.7_xinerama/bstack.c
---- 10_dwm-4.7_tileleft/bstack.c	2010-02-18 21:03:58.000000000 +0100
-+++ 11_dwm-4.7_xinerama/bstack.c	2010-02-18 22:21:51.000000000 +0100
+--- 10_dwm-4.7_tileleft/bstack.c	2010-02-19 22:12:14.000000000 +0100
++++ 11_dwm-4.7_xinerama/bstack.c	2010-02-19 22:12:14.000000000 +0100
 @@ -7,33 +7,33 @@ bstack(void) {
      for(n = 0, c = nexttiled(clients); c; c = nexttiled(c->next))
          n++;
@@ -45,23 +45,22 @@ diff -Narup 10_dwm-4.7_tileleft/bstack.c 11_dwm-4.7_xinerama/bstack.c
      }
  }
 diff -Narup 10_dwm-4.7_tileleft/config.def.h 11_dwm-4.7_xinerama/config.def.h
---- 10_dwm-4.7_tileleft/config.def.h	2010-02-18 21:03:58.000000000 +0100
-+++ 11_dwm-4.7_xinerama/config.def.h	2010-02-18 22:19:46.000000000 +0100
-@@ -25,6 +25,11 @@ Rule rules[] = {
+--- 10_dwm-4.7_tileleft/config.def.h	2010-02-19 22:12:14.000000000 +0100
++++ 11_dwm-4.7_xinerama/config.def.h	2010-02-19 22:26:23.000000000 +0100
+@@ -25,6 +25,10 @@ Rule rules[] = {
  #define INITIALWORKSPACES	 1
  #define MAXWORKSPACES		99
  #define MAXWSTEXTWIDTH		 6	/* must be 2*(strlen(MAXWORKSPACES)+1)  */
 +#define MAXXINERAMASCREENS	 2
 +
 +/* ugly: depending on constants above but needed by layouts below */
-+unsigned int bpos[MAXXINERAMASCREENS];
 +int wax[MAXXINERAMASCREENS], way[MAXXINERAMASCREENS], waw[MAXXINERAMASCREENS], wah[MAXXINERAMASCREENS];
  
  /* layout(s) */
  #define MWFACT			0.6	/* master width factor [0.1 .. 0.9] */
 diff -Narup 10_dwm-4.7_tileleft/config.mk 11_dwm-4.7_xinerama/config.mk
---- 10_dwm-4.7_tileleft/config.mk	2010-02-18 21:03:58.000000000 +0100
-+++ 11_dwm-4.7_xinerama/config.mk	2010-02-18 21:03:58.000000000 +0100
+--- 10_dwm-4.7_tileleft/config.mk	2010-02-19 22:12:14.000000000 +0100
++++ 11_dwm-4.7_xinerama/config.mk	2010-02-19 22:12:14.000000000 +0100
 @@ -15,7 +15,7 @@ X11LIB = /usr/X11R6/lib
  
  # includes and libs
@@ -72,8 +71,8 @@ diff -Narup 10_dwm-4.7_tileleft/config.mk 11_dwm-4.7_xinerama/config.mk
  # flags
  CFLAGS = -Os ${INCS} -DVERSION=\"${VERSION}\"
 diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
---- 10_dwm-4.7_tileleft/dwm.c	2010-02-18 21:03:58.000000000 +0100
-+++ 11_dwm-4.7_xinerama/dwm.c	2010-02-18 23:17:41.000000000 +0100
+--- 10_dwm-4.7_tileleft/dwm.c	2010-02-19 22:12:14.000000000 +0100
++++ 11_dwm-4.7_xinerama/dwm.c	2010-02-19 23:28:36.000000000 +0100
 @@ -41,6 +41,7 @@
  #include <X11/Xlib.h>
  #include <X11/Xproto.h>
@@ -110,20 +109,18 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  void updatewstext(void);
  void view(const char *arg);
  void viewrel(const char *arg);
-@@ -199,9 +204,10 @@ void zoom(const char *arg);
+@@ -199,7 +204,9 @@ void zoom(const char *arg);
  
  /* variables */
  char stext[256];
 -int screen, sx, sy, sw, sh, wax, way, waw, wah;
-+int screen;
++int screen, totalw, totalh;
++int totalx = 0, totaly = 0;
 +unsigned int screenmax = 0;
  int (*xerrorxlib)(Display *, XErrorEvent *);
--unsigned int bh, bpos;
-+unsigned int bh;
+ unsigned int bh, bpos;
  unsigned int blw = 0;
- int wstextwidth = 0;
- unsigned int numlockmask = 0;
-@@ -234,7 +240,7 @@ Client *stack = NULL;
+@@ -234,7 +241,7 @@ Client *stack = NULL;
  Cursor cursor[CurLast];
  Display *dpy;
  DC dc = {0};
@@ -132,7 +129,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  Regs *regs = NULL;
  char **cargv;
  
-@@ -249,6 +255,8 @@ Layout *layout[MAXWORKSPACES];
+@@ -249,6 +256,8 @@ Layout *layout[MAXWORKSPACES];
  double mwfact[MAXWORKSPACES];
  unsigned int workspaces = INITIALWORKSPACES;
  char wstext[MAXWSTEXTWIDTH];
@@ -141,7 +138,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  
  /* function implementations */
  void
-@@ -307,7 +315,7 @@ void
+@@ -307,7 +316,7 @@ void
  ban(Client *c) {
  	if(c->isbanned)
  		return;
@@ -150,7 +147,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  	c->isbanned = True;
  }
  
-@@ -317,7 +325,7 @@ buttonpress(XEvent *e) {
+@@ -317,7 +326,7 @@ buttonpress(XEvent *e) {
  	Client *c;
  	XButtonPressedEvent *ev = &e->xbutton;
  
@@ -159,7 +156,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  		x = textw(wstext);
  		if(ev->x < x) {
  			if(ev->button == Button1) {
-@@ -397,7 +405,7 @@ cleanup(void) {
+@@ -397,7 +406,7 @@ cleanup(void) {
  	XUngrabKey(dpy, AnyKey, AnyModifier, root);
  	XFreePixmap(dpy, dc.drawable);
  	XFreeGC(dpy, dc.gc);
@@ -168,7 +165,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  	XFreeCursor(dpy, cursor[CurNormal]);
  	XFreeCursor(dpy, cursor[CurResize]);
  	XFreeCursor(dpy, cursor[CurMove]);
-@@ -406,6 +414,15 @@ cleanup(void) {
+@@ -406,6 +415,15 @@ cleanup(void) {
  }
  
  void
@@ -184,7 +181,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  compileregs(void) {
  	unsigned int i;
  	regex_t *reg;
-@@ -446,14 +463,11 @@ void
+@@ -446,14 +464,10 @@ void
  configurenotify(XEvent *e) {
  	XConfigureEvent *ev = &e->xconfigure;
  
@@ -195,8 +192,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
 -		dc.drawable = XCreatePixmap(dpy, root, sw, bh, DefaultDepth(dpy, screen));
 -		XResizeWindow(dpy, barwin, sw, bh);
 -		updatebarpos();
-+	// TODO - das geht auf die Gesamtgröße des root-Windows, anders prüfen tun!
-+	if(ev->window == root && (ev->width != sw[SCREEN] || ev->height != sh[SCREEN])) {
++	if(ev->window == root) {
 +		updatexinerama();
  		arrange();
 +		
@@ -322,7 +318,24 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  		c->border = BORDERPX;
  	}
  	XSetWindowBorder(dpy, w, dc.norm[ColBorder]);
-@@ -1052,14 +1072,14 @@ movemouse(Client *c) {
+@@ -1029,7 +1049,9 @@ movemouse(Client *c) {
+ 	unsigned int dui;
+ 	Window dummy;
+ 	XEvent ev;
+-
++	int bartop = (BARPOS == BarTop) ? bh : 0;
++	int barbot = (BARPOS == BarBot) ? bh : 0;
++	
+ 	ocx = nx = c->x;
+ 	ocy = ny = c->y;
+ 	if(XGrabPointer(dpy, root, False, MOUSEMASK, GrabModeAsync, GrabModeAsync,
+@@ -1047,19 +1069,20 @@ movemouse(Client *c) {
+ 		case Expose:
+ 		case MapRequest:
+ 			handler[ev.type](&ev);
+-			break;
++ 			break;
+ 		case MotionNotify:
  			XSync(dpy, False);
  			nx = ocx + (ev.xmotion.x - x1);
  			ny = ocy + (ev.xmotion.y - y1);
@@ -334,18 +347,19 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
 -				ny = way;
 -			else if(abs((way + wah) - (ny + c->h + 2 * c->border)) < SNAP)
 -				ny = way + wah - c->h - 2 * c->border;
-+			if(abs(wax[SCREEN] + nx) < SNAP)
-+				nx = wax[SCREEN];
-+			else if(abs((wax[SCREEN] + waw[SCREEN]) - (nx + c->w + 2 * c->border)) < SNAP)
-+				nx = wax[SCREEN] + waw[SCREEN] - c->w - 2 * c->border;
-+			if(abs(way[SCREEN] - ny) < SNAP)
-+				ny = way[SCREEN];
-+			else if(abs((way[SCREEN] + wah[SCREEN]) - (ny + c->h + 2 * c->border)) < SNAP)
-+				ny = way[SCREEN] + wah[SCREEN] - c->h - 2 * c->border;
++			// TODO: snap to screen borders instead of global borders?
++			if(abs(totalx + nx) < SNAP)
++				nx = totalx;
++			else if(abs((totalx + totalw) - (nx + c->w + 2 * c->border)) < SNAP)
++				nx = totalx + totalw - c->w - 2 * c->border;
++			if(abs((totaly + bartop) - ny) < SNAP)
++				ny = totaly + bartop;
++			else if(abs((totaly + totalh - barbot) - (ny + c->h + 2 * c->border)) < SNAP)
++				ny = totaly + totalh - barbot - c->h - 2 * c->border;
  			resize(c, nx, ny, c->w, c->h, False);
  			break;
  		}
-@@ -1151,14 +1171,14 @@ resize(Client *c, int x, int y, int w, i
+@@ -1151,14 +1174,14 @@ resize(Client *c, int x, int y, int w, i
  	if(w <= 0 || h <= 0)
  		return;
  	/* offscreen appearance fixes */
@@ -357,18 +371,18 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
 -		x = sx;
 -	if(y + h + 2 * c->border < sy)
 -		y = sy;
-+	if(x > sw[SCREEN])
-+		x = sw[SCREEN] - w - 2 * c->border;
-+	if(y > sh[SCREEN])
-+		y = sh[SCREEN] - h - 2 * c->border;
-+	if(x + w + 2 * c->border < sx[SCREEN])
-+		x = sx[SCREEN];
-+	if(y + h + 2 * c->border < sy[SCREEN])
-+		y = sy[SCREEN];
++	if(x > totalw)
++		x = totalw - w - 2 * c->border;
++	if(y > totalh)
++		y = totalh - h - 2 * c->border;
++	if(x + w + 2 * c->border < totalx)
++		x = totalx;
++	if(y + h + 2 * c->border < totaly)
++		y = totaly;
  	if(c->x != x || c->y != y || c->w != w || c->h != h) {
  		setborderbyfloat(c, False);
  		c->x = wc.x = x;
-@@ -1224,7 +1244,7 @@ restack(void) {
+@@ -1224,7 +1247,7 @@ restack(void) {
  		XRaiseWindow(dpy, sel->win);
  	if(layout[selws-1]->arrange != floating) {
  		wc.stack_mode = Below;
@@ -377,7 +391,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  		if(!sel->isfloating) {
  			XConfigureWindow(dpy, sel->win, CWSibling | CWStackMode, &wc);
  			wc.sibling = sel->win;
-@@ -1420,11 +1440,6 @@ setup(void) {
+@@ -1420,11 +1443,6 @@ setup(void) {
  	cursor[CurResize] = XCreateFontCursor(dpy, XC_sizing);
  	cursor[CurMove] = XCreateFontCursor(dpy, XC_fleur);
  
@@ -389,23 +403,25 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  	/* init modifier map */
  	modmap = XGetModifierMapping(dpy);
  	for(i = 0; i < 8; i++)
-@@ -1458,6 +1473,9 @@ setup(void) {
+@@ -1458,6 +1476,11 @@ setup(void) {
  	initfont(FONT);
  	dc.h = bh = dc.font.height + 2;
  
 +	/* init geometry */
++	// init to simple width, expand and update later if xinerama is detected
++	dc.drawable = XCreatePixmap(dpy, root, DisplayWidth(dpy, screen), bh, DefaultDepth(dpy, screen)); 
 +	updatexinerama();
 +
  	/* init layouts */
  	for(i = 0; i < MAXWORKSPACES; i++) {
  		mwfact[i] = MWFACT;
-@@ -1468,20 +1486,12 @@ setup(void) {
+@@ -1468,20 +1491,10 @@ setup(void) {
  		if(j > blw)
  			blw = j;
  	}
 -
  	/* init bar */
--	bpos = BARPOS;
+ 	bpos = BARPOS;
 -	wa.override_redirect = 1;
 -	wa.background_pixmap = ParentRelative;
 -	wa.event_mask = ButtonPressMask | ExposureMask;
@@ -415,16 +431,13 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
 -	XDefineCursor(dpy, barwin, cursor[CurNormal]);
 -	updatebarpos();
 -	XMapRaised(dpy, barwin);
-+	for(i = 0; i < MAXXINERAMASCREENS; i++)
-+		bpos[i] = BARPOS;
 +	createbarwins();
  	strcpy(stext, "dwm-"VERSION);
 -	dc.drawable = XCreatePixmap(dpy, root, sw, bh, DefaultDepth(dpy, screen));
-+	dc.drawable = XCreatePixmap(dpy, root, sw[SCREEN], bh, DefaultDepth(dpy, screen));
  	dc.gc = XCreateGC(dpy, root, 0, 0);
  	XSetLineAttributes(dpy, dc.gc, 1, LineSolid, CapButt, JoinMiter);
  	if(!dc.font.set)
-@@ -1503,6 +1513,31 @@ setup(void) {
+@@ -1503,6 +1516,31 @@ setup(void) {
  }
  
  void
@@ -444,19 +457,19 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
 +			DefaultDepth(dpy, screen), CopyFromParent, DefaultVisual(dpy, screen),
 +			CWOverrideRedirect | CWBackPixmap | CWEventMask, &wa);
 +		XDefineCursor(dpy, barwin[i], cursor[CurNormal]);
-+		XSync(dpy, False);//TODO
 +	}
 +	printf("\n");
 +	updatebarpos();
 +	for(i = 0; i < screenmax; i++)
 +		XMapRaised(dpy, barwin[i]);
++	XSync(dpy, False);
 +}
 +
 +void
  sigusr1(int notused) {
  	quit(NULL);
  	reload = True;
-@@ -1582,28 +1617,28 @@ tile(void) {
+@@ -1582,28 +1620,28 @@ tile(void) {
  		n++;
  
  	/* window geoms */
@@ -494,7 +507,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  			else
  				nh = th - 2 * c->border;
  		}
-@@ -1611,7 +1646,7 @@ tile(void) {
+@@ -1611,7 +1649,7 @@ tile(void) {
  		if((RESIZEHINTS) && ((c->h < bh) || (c->h > nh) || (c->w < bh) || (c->w > nw)))
  			/* client doesn't accept size constraints */
  			resize(c, nx, ny, nw, nh, False);
@@ -503,7 +516,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  			ny = c->y + c->h + 2 * c->border;
  	}
  }
-@@ -1626,29 +1661,29 @@ tileleft(void) {
+@@ -1626,29 +1664,29 @@ tileleft(void) {
  		n++;
  
  	/* window geoms */
@@ -544,7 +557,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  			else
  				nh = th - 2 * c->border;
  		}
-@@ -1656,17 +1691,17 @@ tileleft(void) {
+@@ -1656,7 +1694,7 @@ tileleft(void) {
  		if((RESIZEHINTS) && ((c->h < bh) || (c->h > nh) || (c->w < bh) || (c->w > nw)))
  			/* client doesn't accept size constraints */
  			resize(c, nx, ny, nw, nh, False);
@@ -553,20 +566,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  			ny = c->y + c->h + 2 * c->border;
  	}
  }
- 
- void
- togglebar(const char *arg) {
--	if(bpos == BarOff)
--		bpos = (BARPOS == BarOff) ? BarTop : BARPOS;
-+	if(bpos[SCREEN] == BarOff) // TODO
-+		bpos[SCREEN] = (BARPOS == BarOff) ? BarTop : BARPOS;
- 	else
--		bpos = BarOff;
-+		bpos[SCREEN] = BarOff;
- 	updatebarpos();
- 	arrange();
- }
-@@ -1695,7 +1730,7 @@ togglemax(const char *arg) {
+@@ -1695,7 +1733,7 @@ togglemax(const char *arg) {
  		sel->ry = sel->y;
  		sel->rw = sel->w;
  		sel->rh = sel->h;
@@ -575,7 +575,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  	}
  	else {
  		resize(sel, sel->rx, sel->ry, sel->rw, sel->rh, True);
-@@ -1829,24 +1864,27 @@ unmapnotify(XEvent *e) {
+@@ -1829,24 +1867,27 @@ unmapnotify(XEvent *e) {
  void
  updatebarpos(void) {
  	XEvent ev;
@@ -603,7 +603,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
 +		way[i] = sy[i];
 +		wah[i] = sh[i];
 +		waw[i] = sw[i];
-+		switch(bpos[i]) {
++		switch(bpos) {
 +		default:
 +			wah[i] -= bh;
 +			way[i] += bh;
@@ -620,7 +620,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  	}
  	XSync(dpy, False);
  	while(XCheckMaskEvent(dpy, EnterWindowMask, &ev));
-@@ -1970,6 +2008,48 @@ zoom(const char *arg) {
+@@ -1970,6 +2011,56 @@ zoom(const char *arg) {
  	arrange();
  }
  
@@ -630,18 +630,21 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
 +	int xinescreencount;
 +	unsigned int i;
 +
++
 +	if( ! XineramaIsActive(dpy) ) {
 +		/* no Xinerama available, fallback */
 +		sx[0] = sy[0] = 0;
-+		sw[0] = DisplayWidth(dpy, screen);
-+		sh[0] = DisplayHeight(dpy, screen);
++		sw[0] = totalw = DisplayWidth(dpy, screen);
++		sh[0] = totalh = DisplayHeight(dpy, screen);
 +		screenmax = 1;
 +		return;
 +	}
 +	
 +	destroybarwins();
++	XFreePixmap(dpy, dc.drawable);
 +        xinescreens = XineramaQueryScreens(dpy, &xinescreencount);
 +	screenmax = 0;
++	totalw = totalh = 0;
 +	printf("updatexinerama\n");
 +	for(i = 0; i < xinescreencount; i++) {
 +		printf("screen %d = x%d y%d w%d h%d ", xinescreens[i].screen_number, xinescreens[i].x_org, xinescreens[i].y_org, xinescreens[i].width, xinescreens[i].height);
@@ -660,9 +663,14 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
 +			if (sh[screenmax-1] < xinescreens[i].height)
 +				sh[screenmax-1] = xinescreens[i].height;
 +		}
++		if (sx[screenmax-1] + sw[screenmax-1] > totalw)
++			totalw = sx[screenmax-1] + sw[screenmax-1];
++		if (sy[screenmax-1] + sh[screenmax-1] > totalh)
++			totalh = sy[screenmax-1] + sh[screenmax-1];
 +	}
 +	printf("screenmax=%d\n\n", screenmax);
 +	XFree(xinescreens);
++	dc.drawable = XCreatePixmap(dpy, root, totalw, bh, DefaultDepth(dpy, screen)); 
 +	createbarwins();
 +}
 +
@@ -670,8 +678,8 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  main(int argc, char *argv[]) {
  	if(argc == 2 && !strcmp("-v", argv[1]))
 diff -Narup 10_dwm-4.7_tileleft/maximize.c 11_dwm-4.7_xinerama/maximize.c
---- 10_dwm-4.7_tileleft/maximize.c	2010-02-18 21:03:58.000000000 +0100
-+++ 11_dwm-4.7_xinerama/maximize.c	2010-02-18 21:03:58.000000000 +0100
+--- 10_dwm-4.7_tileleft/maximize.c	2010-02-19 22:12:14.000000000 +0100
++++ 11_dwm-4.7_xinerama/maximize.c	2010-02-19 22:12:14.000000000 +0100
 @@ -6,7 +6,7 @@ maximize(void) {
                  if (isvisible(c)) {
                          unban(c);
