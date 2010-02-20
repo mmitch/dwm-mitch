@@ -1,6 +1,6 @@
 diff -Narup 10_dwm-4.7_tileleft/bstack.c 11_dwm-4.7_xinerama/bstack.c
---- 10_dwm-4.7_tileleft/bstack.c	2010-02-20 11:37:24.000000000 +0100
-+++ 11_dwm-4.7_xinerama/bstack.c	2010-02-20 11:37:24.000000000 +0100
+--- 10_dwm-4.7_tileleft/bstack.c	2010-02-20 12:28:52.000000000 +0100
++++ 11_dwm-4.7_xinerama/bstack.c	2010-02-20 12:28:52.000000000 +0100
 @@ -1,39 +1,39 @@
  void
 -bstack(void) {
@@ -73,8 +73,8 @@ diff -Narup 10_dwm-4.7_tileleft/bstack.c 11_dwm-4.7_xinerama/bstack.c
      }
  }
 diff -Narup 10_dwm-4.7_tileleft/config.def.h 11_dwm-4.7_xinerama/config.def.h
---- 10_dwm-4.7_tileleft/config.def.h	2010-02-20 11:37:24.000000000 +0100
-+++ 11_dwm-4.7_xinerama/config.def.h	2010-02-20 11:37:24.000000000 +0100
+--- 10_dwm-4.7_tileleft/config.def.h	2010-02-20 12:28:52.000000000 +0100
++++ 11_dwm-4.7_xinerama/config.def.h	2010-02-20 12:28:52.000000000 +0100
 @@ -25,6 +25,10 @@ Rule rules[] = {
  #define INITIALWORKSPACES	 1
  #define MAXWORKSPACES		99
@@ -87,8 +87,8 @@ diff -Narup 10_dwm-4.7_tileleft/config.def.h 11_dwm-4.7_xinerama/config.def.h
  /* layout(s) */
  #define MWFACT			0.6	/* master width factor [0.1 .. 0.9] */
 diff -Narup 10_dwm-4.7_tileleft/config.mk 11_dwm-4.7_xinerama/config.mk
---- 10_dwm-4.7_tileleft/config.mk	2010-02-20 11:37:24.000000000 +0100
-+++ 11_dwm-4.7_xinerama/config.mk	2010-02-20 11:37:24.000000000 +0100
+--- 10_dwm-4.7_tileleft/config.mk	2010-02-20 12:28:52.000000000 +0100
++++ 11_dwm-4.7_xinerama/config.mk	2010-02-20 12:28:52.000000000 +0100
 @@ -15,7 +15,7 @@ X11LIB = /usr/X11R6/lib
  
  # includes and libs
@@ -99,8 +99,8 @@ diff -Narup 10_dwm-4.7_tileleft/config.mk 11_dwm-4.7_xinerama/config.mk
  # flags
  CFLAGS = -Os ${INCS} -DVERSION=\"${VERSION}\"
 diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
---- 10_dwm-4.7_tileleft/dwm.c	2010-02-20 11:37:24.000000000 +0100
-+++ 11_dwm-4.7_xinerama/dwm.c	2010-02-20 12:10:46.000000000 +0100
+--- 10_dwm-4.7_tileleft/dwm.c	2010-02-20 12:28:52.000000000 +0100
++++ 11_dwm-4.7_xinerama/dwm.c	2010-02-20 12:29:19.000000000 +0100
 @@ -41,6 +41,7 @@
  #include <X11/Xlib.h>
  #include <X11/Xproto.h>
@@ -825,7 +825,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  
  	/* multihead support */
  	selscreen = XQueryPointer(dpy, root, &w, &w, &d, &d, &d, &d, &mask);
-@@ -1494,12 +1547,31 @@ setup(void) {
+@@ -1494,12 +1547,28 @@ setup(void) {
  	if (signal(SIGUSR1, sigusr1) == SIG_ERR) 
  		eprint("Can't bind to signal USR1\n");
  
@@ -847,15 +847,12 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
 +	wa.background_pixmap = ParentRelative;
 +	wa.event_mask = ButtonPressMask | ExposureMask;
 +
-+	printf("createbarwins\nd%d r%d b%d s%d w%d\n", dpy, root, bh, screen, wa);
 +	for(s = 0; s < screenmax; s++) {
-+		printf("[%d] x%d y%d w%d h%d\n", s, sx[s], sy[s], sw[s], sh[s]);
 +		barwin[s] = XCreateWindow(dpy, root, sx[s], sy[s], sw[s], bh, 0,
 +			DefaultDepth(dpy, screen), CopyFromParent, DefaultVisual(dpy, screen),
 +			CWOverrideRedirect | CWBackPixmap | CWEventMask, &wa);
 +		XDefineCursor(dpy, barwin[s], cursor[CurNormal]);
 +	}
-+	printf("\n");
 +	updatebarpos();
 +	for(s = 0; s < screenmax; s++)
 +		XMapRaised(dpy, barwin[s]);
@@ -863,7 +860,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  }
  
  void
-@@ -1533,26 +1605,27 @@ spawn(const char *arg) {
+@@ -1533,26 +1602,27 @@ spawn(const char *arg) {
  }
  
  void
@@ -901,7 +898,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
          arrange();
  }
  
-@@ -1573,82 +1646,88 @@ textw(const char *text) {
+@@ -1573,37 +1643,38 @@ textw(const char *text) {
  }
  
  void
@@ -930,11 +927,8 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
 +	ny = way[s];
  	nw = 0; /* gcc stupidity requires this */
 -	for(i = 0, c = mc = nexttiled(clients); c; c = nexttiled(c->next), i++) {
-+	printf("tile->arrage() @ s%d\n", s);
-+	printf("  wx=%d wy=%d ww=%d wh=%d\n", wax[s], way[s], waw[s], wah[s]);
 +		
 +	for(i = 0, c = mc = nexttiled(clients, s); c; c = nexttiled(c->next, s), i++) {
-+		printf("  client %40s\n", c->name);
  		c->ismax = False;
  		if(i == 0) { /* master */
  			nw = mw - 2 * c->border;
@@ -955,8 +949,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  			else
  				nh = th - 2 * c->border;
  		}
-+		printf("  -> x=%d y=%d w=%d h=%d\n", nx, ny, nw, nh);
- 		resize(c, nx, ny, nw, nh, RESIZEHINTS);
+@@ -1611,44 +1682,44 @@ tile(void) {
  		if((RESIZEHINTS) && ((c->h < bh) || (c->h > nh) || (c->w < bh) || (c->w > nw)))
  			/* client doesn't accept size constraints */
  			resize(c, nx, ny, nw, nh, False);
@@ -964,7 +957,6 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
 +		if(n > 1 && th != wah[s])
  			ny = c->y + c->h + 2 * c->border;
  	}
-+	printf("\n");
  }
  
  void
@@ -1017,7 +1009,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  			else
  				nh = th - 2 * c->border;
  		}
-@@ -1656,7 +1735,7 @@ tileleft(void) {
+@@ -1656,7 +1727,7 @@ tileleft(void) {
  		if((RESIZEHINTS) && ((c->h < bh) || (c->h > nh) || (c->w < bh) || (c->w > nw)))
  			/* client doesn't accept size constraints */
  			resize(c, nx, ny, nw, nh, False);
@@ -1026,7 +1018,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  			ny = c->y + c->h + 2 * c->border;
  	}
  }
-@@ -1688,14 +1767,14 @@ togglemax(const char *arg) {
+@@ -1688,14 +1759,14 @@ togglemax(const char *arg) {
  
  	if(!sel || sel->isfixed)
  		return;
@@ -1043,7 +1035,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  	}
  	else {
  		resize(sel, sel->rx, sel->ry, sel->rw, sel->rh, True);
-@@ -1706,12 +1785,13 @@ togglemax(const char *arg) {
+@@ -1706,12 +1777,13 @@ togglemax(const char *arg) {
  void
  view(const char *arg) {
  	int i;
@@ -1060,7 +1052,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  	arrange();  
  }
  
-@@ -1727,9 +1807,13 @@ pushstack(const char *arg) {
+@@ -1727,9 +1799,13 @@ pushstack(const char *arg) {
  void
  popstack(const char *arg) {
  	Client *c;
@@ -1076,7 +1068,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  	focus(c);
  	arrange();
  }
-@@ -1739,51 +1823,53 @@ wscount(const char *arg) {
+@@ -1739,51 +1815,53 @@ wscount(const char *arg) {
  	Client *c;
  	int i;
  	unsigned int j;
@@ -1154,7 +1146,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  	arrange();
  }
  
-@@ -1829,24 +1915,27 @@ unmapnotify(XEvent *e) {
+@@ -1829,24 +1907,27 @@ unmapnotify(XEvent *e) {
  void
  updatebarpos(void) {
  	XEvent ev;
@@ -1199,7 +1191,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  	}
  	XSync(dpy, False);
  	while(XCheckMaskEvent(dpy, EnterWindowMask, &ev));
-@@ -1945,11 +2034,12 @@ xerrorstart(Display *dsply, XErrorEvent 
+@@ -1945,11 +2026,12 @@ xerrorstart(Display *dsply, XErrorEvent 
  void
  moveto(const char *arg) {
  	unsigned int i;
@@ -1213,7 +1205,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  		return;
  	sel->workspace = i;
          arrange();
-@@ -1961,8 +2051,8 @@ zoom(const char *arg) {
+@@ -1961,8 +2043,8 @@ zoom(const char *arg) {
  
  	if(!sel || !dozoom || sel->isfloating)
  		return;
@@ -1224,7 +1216,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  			return;
  	detach(c);
  	attach(c);
-@@ -1970,6 +2060,51 @@ zoom(const char *arg) {
+@@ -1970,6 +2052,51 @@ zoom(const char *arg) {
  	arrange();
  }
  
@@ -1276,7 +1268,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  int
  main(int argc, char *argv[]) {
  	if(argc == 2 && !strcmp("-v", argv[1]))
-@@ -1987,7 +2122,6 @@ main(int argc, char *argv[]) {
+@@ -1987,7 +2114,6 @@ main(int argc, char *argv[]) {
  
  	checkotherwm();
  	setup();
@@ -1285,8 +1277,8 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  	scan();
  	run();
 diff -Narup 10_dwm-4.7_tileleft/maximize.c 11_dwm-4.7_xinerama/maximize.c
---- 10_dwm-4.7_tileleft/maximize.c	2010-02-20 11:37:24.000000000 +0100
-+++ 11_dwm-4.7_xinerama/maximize.c	2010-02-20 11:37:24.000000000 +0100
+--- 10_dwm-4.7_tileleft/maximize.c	2010-02-20 12:28:52.000000000 +0100
++++ 11_dwm-4.7_xinerama/maximize.c	2010-02-20 12:30:03.000000000 +0100
 @@ -1,15 +1,16 @@
  void
 -maximize(void) {
@@ -1302,14 +1294,14 @@ diff -Narup 10_dwm-4.7_tileleft/maximize.c 11_dwm-4.7_xinerama/maximize.c
 -                        ban(c);
 -                }
 +	for(c = clients; c; c = c->next)
-+// try removing, is already done by main arrange() function
-+//		if (isvisible(c)) {
-+//			unban(c);
-+			if(c->screen == s && ! c->isfloating)
-+				resize(c, wax[s], way[s], waw[s] - 2 * BORDERPX, wah[s] - 2 * BORDERPX, True);
-+//		} else {
-+//			ban(c);
-+//		}
++		if (c->screen == s)
++			if (isvisible(c)) {
++				unban(c);
++				if(! c->isfloating)
++					resize(c, wax[s], way[s], waw[s] - 2 * BORDERPX, wah[s] - 2 * BORDERPX, True);
++			} else {
++				ban(c);
++			}
  	
          focus(NULL);
          restack();
