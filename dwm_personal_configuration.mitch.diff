@@ -60,7 +60,7 @@ diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.mitch/config.
 +#define MAXXINERAMASCREENS     2
  
  /* ugly: depending on constants above but needed by layouts below */
- int wax[MAXXINERAMASCREENS], way[MAXXINERAMASCREENS], waw[MAXXINERAMASCREENS], wah[MAXXINERAMASCREENS];
+ double mwfact[MAXXINERAMASCREENS][MAXWORKSPACES];
  
  /* layout(s) */
 -#define MWFACT			0.6	/* master width factor [0.1 .. 0.9] */
