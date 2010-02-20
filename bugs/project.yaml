@@ -40,3 +40,12 @@ releases:
     - Christian Garbs <mitch@cgarbs.de>
     - released
     - subsequently document 3.5.1 release (2008-12-27)
+- !ditz.rubyforge.org,2008-03-06/release 
+  name: "3.7"
+  status: :unreleased
+  release_time: 
+  log_events: 
+  - - 2010-02-20 11:22:07.488616 Z
+    - Christian Garbs <mitch@cgarbs.de>
+    - created
+    - ""
