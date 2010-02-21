@@ -100,7 +100,7 @@ diff -Narup 10_dwm-4.7_tileleft/config.mk 11_dwm-4.7_xinerama/config.mk
  CFLAGS = -Os ${INCS} -DVERSION=\"${VERSION}\"
 diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
 --- 10_dwm-4.7_tileleft/dwm.c	2010-02-21 01:04:40.000000000 +0100
-+++ 11_dwm-4.7_xinerama/dwm.c	2010-02-21 14:01:21.000000000 +0100
++++ 11_dwm-4.7_xinerama/dwm.c	2010-02-21 17:29:31.000000000 +0100
 @@ -41,6 +41,7 @@
  #include <X11/Xlib.h>
  #include <X11/Xproto.h>
@@ -514,8 +514,8 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
 -		for(c = stack; c && !isvisible(c); c = c->snext);
 +	unsigned int s = whichscreen();
 +
-+	if((!c && selscreen) || (c && (!isvisible(c) && c->screen != s)))
-+		for(c = stack; c && (!isvisible(c) && c->screen != s); c = c->snext);
++	if((!c && selscreen) || (c && (!isvisible(c) || c->screen != s)))
++		for(c = stack; c && (!isvisible(c) || c->screen != s); c = c->snext);
  	if(sel && sel != c) {
  		grabbuttons(sel, False);
  		XSetWindowBorder(dpy, sel->win, dc.norm[ColBorder]);
@@ -897,7 +897,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  }
  
  void
-@@ -1533,26 +1604,27 @@ spawn(const char *arg) {
+@@ -1533,26 +1604,29 @@ spawn(const char *arg) {
  }
  
  void
@@ -932,10 +932,12 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
 +	if (selws[s] < 1)
 +		selws[s] = workspaces[s];
 +	updatewstext(s);
++	sel = NULL;
++	focus(NULL);
          arrange();
  }
  
-@@ -1573,37 +1645,38 @@ textw(const char *text) {
+@@ -1573,37 +1647,38 @@ textw(const char *text) {
  }
  
  void
@@ -986,7 +988,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  			else
  				nh = th - 2 * c->border;
  		}
-@@ -1611,44 +1684,44 @@ tile(void) {
+@@ -1611,44 +1686,44 @@ tile(void) {
  		if((RESIZEHINTS) && ((c->h < bh) || (c->h > nh) || (c->w < bh) || (c->w > nw)))
  			/* client doesn't accept size constraints */
  			resize(c, nx, ny, nw, nh, False);
@@ -1046,7 +1048,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  			else
  				nh = th - 2 * c->border;
  		}
-@@ -1656,7 +1729,7 @@ tileleft(void) {
+@@ -1656,7 +1731,7 @@ tileleft(void) {
  		if((RESIZEHINTS) && ((c->h < bh) || (c->h > nh) || (c->w < bh) || (c->w > nw)))
  			/* client doesn't accept size constraints */
  			resize(c, nx, ny, nw, nh, False);
@@ -1055,7 +1057,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  			ny = c->y + c->h + 2 * c->border;
  	}
  }
-@@ -1688,14 +1761,14 @@ togglemax(const char *arg) {
+@@ -1688,14 +1763,14 @@ togglemax(const char *arg) {
  
  	if(!sel || sel->isfixed)
  		return;
@@ -1072,7 +1074,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  	}
  	else {
  		resize(sel, sel->rx, sel->ry, sel->rw, sel->rh, True);
-@@ -1706,12 +1779,13 @@ togglemax(const char *arg) {
+@@ -1706,12 +1781,15 @@ togglemax(const char *arg) {
  void
  view(const char *arg) {
  	int i;
@@ -1086,10 +1088,20 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
 -	updatewstext();
 +	selws[s] = i;
 +	updatewstext(s);
++	sel = NULL;
++	focus(NULL);
  	arrange();  
  }
  
-@@ -1727,9 +1801,13 @@ pushstack(const char *arg) {
+@@ -1720,6 +1798,7 @@ pushstack(const char *arg) {
+ 	if (!sel)
+ 		return;
+ 	sel->workspace = 0;
++	sel = NULL;
+ 	focus(NULL);
+ 	arrange();
+ }
+@@ -1727,9 +1806,13 @@ pushstack(const char *arg) {
  void
  popstack(const char *arg) {
  	Client *c;
@@ -1105,7 +1117,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  	focus(c);
  	arrange();
  }
-@@ -1739,51 +1817,53 @@ wscount(const char *arg) {
+@@ -1739,51 +1822,53 @@ wscount(const char *arg) {
  	Client *c;
  	int i;
  	unsigned int j;
@@ -1183,7 +1195,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  	arrange();
  }
  
-@@ -1829,24 +1909,27 @@ unmapnotify(XEvent *e) {
+@@ -1829,24 +1914,27 @@ unmapnotify(XEvent *e) {
  void
  updatebarpos(void) {
  	XEvent ev;
@@ -1228,7 +1240,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  	}
  	XSync(dpy, False);
  	while(XCheckMaskEvent(dpy, EnterWindowMask, &ev));
-@@ -1945,11 +2028,12 @@ xerrorstart(Display *dsply, XErrorEvent 
+@@ -1945,11 +2033,12 @@ xerrorstart(Display *dsply, XErrorEvent 
  void
  moveto(const char *arg) {
  	unsigned int i;
@@ -1242,7 +1254,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  		return;
  	sel->workspace = i;
          arrange();
-@@ -1961,8 +2045,8 @@ zoom(const char *arg) {
+@@ -1961,8 +2050,8 @@ zoom(const char *arg) {
  
  	if(!sel || !dozoom || sel->isfloating)
  		return;
@@ -1253,7 +1265,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  			return;
  	detach(c);
  	attach(c);
-@@ -1970,6 +2054,55 @@ zoom(const char *arg) {
+@@ -1970,6 +2059,55 @@ zoom(const char *arg) {
  	arrange();
  }
  
@@ -1309,7 +1321,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  int
  main(int argc, char *argv[]) {
  	if(argc == 2 && !strcmp("-v", argv[1]))
-@@ -1987,7 +2120,6 @@ main(int argc, char *argv[]) {
+@@ -1987,7 +2125,6 @@ main(int argc, char *argv[]) {
  
  	checkotherwm();
  	setup();
