@@ -1,6 +1,6 @@
 diff -Narup 10_dwm-4.7_tileleft/bstack.c 11_dwm-4.7_xinerama/bstack.c
---- 10_dwm-4.7_tileleft/bstack.c	2010-02-20 12:28:52.000000000 +0100
-+++ 11_dwm-4.7_xinerama/bstack.c	2010-02-20 12:28:52.000000000 +0100
+--- 10_dwm-4.7_tileleft/bstack.c	2010-02-21 01:04:40.000000000 +0100
++++ 11_dwm-4.7_xinerama/bstack.c	2010-02-21 01:04:40.000000000 +0100
 @@ -1,39 +1,39 @@
  void
 -bstack(void) {
@@ -73,8 +73,8 @@ diff -Narup 10_dwm-4.7_tileleft/bstack.c 11_dwm-4.7_xinerama/bstack.c
      }
  }
 diff -Narup 10_dwm-4.7_tileleft/config.def.h 11_dwm-4.7_xinerama/config.def.h
---- 10_dwm-4.7_tileleft/config.def.h	2010-02-20 12:28:52.000000000 +0100
-+++ 11_dwm-4.7_xinerama/config.def.h	2010-02-20 12:28:52.000000000 +0100
+--- 10_dwm-4.7_tileleft/config.def.h	2010-02-21 01:04:40.000000000 +0100
++++ 11_dwm-4.7_xinerama/config.def.h	2010-02-21 01:04:40.000000000 +0100
 @@ -25,6 +25,10 @@ Rule rules[] = {
  #define INITIALWORKSPACES	 1
  #define MAXWORKSPACES		99
@@ -87,8 +87,8 @@ diff -Narup 10_dwm-4.7_tileleft/config.def.h 11_dwm-4.7_xinerama/config.def.h
  /* layout(s) */
  #define MWFACT			0.6	/* master width factor [0.1 .. 0.9] */
 diff -Narup 10_dwm-4.7_tileleft/config.mk 11_dwm-4.7_xinerama/config.mk
---- 10_dwm-4.7_tileleft/config.mk	2010-02-20 12:28:52.000000000 +0100
-+++ 11_dwm-4.7_xinerama/config.mk	2010-02-20 12:28:52.000000000 +0100
+--- 10_dwm-4.7_tileleft/config.mk	2010-02-21 01:04:40.000000000 +0100
++++ 11_dwm-4.7_xinerama/config.mk	2010-02-21 01:04:40.000000000 +0100
 @@ -15,7 +15,7 @@ X11LIB = /usr/X11R6/lib
  
  # includes and libs
@@ -99,8 +99,8 @@ diff -Narup 10_dwm-4.7_tileleft/config.mk 11_dwm-4.7_xinerama/config.mk
  # flags
  CFLAGS = -Os ${INCS} -DVERSION=\"${VERSION}\"
 diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
---- 10_dwm-4.7_tileleft/dwm.c	2010-02-20 12:28:52.000000000 +0100
-+++ 11_dwm-4.7_xinerama/dwm.c	2010-02-20 12:29:19.000000000 +0100
+--- 10_dwm-4.7_tileleft/dwm.c	2010-02-21 01:04:40.000000000 +0100
++++ 11_dwm-4.7_xinerama/dwm.c	2010-02-21 01:24:09.000000000 +0100
 @@ -41,6 +41,7 @@
  #include <X11/Xlib.h>
  #include <X11/Xproto.h>
@@ -465,7 +465,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
 +		drawtext(stext, dc.norm);
 +		if((dc.w = dc.x - x) > bh) {
 +			dc.x = x;
-+			if(sel) {
++			if(sel && sel->screen == s) {
 +				drawtext(sel->name, dc.sel);
 +			}
 +			else
@@ -508,6 +508,32 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  			resize(c, c->x, c->y, c->w, c->h, True);
  }
  
+@@ -699,9 +726,9 @@ focusnext(const char *arg) {
+ 
+ 	if(!sel)
+ 		return;
+-	for(c = sel->next; c && !isvisible(c); c = c->next);
++	for(c = sel->next; c && (!isvisible(c) || c->screen != sel->screen); c = c->next);
+ 	if(!c)
+-		for(c = clients; c && !isvisible(c); c = c->next);
++		for(c = clients; c && (!isvisible(c) || c->screen != sel->screen); c = c->next);
+ 	if(c) {
+ 		focus(c);
+ 		restack();
+@@ -714,10 +741,10 @@ focusprev(const char *arg) {
+ 
+ 	if(!sel)
+ 		return;
+-	for(c = sel->prev; c && !isvisible(c); c = c->prev);
++	for(c = sel->prev; c && (!isvisible(c) || c->screen != sel->screen); c = c->prev);
+ 	if(!c) {
+-		for(c = clients; c && c->next; c = c->next);
+-		for(; c && !isvisible(c); c = c->prev);
++		for(c = sel; c && c->next; c = c->next);
++		for(; c && (!isvisible(c) || c->screen != sel->screen); c = c->prev);
+ 	}
+ 	if(c) {
+ 		focus(c);
 @@ -902,7 +929,7 @@ isprotodel(Client *c) {
  
  Bool
@@ -1216,7 +1242,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  			return;
  	detach(c);
  	attach(c);
-@@ -1970,6 +2052,51 @@ zoom(const char *arg) {
+@@ -1970,6 +2052,55 @@ zoom(const char *arg) {
  	arrange();
  }
  
@@ -1225,7 +1251,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
 +	XineramaScreenInfo *xinescreens;
 +	int xinescreencount;
 +	unsigned int i;
-+
++	Client *c;
 +
 +	if( ! XineramaIsActive(dpy) ) {
 +		/* no Xinerama available, fallback */
@@ -1260,6 +1286,10 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
 +		if (sy[screenmax-1] + sh[screenmax-1] > totalh)
 +			totalh = sy[screenmax-1] + sh[screenmax-1];
 +	}
++	// if screens have been removed, move clients to stack
++	for(c = clients; c; c = c->next)
++		if(c->screen >= screenmax)
++			c->workspace = 0;
 +	XFree(xinescreens);
 +	dc.drawable = XCreatePixmap(dpy, root, totalw, bh, DefaultDepth(dpy, screen)); 
 +	createbarwins();
@@ -1268,7 +1298,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  int
  main(int argc, char *argv[]) {
  	if(argc == 2 && !strcmp("-v", argv[1]))
-@@ -1987,7 +2114,6 @@ main(int argc, char *argv[]) {
+@@ -1987,7 +2118,6 @@ main(int argc, char *argv[]) {
  
  	checkotherwm();
  	setup();
@@ -1277,8 +1307,8 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  	scan();
  	run();
 diff -Narup 10_dwm-4.7_tileleft/maximize.c 11_dwm-4.7_xinerama/maximize.c
---- 10_dwm-4.7_tileleft/maximize.c	2010-02-20 12:28:52.000000000 +0100
-+++ 11_dwm-4.7_xinerama/maximize.c	2010-02-20 12:30:03.000000000 +0100
+--- 10_dwm-4.7_tileleft/maximize.c	2010-02-21 01:04:40.000000000 +0100
++++ 11_dwm-4.7_xinerama/maximize.c	2010-02-21 01:04:40.000000000 +0100
 @@ -1,15 +1,16 @@
  void
 -maximize(void) {
