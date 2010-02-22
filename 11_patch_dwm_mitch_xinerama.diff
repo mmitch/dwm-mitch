@@ -1,6 +1,6 @@
 diff -Narup 10_dwm-4.7_tileleft/bstack.c 11_dwm-4.7_xinerama/bstack.c
---- 10_dwm-4.7_tileleft/bstack.c	2010-02-22 19:57:07.000000000 +0100
-+++ 11_dwm-4.7_xinerama/bstack.c	2010-02-22 19:57:07.000000000 +0100
+--- 10_dwm-4.7_tileleft/bstack.c	2010-02-22 20:03:42.000000000 +0100
++++ 11_dwm-4.7_xinerama/bstack.c	2010-02-22 20:03:42.000000000 +0100
 @@ -1,39 +1,39 @@
  void
 -bstack(void) {
@@ -73,8 +73,8 @@ diff -Narup 10_dwm-4.7_tileleft/bstack.c 11_dwm-4.7_xinerama/bstack.c
      }
  }
 diff -Narup 10_dwm-4.7_tileleft/config.def.h 11_dwm-4.7_xinerama/config.def.h
---- 10_dwm-4.7_tileleft/config.def.h	2010-02-22 19:57:07.000000000 +0100
-+++ 11_dwm-4.7_xinerama/config.def.h	2010-02-22 19:57:07.000000000 +0100
+--- 10_dwm-4.7_tileleft/config.def.h	2010-02-22 20:03:42.000000000 +0100
++++ 11_dwm-4.7_xinerama/config.def.h	2010-02-22 20:03:42.000000000 +0100
 @@ -25,6 +25,10 @@ Rule rules[] = {
  #define INITIALWORKSPACES	 1
  #define MAXWORKSPACES		99
@@ -87,8 +87,8 @@ diff -Narup 10_dwm-4.7_tileleft/config.def.h 11_dwm-4.7_xinerama/config.def.h
  /* layout(s) */
  #define MWFACT			0.6	/* master width factor [0.1 .. 0.9] */
 diff -Narup 10_dwm-4.7_tileleft/config.mk 11_dwm-4.7_xinerama/config.mk
---- 10_dwm-4.7_tileleft/config.mk	2010-02-22 19:57:07.000000000 +0100
-+++ 11_dwm-4.7_xinerama/config.mk	2010-02-22 19:57:07.000000000 +0100
+--- 10_dwm-4.7_tileleft/config.mk	2010-02-22 20:03:42.000000000 +0100
++++ 11_dwm-4.7_xinerama/config.mk	2010-02-22 20:03:42.000000000 +0100
 @@ -15,7 +15,7 @@ X11LIB = /usr/X11R6/lib
  
  # includes and libs
@@ -99,8 +99,8 @@ diff -Narup 10_dwm-4.7_tileleft/config.mk 11_dwm-4.7_xinerama/config.mk
  # flags
  CFLAGS = -Os ${INCS} -DVERSION=\"${VERSION}\"
 diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
---- 10_dwm-4.7_tileleft/dwm.c	2010-02-22 19:57:07.000000000 +0100
-+++ 11_dwm-4.7_xinerama/dwm.c	2010-02-22 19:57:07.000000000 +0100
+--- 10_dwm-4.7_tileleft/dwm.c	2010-02-22 20:03:42.000000000 +0100
++++ 11_dwm-4.7_xinerama/dwm.c	2010-02-22 20:47:59.000000000 +0100
 @@ -41,6 +41,7 @@
  #include <X11/Xlib.h>
  #include <X11/Xproto.h>
@@ -514,7 +514,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
 -		for(c = stack; c && !isvisible(c); c = c->snext);
 +	unsigned int s = whichscreen();
 +
-+	if((!c && selscreen) || (c && (!isvisible(c) || c->screen != s)))
++	if((!c && selscreen) || (c && (!isvisible(c) || (c->screen != s && !c->isfloating && layout[c->screen][c->workspace-1]->arrange != floating))))
 +		for(c = stack; c && (!isvisible(c) || c->screen != s); c = c->snext);
  	if(sel && sel != c) {
  		grabbuttons(sel, False);
@@ -1330,8 +1330,8 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  	scan();
  	run();
 diff -Narup 10_dwm-4.7_tileleft/maximize.c 11_dwm-4.7_xinerama/maximize.c
---- 10_dwm-4.7_tileleft/maximize.c	2010-02-22 19:57:07.000000000 +0100
-+++ 11_dwm-4.7_xinerama/maximize.c	2010-02-22 19:57:07.000000000 +0100
+--- 10_dwm-4.7_tileleft/maximize.c	2010-02-22 20:03:42.000000000 +0100
++++ 11_dwm-4.7_xinerama/maximize.c	2010-02-22 20:03:42.000000000 +0100
 @@ -1,15 +1,16 @@
  void
 -maximize(void) {
