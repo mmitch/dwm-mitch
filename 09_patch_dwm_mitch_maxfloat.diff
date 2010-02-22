@@ -1,7 +1,7 @@
 diff -Narup 08_dwm-4.7_floatborder/dwm.c 09_dwm-4.7_maxfloat/dwm.c
---- 08_dwm-4.7_floatborder/dwm.c	2007-12-26 18:49:57.000000000 +0100
-+++ 09_dwm-4.7_maxfloat/dwm.c	2007-12-26 18:50:24.000000000 +0100
-@@ -67,7 +67,7 @@ struct Client {
+--- 08_dwm-4.7_floatborder/dwm.c	2010-02-22 19:57:07.000000000 +0100
++++ 09_dwm-4.7_maxfloat/dwm.c	2010-02-22 19:57:07.000000000 +0100
+@@ -66,7 +66,7 @@ struct Client {
  	int minax, maxax, minay, maxay;
  	long flags;
  	unsigned int border, oldborder, workspace;
@@ -10,7 +10,7 @@ diff -Narup 08_dwm-4.7_floatborder/dwm.c 09_dwm-4.7_maxfloat/dwm.c
  	Client *next;
  	Client *prev;
  	Client *snext;
-@@ -1642,13 +1642,9 @@ togglemax(const char *arg) {
+@@ -1641,13 +1641,9 @@ togglemax(const char *arg) {
  
  	if(!sel || sel->isfixed)
  		return;
@@ -26,7 +26,7 @@ diff -Narup 08_dwm-4.7_floatborder/dwm.c 09_dwm-4.7_maxfloat/dwm.c
  		sel->rx = sel->x;
  		sel->ry = sel->y;
  		sel->rw = sel->w;
-@@ -1657,10 +1653,7 @@ togglemax(const char *arg) {
+@@ -1656,10 +1652,7 @@ togglemax(const char *arg) {
  	}
  	else {
  		resize(sel, sel->rx, sel->ry, sel->rw, sel->rh, True);

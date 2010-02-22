@@ -1,6 +1,6 @@
 diff -Narup 09_dwm-4.7_maxfloat/config.def.h 10_dwm-4.7_tileleft/config.def.h
---- 09_dwm-4.7_maxfloat/config.def.h	2010-01-21 21:12:35.000000000 +0100
-+++ 10_dwm-4.7_tileleft/config.def.h	2010-01-21 21:12:35.000000000 +0100
+--- 09_dwm-4.7_maxfloat/config.def.h	2010-02-22 19:57:07.000000000 +0100
++++ 10_dwm-4.7_tileleft/config.def.h	2010-02-22 19:57:07.000000000 +0100
 @@ -35,6 +35,7 @@ Rule rules[] = {
  Layout layouts[] = {
  	/* symbol		function */
@@ -10,9 +10,9 @@ diff -Narup 09_dwm-4.7_maxfloat/config.def.h 10_dwm-4.7_tileleft/config.def.h
  	{ "TTT",		bstack },
  	{ "[ ]",		maximize },
 diff -Narup 09_dwm-4.7_maxfloat/dwm.c 10_dwm-4.7_tileleft/dwm.c
---- 09_dwm-4.7_maxfloat/dwm.c	2010-01-21 21:12:35.000000000 +0100
-+++ 10_dwm-4.7_tileleft/dwm.c	2010-01-21 21:23:39.000000000 +0100
-@@ -178,6 +178,7 @@ void spawn(const char *arg);
+--- 09_dwm-4.7_maxfloat/dwm.c	2010-02-22 19:57:07.000000000 +0100
++++ 10_dwm-4.7_tileleft/dwm.c	2010-02-22 19:57:07.000000000 +0100
+@@ -177,6 +177,7 @@ void spawn(const char *arg);
  unsigned int textnw(const char *text, unsigned int len);
  unsigned int textw(const char *text);
  void tile(void);
@@ -20,7 +20,7 @@ diff -Narup 09_dwm-4.7_maxfloat/dwm.c 10_dwm-4.7_tileleft/dwm.c
  void togglebar(const char *arg);
  void togglefloating(const char *arg);
  void togglemax(const char *arg);
-@@ -1597,8 +1598,8 @@ tile(void) {
+@@ -1596,8 +1597,8 @@ tile(void) {
  		}
  		else {  /* tile window */
  			if(i == 1) {
@@ -30,7 +30,7 @@ diff -Narup 09_dwm-4.7_maxfloat/dwm.c 10_dwm-4.7_tileleft/dwm.c
  				nw = waw - nx - 2 * c->border;
  			}
  			if(i + 1 == n) /* remainder */
-@@ -1616,6 +1617,51 @@ tile(void) {
+@@ -1615,6 +1616,51 @@ tile(void) {
  }
  
  void

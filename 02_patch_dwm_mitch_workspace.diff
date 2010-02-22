@@ -1,6 +1,6 @@
 diff -Narup 01_dwm-4.7_maximize/config.def.h 02_dwm-4.7_workspace/config.def.h
---- 01_dwm-4.7_maximize/config.def.h	2008-12-03 21:09:29.000000000 +0100
-+++ 02_dwm-4.7_workspace/config.def.h	2008-12-03 21:09:29.000000000 +0100
+--- 01_dwm-4.7_maximize/config.def.h	2010-02-22 19:54:44.000000000 +0100
++++ 02_dwm-4.7_workspace/config.def.h	2010-02-22 19:54:44.000000000 +0100
 @@ -11,16 +11,19 @@
  #define SELBGCOLOR		"#0066ff"
  #define SELFGCOLOR		"#ffffff"
@@ -119,9 +119,17 @@ diff -Narup 01_dwm-4.7_maximize/config.def.h 02_dwm-4.7_workspace/config.def.h
  	{ MODKEY|ShiftMask,		XK_q,		quit,		NULL },
  };
 diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
---- 01_dwm-4.7_maximize/dwm.c	2008-12-03 21:09:29.000000000 +0100
-+++ 02_dwm-4.7_workspace/dwm.c	2008-12-03 21:12:46.000000000 +0100
-@@ -65,9 +65,8 @@ struct Client {
+--- 01_dwm-4.7_maximize/dwm.c	2010-02-22 19:54:44.000000000 +0100
++++ 02_dwm-4.7_workspace/dwm.c	2010-02-22 19:56:41.000000000 +0100
+@@ -45,7 +45,6 @@
+ #define BUTTONMASK		(ButtonPressMask | ButtonReleaseMask)
+ #define CLEANMASK(mask)		(mask & ~(numlockmask | LockMask))
+ #define LENGTH(x)		(sizeof x / sizeof x[0])
+-#define MAXTAGLEN		16
+ #define MOUSEMASK		(BUTTONMASK | PointerMotionMask)
+ 
+ 
+@@ -65,9 +64,8 @@ struct Client {
  	int basew, baseh, incw, inch, maxw, maxh, minw, minh;
  	int minax, maxax, minay, maxay;
  	long flags;
@@ -132,7 +140,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  	Client *next;
  	Client *prev;
  	Client *snext;
-@@ -103,16 +102,16 @@ typedef struct {
+@@ -103,16 +101,16 @@ typedef struct {
  
  typedef struct {
  	const char *prop;
@@ -151,7 +159,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  void applyrules(Client *c);
  void arrange(void);
  void attach(Client *c);
-@@ -131,7 +130,6 @@ void detachstack(Client *c);
+@@ -131,7 +129,6 @@ void detachstack(Client *c);
  void drawbar(void);
  void drawsquare(Bool filled, Bool empty, unsigned long col[ColLast]);
  void drawtext(const char *text, unsigned long col[ColLast]);
@@ -159,7 +167,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  void enternotify(XEvent *e);
  void eprint(const char *errstr, ...);
  void expose(XEvent *e);
-@@ -146,9 +144,7 @@ long getstate(Window w);
+@@ -146,9 +143,7 @@ long getstate(Window w);
  Bool gettextprop(Window w, Atom atom, char *text, unsigned int size);
  void grabbuttons(Client *c, Bool focused);
  void grabkeys(void);
@@ -169,7 +177,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  Bool isprotodel(Client *c);
  Bool isvisible(Client *c);
  void keypress(XEvent *e);
-@@ -157,9 +153,14 @@ void leavenotify(XEvent *e);
+@@ -157,9 +152,14 @@ void leavenotify(XEvent *e);
  void manage(Window w, XWindowAttributes *wa);
  void mappingnotify(XEvent *e);
  void maprequest(XEvent *e);
@@ -185,7 +193,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  void quit(const char *arg);
  void resize(Client *c, int x, int y, int w, int h, Bool sizehints);
  void resizemouse(Client *c);
-@@ -171,23 +172,22 @@ void setlayout(const char *arg);
+@@ -171,23 +171,22 @@ void setlayout(const char *arg);
  void setmwfact(const char *arg);
  void setup(void);
  void spawn(const char *arg);
@@ -212,7 +220,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  int xerror(Display *dpy, XErrorEvent *ee);
  int xerrordummy(Display *dsply, XErrorEvent *ee);
  int xerrorstart(Display *dsply, XErrorEvent *ee);
-@@ -200,7 +200,9 @@ int screen, sx, sy, sw, sh, wax, way, wa
+@@ -200,7 +199,9 @@ int screen, sx, sy, sw, sh, wax, way, wa
  int (*xerrorxlib)(Display *, XErrorEvent *);
  unsigned int bh, bpos;
  unsigned int blw = 0;
@@ -222,7 +230,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  void (*handler[LASTEvent]) (XEvent *) = {
  	[ButtonPress] = buttonpress,
  	[ConfigureRequest] = configurerequest,
-@@ -235,15 +237,16 @@ Regs *regs = NULL;
+@@ -235,15 +236,16 @@ Regs *regs = NULL;
  /* configuration, allows nested code to access above variables */
  #include "config.h"
  
@@ -242,7 +250,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  	XClassHint ch = { 0 };
  
  	/* rule matching */
-@@ -254,19 +257,13 @@ applyrules(Client *c) {
+@@ -254,19 +256,13 @@ applyrules(Client *c) {
  	for(i = 0; i < LENGTH(rules); i++)
  		if(regs[i].propregex && !regexec(regs[i].propregex, buf, 1, &tmp, 0)) {
  			c->isfloating = rules[i].isfloating;
@@ -264,7 +272,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  }
  
  void
-@@ -307,32 +304,31 @@ ban(Client *c) {
+@@ -307,32 +303,31 @@ ban(Client *c) {
  
  void
  buttonpress(XEvent *e) {
@@ -315,7 +323,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  	}
  	else if((c = getclient(ev->window))) {
  		focus(c);
-@@ -415,13 +411,6 @@ compileregs(void) {
+@@ -415,13 +410,6 @@ compileregs(void) {
  			else
  				regs[i].propregex = reg;
  		}
@@ -329,7 +337,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  	}
  }
  
-@@ -533,21 +522,12 @@ detachstack(Client *c) {
+@@ -533,21 +521,12 @@ detachstack(Client *c) {
  
  void
  drawbar(void) {
@@ -355,7 +363,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  	dc.w = blw;
  	drawtext(layout->symbol, dc.norm);
  	x = dc.x + dc.w;
-@@ -869,14 +849,6 @@ grabkeys(void)  {
+@@ -869,14 +848,6 @@ grabkeys(void)  {
  	}
  }
  
@@ -370,7 +378,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  void
  initfont(const char *fontstr) {
  	char *def, **missing;
-@@ -920,16 +892,6 @@ initfont(const char *fontstr) {
+@@ -920,16 +891,6 @@ initfont(const char *fontstr) {
  }
  
  Bool
@@ -387,7 +395,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  isprotodel(Client *c) {
  	int i, n;
  	Atom *protocols;
-@@ -946,12 +908,7 @@ isprotodel(Client *c) {
+@@ -946,12 +907,7 @@ isprotodel(Client *c) {
  
  Bool
  isvisible(Client *c) {
@@ -401,7 +409,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  }
  
  void
-@@ -1008,8 +965,8 @@ manage(Window w, XWindowAttributes *wa) 
+@@ -1008,8 +964,8 @@ manage(Window w, XWindowAttributes *wa) 
  	XWindowChanges wc;
  
  	c = emallocz(sizeof(Client));
@@ -411,7 +419,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  	c->x = wa->x;
  	c->y = wa->y;
  	c->w = wa->width;
-@@ -1041,8 +998,6 @@ manage(Window w, XWindowAttributes *wa) 
+@@ -1041,8 +997,6 @@ manage(Window w, XWindowAttributes *wa) 
  	updatetitle(c);
  	if((rettrans = XGetTransientForHint(dpy, w, &trans) == Success))
  		for(t = clients; t && t->win != trans; t = t->next);
@@ -420,7 +428,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  	applyrules(c);
  	if(!c->isfloating)
  		c->isfloating = (rettrans == Success) || c->isfixed;
-@@ -1480,8 +1435,7 @@ setup(void) {
+@@ -1480,8 +1434,7 @@ setup(void) {
  	/* grab keys */
  	grabkeys();
  
@@ -430,7 +438,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  	compileregs();
  
  	/* init appearance */
-@@ -1524,6 +1478,12 @@ setup(void) {
+@@ -1524,6 +1477,12 @@ setup(void) {
  	/* multihead support */
  	selscreen = XQueryPointer(dpy, root, &w, &w, &d, &d, &d, &d, &mask);
  
@@ -443,7 +451,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  }
  
  void
-@@ -1551,15 +1511,27 @@ spawn(const char *arg) {
+@@ -1551,15 +1510,27 @@ spawn(const char *arg) {
  }
  
  void
@@ -479,7 +487,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  }
  
  unsigned int
-@@ -1671,28 +1643,73 @@ togglemax(const char *arg) {
+@@ -1671,28 +1642,73 @@ togglemax(const char *arg) {
  }
  
  void
@@ -568,7 +576,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  	arrange();
  }
  
-@@ -1719,7 +1736,6 @@ unmanage(Client *c) {
+@@ -1719,7 +1735,6 @@ unmanage(Client *c) {
  		focus(NULL);
  	XUngrabButton(dpy, AnyButton, AnyModifier, c->win);
  	setclientstate(c, WithdrawnState);
@@ -576,7 +584,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  	free(c);
  	XSync(dpy, False);
  	XSetErrorHandler(xerror);
-@@ -1853,24 +1869,16 @@ xerrorstart(Display *dsply, XErrorEvent 
+@@ -1853,24 +1868,16 @@ xerrorstart(Display *dsply, XErrorEvent 
  }
  
  void
@@ -610,7 +618,7 @@ diff -Narup 01_dwm-4.7_maximize/dwm.c 02_dwm-4.7_workspace/dwm.c
  }
  
  void
-@@ -1904,6 +1912,7 @@ main(int argc, char *argv[]) {
+@@ -1904,6 +1911,7 @@ main(int argc, char *argv[]) {
  
  	checkotherwm();
  	setup();
