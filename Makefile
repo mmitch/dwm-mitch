@@ -1,4 +1,4 @@
-VERSION = 3.6
+VERSION = 3.7+git
 DWM_VERSION = 4.7
 DMENU_VERSION = 4.0
 PREFIX = /usr/local
