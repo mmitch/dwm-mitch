@@ -1,0 +1,18 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: floating zoom window error
+desc: when borders are active, zooming a floating window will offset the window by bordersize pixels to the right and down
+type: :bugfix
+component: dwm-mitch
+release: "3.7"
+reporter: Christian Garbs <mitch@cgarbs.de>
+status: :unstarted
+disposition: 
+creation_time: 2010-05-15 18:46:16.248417 Z
+references: []
+
+id: 8b114e29b4fd3352f61b922f7057edb0a1e26bb3
+log_events: 
+- - 2010-05-15 18:46:16.943750 Z
+  - Christian Garbs <mitch@cgarbs.de>
+  - created
+  - ""
