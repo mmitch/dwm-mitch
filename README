@@ -133,7 +133,3 @@ Included DMENU patches:
 
 
  (optional: personal configuration settings)
-  * dmenu_personal_configuration.mitch.diff
-    written by: Christian Garbs <mitch@cgarbs.de>
-  * dmenu_personal_configuration.andy.diff
-    written by: Andreas Geisenhainer <psycorama@opensecure.de>
