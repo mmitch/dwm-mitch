@@ -1,6 +1,7 @@
 #!/bin/bash
 cachefile=~/.dmenu-cache
 histfile=~/.dmenu-history
+HISTSIZE=20
 
 if [ "$1" = "--help" ]; then
 	echo "dwm-choose [--clearcache|--clearhistory|--createcache|--help]";
@@ -49,7 +50,7 @@ fi
 		seen["$LINE"]=1
 	    fi
 	fi
-    done ) > "$histfile.new"
+    done ) | head -n $HISTSIZE > "$histfile.new"
 mv "$histfile.new" "$histfile"
 
 # run chosen command
