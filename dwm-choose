@@ -34,7 +34,23 @@ fi
 
 # run dmenu
 if [ "$DMENU_COLORS" ] ; then
-    exec $(dmenu -hist "$histfile" $DMENU_COLORS < "$cachefile")
+    COMMAND=$(cat "$histfile" "$cachefile" | dmenu $DMENU_COLORS)
 else
-    exec $(dmenu -hist "$histfile" < "$cachefile")
+    COMMAND=$(cat "$histfile" "$cachefile" | dmenu)
 fi
+
+# prepend COMMAND to history while removing duplicates
+# needs bash > v4.0
+# this filter is equivalent to:  perl -ne 'print $_ unless $a{$_}++;'
+( echo "$COMMAND"; cat "$histfile") | ( declare -A seen; while read -r LINE; do \
+    if [[ -n "$LINE" ]] ; then
+	    if [[ -z ${seen["$LINE"]} ]] ; then
+		echo "$LINE"
+		seen["$LINE"]=1
+	    fi
+	fi
+    done ) > "$histfile.new"
+mv "$histfile.new" "$histfile"
+
+# run chosen command
+exec $COMMAND
