@@ -11,8 +11,10 @@ behave like my beloved wmii-2.
 The included file "dwm-mitch" is a start script that initializes a
 dmenu-cache, starts a loop for the status line (showing current time
 and system load) and runs dwm.  If it finds an executable file in
-"$HOME/.dwm-status", it will be run and used as input for the dwm
-status line instead of the default status line.
+"$HOME/.dwm-status", it will be run for status line updates instead.
+To update the status line, change the title of the X root window,
+e.g. call "xsetroot -name $content" regularly.  See "dwm-mitch" for
+an example.
 
 The environment variable DMENU_COLORS is used for changing the
 colors of dmenu on the dwm-choose script.  Set it like this:
@@ -103,6 +105,11 @@ Included DWM patches:
     add Xinerama support
     written by: Christian Garbs <mitch@cgarbs.de>
 
+ *  12_patch_dwm_mitch_xsetroot.diff
+    read status line from X root window instead of stdin
+    use "xsetroot -name $foo" to update
+    written by: Christian Garbs <mitch@cgarbs.de>
+
 
  (optional: personal configuration settings)
   * dwm_personal_configuration.mitch.diff
@@ -115,29 +122,14 @@ Included DWM patches:
 Included DMENU patches:
 
 
- *  00_patch_dmenu_robmanea_history.diff
-    add a history file to dmenu
-    written by: Rob Manea <rob.manea@googlemail.com>
-    (changed to apply against current dmenu version)
-
-
- *  01_patch_dmenu_mitch_fixemptylines.diff
-    fix empty lines in dmenu history
-    written by: Christian Garbs <mitch@cgarbs.de>
-
-
- *  02_patch_dmenu_mitch_utf8widechars.diff
+ *  00_patch_dmenu_mitch_utf8widechars.diff
     fix display of wide characters
     written by: Christian Garbs <mitch@cgarbs.de>
 
 
- *  03_patch_dmenu_mitch_patchversion.diff
+ *  01_patch_dmenu_mitch_patchversion.diff
     add dmenu-mitch patchlevel to dmenu version
     written by: Christian Garbs <mitch@cgarbs.de>
 
 
  (optional: personal configuration settings)
-  * dmenu_personal_configuration.mitch.diff
-    written by: Christian Garbs <mitch@cgarbs.de>
-  * dmenu_personal_configuration.andy.diff
-    written by: Andreas Geisenhainer <psycorama@opensecure.de>

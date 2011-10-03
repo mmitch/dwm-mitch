@@ -1,0 +1,150 @@
+diff -Narup 11_dwm-4.7_xinerama//dwm.c 12_dwm-4.7_xsetroot//dwm.c
+--- 11_dwm-4.7_xinerama//dwm.c	2011-10-03 18:51:32.450225219 +0200
++++ 12_dwm-4.7_xsetroot//dwm.c	2011-10-03 18:53:24.289483704 +0200
+@@ -6,12 +6,10 @@
+  * events about window (dis-)appearance.  Only one X connection at a time is
+  * allowed to select for this event mask.
+  *
+- * Calls to fetch an X event from the event queue are blocking.  Due reading
+- * status text from standard input, a select()-driven main loop has been
+- * implemented which selects for reads on the X connection and STDIN_FILENO to
+- * handle all data smoothly. The event handlers of dwm are organized in an
+- * array which is accessed whenever a new event has been fetched. This allows
+- * event dispatching in O(1) time.
++ * Calls to fetch an X event from the event queue are blocking. The
++ * event handlers of dwm are organized in an array which is accessed
++ * whenever a new event has been fetched. This allows event
++ * dispatching in O(1) time.
+  *
+  * Each child of the root window is called a client, except windows which have
+  * set the override_redirect flag.  Clients are organized in a global
+@@ -188,6 +186,7 @@ void unmanage(Client *c);
+ void unmapnotify(XEvent *e);
+ void updatebarpos(void);
+ void updatesizehints(Client *c);
++void updatestatus(void);
+ void updatetitle(Client *c);
+ void updatexinerama(void);
+ void updatewstext(int screen);
+@@ -227,7 +226,7 @@ void (*handler[LASTEvent]) (XEvent *) =
+ Atom wmatom[WMLast], netatom[NetLast];
+ Bool domwfact = True;
+ Bool dozoom = True;
+-Bool otherwm, readin;
++Bool otherwm;
+ Bool running = True;
+ Bool reload = False;
+ Bool selscreen = True;
+@@ -1127,9 +1126,11 @@ propertynotify(XEvent *e) {
+ 	Window trans;
+ 	XPropertyEvent *ev = &e->xproperty;
+ 
+-	if(ev->state == PropertyDelete)
++	if((ev->window == root) && (ev->atom == XA_WM_NAME))
++		updatestatus();
++	else if(ev->state == PropertyDelete)
+ 		return; /* ignore */
+-	if((c = getclient(ev->window))) {
++	else if((c = getclient(ev->window))) {
+ 		switch (ev->atom) {
+ 			default: break;
+ 			case XA_WM_TRANSIENT_FOR:
+@@ -1151,7 +1152,7 @@ propertynotify(XEvent *e) {
+ 
+ void
+ quit(const char *arg) {
+-	readin = running = False;
++	running = False;
+ }
+ 
+ 
+@@ -1292,61 +1293,12 @@ restack(void) {
+ 
+ void
+ run(void) {
+-	char *p;
+-	char buf[sizeof stext];
+-	fd_set rd;
+-	int r, xfd;
+-	unsigned int len, offset;
+ 	XEvent ev;
+-
+-	/* main event loop, also reads status text from stdin */
++	/* main event loop*/
+ 	XSync(dpy, False);
+-	xfd = ConnectionNumber(dpy);
+-	readin = True;
+-	offset = 0;
+-	len = sizeof stext - 1;
+-	buf[len] = stext[len] = '\0'; /* 0-terminator is never touched */
+-	while(running) {
+-		FD_ZERO(&rd);
+-		if(readin)
+-			FD_SET(STDIN_FILENO, &rd);
+-		FD_SET(xfd, &rd);
+-		if(select(xfd + 1, &rd, NULL, NULL, NULL) == -1) {
+-			if(errno == EINTR)
+-				continue;
+-			eprint("select failed\n");
+-		}
+-		if(FD_ISSET(STDIN_FILENO, &rd)) {
+-			switch((r = read(STDIN_FILENO, buf + offset, len - offset))) {
+-			case -1:
+-				strncpy(stext, strerror(errno), len);
+-				readin = False;
+-				break;
+-			case 0:
+-				strncpy(stext, "EOF", 4);
+-				readin = False;
+-				break;
+-			default:
+-				for(p = buf + offset; r > 0; p++, r--, offset++)
+-					if(*p == '\n' || *p == '\0') {
+-						*p = '\0';
+-						strncpy(stext, buf, len);
+-						p += r - 1; /* p is buf + offset + r - 1 */
+-						for(r = 0; *(p - r) && *(p - r) != '\n'; r++);
+-						offset = r;
+-						if(r)
+-							memmove(buf, p - r + 1, r);
+-						break;
+-					}
+-				break;
+-			}
+-			drawbar();
+-		}
+-		while(XPending(dpy)) {
+-			XNextEvent(dpy, &ev);
+-			if(handler[ev.type])
+-				(handler[ev.type])(&ev); /* call handler */
+-		}
++	while(running && !XNextEvent(dpy, &ev)) {
++		if(handler[ev.type])
++			(handler[ev.type])(&ev); /* call handler */
+ 	}
+ }
+ 
+@@ -1484,7 +1436,8 @@ setup(void) {
+ 
+ 	/* select for events */
+ 	wa.event_mask = SubstructureRedirectMask | SubstructureNotifyMask
+-		| EnterWindowMask | LeaveWindowMask | StructureNotifyMask;
++		| EnterWindowMask | LeaveWindowMask | StructureNotifyMask
++		| PropertyChangeMask;
+ 	wa.cursor = cursor[CurNormal];
+ 	XChangeWindowAttributes(dpy, root, CWEventMask | CWCursor, &wa);
+ 	XSelectInput(dpy, root, wa.event_mask);
+@@ -1992,6 +1945,13 @@ updatesizehints(Client *c) {
+ }
+ 
+ void
++updatestatus(void) {
++	if(!gettextprop(root, XA_WM_NAME, stext, sizeof(stext)))
++		strcpy(stext, "dwm-"VERSION);
++	drawbar();
++}
++
++void
+ updatetitle(Client *c) {
+ 	if(!gettextprop(c->win, netatom[NetWMName], c->name, sizeof c->name))
+ 		gettextprop(c->win, wmatom[WMName], c->name, sizeof c->name);

@@ -1,0 +1,13 @@
+diff -Narup 00_dmenu-4.4.1_utf8widechars//config.mk 01_dmenu-4.4.1_patchversion//config.mk
+--- 00_dmenu-4.4.1_utf8widechars//config.mk	2011-10-03 17:48:37.935492512 +0200
++++ 01_dmenu-4.4.1_patchversion//config.mk	2011-10-03 17:48:37.945492451 +0200
+@@ -1,6 +1,9 @@
+ # dmenu version
+ VERSION = 4.4.1
+ 
++# dwm-mitch patchlevel
++VERSION := ${VERSION}+${PATCHVERSION}
++
+ # paths
+ PREFIX = /usr/local
+ MANPREFIX = ${PREFIX}/share/man

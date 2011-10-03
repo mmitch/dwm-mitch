@@ -1,6 +1,6 @@
 VERSION = 3.7+git
 DWM_VERSION = 4.7
-DMENU_VERSION = 4.0
+DMENU_VERSION = 4.4.1
 PREFIX = /usr/local
 
 DWM = dwm-$(DWM_VERSION)
@@ -120,10 +120,14 @@ workspace-patch:
 
 workspace-personal:
 	@for PERSONAL in dwm_personal_configuration.*.diff; do \
-		mkdir -p `echo $${PERSONAL%%.diff} | sed "s/^dwm/99_dwm-$(DWM_VERSION)/"`; \
+		if [ -e $$PERSONAL ] ; then \
+			mkdir -p `echo $${PERSONAL%%.diff} | sed "s/^dwm/99_dwm-$(DWM_VERSION)/"`; \
+		fi ; \
 	done
 	@for PERSONAL in dmenu_personal_configuration.*.diff; do \
-		mkdir -p `echo $${PERSONAL%%.diff} | sed "s/^dmenu/99_dmenu-$(DMENU_VERSION)/"`; \
+		if [ -e $$PERSONAL ] ; then \
+			mkdir -p `echo $${PERSONAL%%.diff} | sed "s/^dmenu/99_dmenu-$(DMENU_VERSION)/"`; \
+		fi ; \
 	done
 
 workspace:	clean expand workspace-patch
@@ -131,14 +135,18 @@ workspace:	clean expand workspace-patch
 personal:	clean workspace-personal
 	DWM_PERSOCON= DMENU_PERSOCON= make patch
 	@for PERSONAL in dwm_personal_configuration.*.diff; do \
-		echo expanding $$PERSONAL:; \
-		TARGET=`echo $${PERSONAL%%.diff} | sed "s/^dwm/99_dwm-$(DWM_VERSION)/"`; \
-		cp $(DWM)/* $$TARGET/; \
-		patch -p1 -d $$TARGET < $$PERSONAL || exit 1; \
+		if [ -e $$PERSONAL ] ; then \
+			echo expanding $$PERSONAL:; \
+			TARGET=`echo $${PERSONAL%%.diff} | sed "s/^dwm/99_dwm-$(DWM_VERSION)/"`; \
+			cp $(DWM)/* $$TARGET/; \
+			patch -p1 -d $$TARGET < $$PERSONAL || exit 1; \
+		fi ; \
 	done
 	@for PERSONAL in dmenu_personal_configuration.*.diff; do \
-		echo expanding $$PERSONAL:; \
-		TARGET=`echo $${PERSONAL%%.diff} | sed "s/^dmenu/99_dmenu-$(DMENU_VERSION)/"`; \
-		cp $(DMENU)/* $$TARGET/; \
-		patch -p1 -d $$TARGET < $$PERSONAL || exit 1; \
+		if [ -e $$PERSONAL ] ; then \
+			echo expanding $$PERSONAL:; \
+			TARGET=`echo $${PERSONAL%%.diff} | sed "s/^dmenu/99_dmenu-$(DMENU_VERSION)/"`; \
+			cp $(DMENU)/* $$TARGET/; \
+			patch -p1 -d $$TARGET < $$PERSONAL || exit 1; \
+		fi ; \
 	done
