@@ -11,8 +11,10 @@ behave like my beloved wmii-2.
 The included file "dwm-mitch" is a start script that initializes a
 dmenu-cache, starts a loop for the status line (showing current time
 and system load) and runs dwm.  If it finds an executable file in
-"$HOME/.dwm-status", it will be run and used as input for the dwm
-status line instead of the default status line.
+"$HOME/.dwm-status", it will be run for status line updates instead.
+To update the status line, change the title of the X root window,
+e.g. call "xsetroot -name $content" regularly.  See "dwm-mitch" for
+an example.
 
 The environment variable DMENU_COLORS is used for changing the
 colors of dmenu on the dwm-choose script.  Set it like this:
@@ -101,6 +103,11 @@ Included DWM patches:
 
  *  11_patch_dwm_mitch_xinerama.diff
     add Xinerama support
+    written by: Christian Garbs <mitch@cgarbs.de>
+
+ *  12_patch_dwm_mitch_xsetroot.diff
+    read status line from X root window instead of stdin
+    use "xsetroot -name $foo" to update
     written by: Christian Garbs <mitch@cgarbs.de>
 
 

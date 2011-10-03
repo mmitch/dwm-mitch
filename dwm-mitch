@@ -8,13 +8,16 @@ ${DWMCHOOSE} --clearcache
 ${DWMCHOOSE} --createcache &
 
 if [ -x "${STATUS_SCRIPT}" ] ; then
-	# personalized status script
-	if [ $(( 0$(stat -c %a "${STATUS_SCRIPT}") & 0022 )) -gt 0 ] ; then
-		exec ${DWM} < <(echo "${STATUS_SCRIPT} is insecure: writeable by group or other"; sleep 3600)
-	else
-		exec ${DWM} < <(exec "${STATUS_SCRIPT}")
-	fi
+    # personalized status script
+    if [ $(( 0$(stat -c %a "${STATUS_SCRIPT}") & 0022 )) -gt 0 ] ; then
+        # sleep is a dirty little workaround because dwm only listens to changes after it has been started
+	(sleep 10; xsetroot -name "${STATUS_SCRIPT} is insecure: writeable by group or other") &
+    else
+	(exec "${STATUS_SCRIPT}") &
+    fi
 else
-	# default status with time and load
-	exec ${DWM} < <(while sleep 2; do echo $(/bin/date +%H:%M:%S) $(cut -d ' ' -f -3 /proc/loadavg); done)
+    # default status with time and load
+    (while xsetroot -name "$(/bin/date +%H:%M:%S) $(cut -d ' ' -f -3 /proc/loadavg)"; do sleep 2; done) &
 fi
+
+exec ${DWM}
