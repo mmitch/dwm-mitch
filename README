@@ -115,23 +115,12 @@ Included DWM patches:
 Included DMENU patches:
 
 
- *  00_patch_dmenu_robmanea_history.diff
-    add a history file to dmenu
-    written by: Rob Manea <rob.manea@googlemail.com>
-    (changed to apply against current dmenu version)
-
-
- *  01_patch_dmenu_mitch_fixemptylines.diff
-    fix empty lines in dmenu history
-    written by: Christian Garbs <mitch@cgarbs.de>
-
-
- *  02_patch_dmenu_mitch_utf8widechars.diff
+ *  00_patch_dmenu_mitch_utf8widechars.diff
     fix display of wide characters
     written by: Christian Garbs <mitch@cgarbs.de>
 
 
- *  03_patch_dmenu_mitch_patchversion.diff
+ *  01_patch_dmenu_mitch_patchversion.diff
     add dmenu-mitch patchlevel to dmenu version
     written by: Christian Garbs <mitch@cgarbs.de>
 
