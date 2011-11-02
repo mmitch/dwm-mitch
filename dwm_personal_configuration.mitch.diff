@@ -1,6 +1,6 @@
 diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.mitch/config.def.h
 --- dwm-4.7/config.def.h	2010-07-19 11:23:47.000000000 +0200
-+++ 99_dwm-4.7_personal_configuration.mitch/config.def.h	2010-07-19 11:24:03.000000000 +0200
++++ 99_dwm-4.7_personal_configuration.mitch/config.def.h	2011-11-02 21:53:45.000000000 +0100
 @@ -2,102 +2,107 @@
  
  /* appearance */
@@ -168,15 +168,15 @@ diff -Narup dwm-4.7/config.def.h 99_dwm-4.7_personal_configuration.mitch/config.
 +	{ MODKEY|ControlMask,		XK_q,		pushstack,	NULL },
 +	{ MODKEY|ControlMask,		XK_q,		viewrel,	"-1" },
 +	{ MODKEY|ControlMask,		XK_q,		popstack,	NULL },
-+/* Thinkpad special keys mapped to F33/F34 */
-+	{ 0,				XK_F33,		viewrel,	"1" },
-+	{ 0,				XK_F34,		viewrel,	"-1" },
-+	{ ControlMask,			XK_F33,		pushstack,	NULL },
-+	{ ControlMask,			XK_F33,		viewrel,	"1" },
-+	{ ControlMask,			XK_F33,		popstack,	NULL },
-+	{ ControlMask,			XK_F34,		pushstack,	NULL },
-+	{ ControlMask,			XK_F34,		viewrel,	"-1" },
-+	{ ControlMask,			XK_F34,		popstack,	NULL },
++/* Thinkpad special keys XF86Forward/XF86Back */
++	{ 0,				0x1008ff27,	viewrel,	"1" },
++	{ 0,				0x1008ff26,	viewrel,	"-1" },
++	{ ControlMask,			0x1008ff27,	pushstack,	NULL },
++	{ ControlMask,			0x1008ff27,	viewrel,	"1" },
++	{ ControlMask,			0x1008ff27,	popstack,	NULL },
++	{ ControlMask,			0x1008ff26,	pushstack,	NULL },
++	{ ControlMask,			0x1008ff26,	viewrel,	"-1" },
++	{ ControlMask,			0x1008ff26,	popstack,	NULL },
  };
 diff -Narup dwm-4.7/config.mk 99_dwm-4.7_personal_configuration.mitch/config.mk
 --- dwm-4.7/config.mk	2010-07-19 11:23:47.000000000 +0200
