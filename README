@@ -110,6 +110,10 @@ Included DWM patches:
     use "xsetroot -name $foo" to update
     written by: Christian Garbs <mitch@cgarbs.de>
 
+ *  13_patch_dwm_mitch_fixkeygrab.diff
+    skip keybindings to unknown symbols
+    written by: Christian Garbs <mitch@cgarbs.de>
+
 
  (optional: personal configuration settings)
   * dwm_personal_configuration.mitch.diff
