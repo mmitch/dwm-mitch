@@ -105,13 +105,20 @@ Included DWM patches:
     add Xinerama support
     written by: Christian Garbs <mitch@cgarbs.de>
 
+
  *  12_patch_dwm_mitch_xsetroot.diff
     read status line from X root window instead of stdin
     use "xsetroot -name $foo" to update
     written by: Christian Garbs <mitch@cgarbs.de>
 
+
  *  13_patch_dwm_mitch_fixkeygrab.diff
     skip keybindings to unknown symbols
+    written by: Christian Garbs <mitch@cgarbs.de>
+
+
+ *  14_patch_dwm_mitch_warpscreen.diff
+    move mouse pointer via keyboard across Xinerama screens
     written by: Christian Garbs <mitch@cgarbs.de>
 
 
@@ -137,3 +144,4 @@ Included DMENU patches:
 
 
  (optional: personal configuration settings)
+  * currently none
