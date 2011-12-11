@@ -1,6 +1,6 @@
 diff -Narup 13_dwm-4.7_fixkeygrab//config.def.h 14_dwm-4.7_warpscreen//config.def.h
---- 13_dwm-4.7_fixkeygrab//config.def.h	2011-12-10 11:41:18.159929423 +0100
-+++ 14_dwm-4.7_warpscreen//config.def.h	2011-12-10 11:41:18.175929368 +0100
+--- 13_dwm-4.7_fixkeygrab//config.def.h	2011-12-11 13:27:23.001133316 +0100
++++ 14_dwm-4.7_warpscreen//config.def.h	2011-12-11 13:27:23.021132969 +0100
 @@ -100,4 +100,6 @@ Key keys[] = {
  	{ MODKEY|ShiftMask,		XK_h,		viewrel,	"-1" },
  	{ MODKEY|ShiftMask,		XK_h,		popstack,	NULL },
@@ -9,8 +9,8 @@ diff -Narup 13_dwm-4.7_fixkeygrab//config.def.h 14_dwm-4.7_warpscreen//config.de
 +	{ MODKEY|ControlMask,		XK_h,		warpmouserel,	"-1" },
  };
 diff -Narup 13_dwm-4.7_fixkeygrab//dwm.c 14_dwm-4.7_warpscreen//dwm.c
---- 13_dwm-4.7_fixkeygrab//dwm.c	2011-12-10 11:41:18.171929380 +0100
-+++ 14_dwm-4.7_warpscreen//dwm.c	2011-12-10 12:49:29.880332699 +0100
+--- 13_dwm-4.7_fixkeygrab//dwm.c	2011-12-11 13:27:23.005133247 +0100
++++ 14_dwm-4.7_warpscreen//dwm.c	2011-12-11 13:29:15.659168178 +0100
 @@ -192,6 +192,8 @@ void updatexinerama(void);
  void updatewstext(int screen);
  void view(const char *arg);
@@ -20,7 +20,7 @@ diff -Narup 13_dwm-4.7_fixkeygrab//dwm.c 14_dwm-4.7_warpscreen//dwm.c
  void wscount(const char *arg);
  unsigned int whichscreen(void);
  int xerror(Display *dpy, XErrorEvent *ee);
-@@ -1586,6 +1588,39 @@ viewrel(const char *arg) {
+@@ -1586,6 +1588,40 @@ viewrel(const char *arg) {
          arrange();
  }
  
@@ -55,12 +55,13 @@ diff -Narup 13_dwm-4.7_fixkeygrab//dwm.c 14_dwm-4.7_warpscreen//dwm.c
 +                y = sh[target];
 +
 +        XWarpPointer(dpy, None, root, 0, 0, 0, 0, x + sx[target], y + sy[target]);
++	focus(NULL);
 +}
 +
  unsigned int
  textnw(const char *text, unsigned int len) {
  	XRectangle r;
-@@ -1750,6 +1785,30 @@ view(const char *arg) {
+@@ -1750,6 +1786,31 @@ view(const char *arg) {
  }
  
  void
@@ -85,6 +86,7 @@ diff -Narup 13_dwm-4.7_fixkeygrab//dwm.c 14_dwm-4.7_warpscreen//dwm.c
 +                y = sh[target];
 +
 +        XWarpPointer(dpy, None, root, 0, 0, 0, 0, x + sx[target], y + sy[target]);
++	focus(NULL);
 +}
 +
 +void
