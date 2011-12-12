@@ -1,6 +1,6 @@
-diff -Narup 10_dwm-4.7_tileleft/bstack.c 11_dwm-4.7_xinerama/bstack.c
---- 10_dwm-4.7_tileleft/bstack.c	2010-02-22 20:03:42.000000000 +0100
-+++ 11_dwm-4.7_xinerama/bstack.c	2010-02-22 20:03:42.000000000 +0100
+diff -Narup 10_dwm-4.7_tileleft//bstack.c 11_dwm-4.7_xinerama//bstack.c
+--- 10_dwm-4.7_tileleft//bstack.c	2011-12-12 15:11:58.172877697 +0100
++++ 11_dwm-4.7_xinerama//bstack.c	2011-12-12 15:13:55.944879052 +0100
 @@ -1,39 +1,39 @@
  void
 -bstack(void) {
@@ -72,9 +72,9 @@ diff -Narup 10_dwm-4.7_tileleft/bstack.c 11_dwm-4.7_xinerama/bstack.c
 +		    nx = c->x + c->w + 2 * c->border;
      }
  }
-diff -Narup 10_dwm-4.7_tileleft/config.def.h 11_dwm-4.7_xinerama/config.def.h
---- 10_dwm-4.7_tileleft/config.def.h	2010-02-22 20:03:42.000000000 +0100
-+++ 11_dwm-4.7_xinerama/config.def.h	2010-02-22 20:03:42.000000000 +0100
+diff -Narup 10_dwm-4.7_tileleft//config.def.h 11_dwm-4.7_xinerama//config.def.h
+--- 10_dwm-4.7_tileleft//config.def.h	2011-12-12 15:11:58.176879147 +0100
++++ 11_dwm-4.7_xinerama//config.def.h	2011-12-12 15:13:55.944879052 +0100
 @@ -25,6 +25,10 @@ Rule rules[] = {
  #define INITIALWORKSPACES	 1
  #define MAXWORKSPACES		99
@@ -86,9 +86,9 @@ diff -Narup 10_dwm-4.7_tileleft/config.def.h 11_dwm-4.7_xinerama/config.def.h
  
  /* layout(s) */
  #define MWFACT			0.6	/* master width factor [0.1 .. 0.9] */
-diff -Narup 10_dwm-4.7_tileleft/config.mk 11_dwm-4.7_xinerama/config.mk
---- 10_dwm-4.7_tileleft/config.mk	2010-02-22 20:03:42.000000000 +0100
-+++ 11_dwm-4.7_xinerama/config.mk	2010-02-22 20:03:42.000000000 +0100
+diff -Narup 10_dwm-4.7_tileleft//config.mk 11_dwm-4.7_xinerama//config.mk
+--- 10_dwm-4.7_tileleft//config.mk	2011-12-12 15:11:58.172877697 +0100
++++ 11_dwm-4.7_xinerama//config.mk	2011-12-12 15:13:55.944879052 +0100
 @@ -15,7 +15,7 @@ X11LIB = /usr/X11R6/lib
  
  # includes and libs
@@ -98,9 +98,9 @@ diff -Narup 10_dwm-4.7_tileleft/config.mk 11_dwm-4.7_xinerama/config.mk
  
  # flags
  CFLAGS = -Os ${INCS} -DVERSION=\"${VERSION}\"
-diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
---- 10_dwm-4.7_tileleft/dwm.c	2010-02-22 20:03:42.000000000 +0100
-+++ 11_dwm-4.7_xinerama/dwm.c	2010-02-22 20:47:59.000000000 +0100
+diff -Narup 10_dwm-4.7_tileleft//dwm.c 11_dwm-4.7_xinerama//dwm.c
+--- 10_dwm-4.7_tileleft//dwm.c	2011-12-12 15:11:58.180876965 +0100
++++ 11_dwm-4.7_xinerama//dwm.c	2011-12-12 15:13:55.948876031 +0100
 @@ -41,6 +41,7 @@
  #include <X11/Xlib.h>
  #include <X11/Xproto.h>
@@ -554,7 +554,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  }
  
  void
-@@ -955,29 +984,31 @@ manage(Window w, XWindowAttributes *wa) 
+@@ -955,29 +984,31 @@ manage(Window w, XWindowAttributes *wa)
  	Client *c, *t = NULL;
  	Window trans;
  	Status rettrans;
@@ -1240,7 +1240,7 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  	}
  	XSync(dpy, False);
  	while(XCheckMaskEvent(dpy, EnterWindowMask, &ev));
-@@ -1944,11 +2032,12 @@ xerrorstart(Display *dsply, XErrorEvent 
+@@ -1944,11 +2032,12 @@ xerrorstart(Display *dsply, XErrorEvent
  void
  moveto(const char *arg) {
  	unsigned int i;
@@ -1329,16 +1329,17 @@ diff -Narup 10_dwm-4.7_tileleft/dwm.c 11_dwm-4.7_xinerama/dwm.c
  	drawbar();
  	scan();
  	run();
-diff -Narup 10_dwm-4.7_tileleft/maximize.c 11_dwm-4.7_xinerama/maximize.c
---- 10_dwm-4.7_tileleft/maximize.c	2010-02-22 20:03:42.000000000 +0100
-+++ 11_dwm-4.7_xinerama/maximize.c	2010-02-22 20:03:42.000000000 +0100
-@@ -1,15 +1,16 @@
+diff -Narup 10_dwm-4.7_tileleft//maximize.c 11_dwm-4.7_xinerama//maximize.c
+--- 10_dwm-4.7_tileleft//maximize.c	2011-12-12 15:14:18.336876327 +0100
++++ 11_dwm-4.7_xinerama//maximize.c	2011-12-12 15:13:55.948876031 +0100
+@@ -1,16 +1,17 @@
  void
 -maximize(void) {
 +maximize(unsigned int s) {
  	Client *c;
-         
--        for(c = clients; c; c = c->next)
+ 	
+	domwfact = dozoom = False;        
+         for(c = clients; c; c = c->next)
 -                if (isvisible(c)) {
 -                        unban(c);
 -                        if(! c->isfloating)
@@ -1346,7 +1347,6 @@ diff -Narup 10_dwm-4.7_tileleft/maximize.c 11_dwm-4.7_xinerama/maximize.c
 -                } else {
 -                        ban(c);
 -                }
-+	for(c = clients; c; c = c->next)
 +		if (c->screen == s)
 +			if (isvisible(c)) {
 +				unban(c);

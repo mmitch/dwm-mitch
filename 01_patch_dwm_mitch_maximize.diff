@@ -1,6 +1,6 @@
-diff -Narup 00_dwm-4.7_bstack/config.def.h 01_dwm-4.7_maximize/config.def.h
---- 00_dwm-4.7_bstack/config.def.h	2007-11-24 14:52:16.000000000 +0100
-+++ 01_dwm-4.7_maximize/config.def.h	2007-12-24 17:50:16.000000000 +0100
+diff -Narup 00_dwm-4.7_bstack//config.def.h 01_dwm-4.7_maximize//config.def.h
+--- 00_dwm-4.7_bstack//config.def.h	2011-12-12 15:05:02.488881215 +0100
++++ 01_dwm-4.7_maximize//config.def.h	2011-12-12 15:05:02.500873831 +0100
 @@ -27,11 +27,13 @@ Rule rules[] = {
  #define RESIZEHINTS		True	/* False - respect size hints in tiled resizals */
  #define SNAP			32	/* snap pixel */
@@ -15,14 +15,15 @@ diff -Narup 00_dwm-4.7_bstack/config.def.h 01_dwm-4.7_maximize/config.def.h
  };
  
  /* key definitions */
-diff -Narup 00_dwm-4.7_bstack/maximize.c 01_dwm-4.7_maximize/maximize.c
---- 00_dwm-4.7_bstack/maximize.c	1970-01-01 01:00:00.000000000 +0100
-+++ 01_dwm-4.7_maximize/maximize.c	2007-12-24 17:48:33.000000000 +0100
-@@ -0,0 +1,17 @@
+diff -Narup 00_dwm-4.7_bstack//maximize.c 01_dwm-4.7_maximize//maximize.c
+--- 00_dwm-4.7_bstack//maximize.c	1970-01-01 01:00:00.000000000 +0100
++++ 01_dwm-4.7_maximize//maximize.c	2011-12-12 15:05:58.468542613 +0100
+@@ -0,0 +1,18 @@
 +void
 +maximize(void) {
 +	Client *c;
-+        
++	
++	domwfact = dozoom = False;        
 +        for(c = clients; c; c = c->next)
 +                if (isvisible(c)) {
 +                        unban(c);
