@@ -194,7 +194,6 @@ void zoom(const char *arg);
 
 /* variables */
 char stext[256];
-double mwfact;
 int screen, sx, sy, sw, sh, wax, way, waw, wah;
 int (*xerrorxlib)(Display *, XErrorEvent *);
 unsigned int bh, bpos;
@@ -229,16 +228,20 @@ Client *stack = NULL;
 Cursor cursor[CurLast];
 Display *dpy;
 DC dc = {0};
-Layout *layout = NULL;
 Window barwin, root;
 Regs *regs = NULL;
+
+/* predefine variables depending on config.h */
+extern double mwfact[];
 
 /* configuration, allows nested code to access above variables */
 #include "config.h"
 
 /* variables depending on config.h */
-char wstext[MAXWSTEXTWIDTH];
+Layout *layout[MAXWORKSPACES];
+double mwfact[MAXWORKSPACES];
 unsigned int workspaces = INITIALWORKSPACES;
+char wstext[MAXWSTEXTWIDTH];
 
 /* function implementations */
 void
@@ -274,7 +277,7 @@ arrange(void) {
 			unban(c);
 		else
 			ban(c);
-	layout->arrange();
+	layout[selws-1]->arrange();
 	focus(NULL);
 	restack();
 }
@@ -334,20 +337,20 @@ buttonpress(XEvent *e) {
 		if(CLEANMASK(ev->state) != MODKEY)
 			return;
 		if(ev->button == Button1) {
-			if((layout->arrange == floating) || c->isfloating)
+			if((layout[selws-1]->arrange == floating) || c->isfloating)
 				restack();
 			else
 				togglefloating(NULL);
 			movemouse(c);
 		}
 		else if(ev->button == Button2) {
-			if((floating != layout->arrange) && c->isfloating)
+			if((floating != layout[selws-1]->arrange) && c->isfloating)
 				togglefloating(NULL);
 			else
 				zoom(NULL);
 		}
 		else if(ev->button == Button3 && !c->isfixed) {
-			if((floating == layout->arrange) || c->isfloating)
+			if((floating == layout[selws-1]->arrange) || c->isfloating)
 				restack();
 			else
 				togglefloating(NULL);
@@ -456,7 +459,7 @@ configurerequest(XEvent *e) {
 		c->ismax = False;
 		if(ev->value_mask & CWBorderWidth)
 			c->border = ev->border_width;
-		if(c->isfixed || c->isfloating || (floating == layout->arrange)) {
+		if(c->isfixed || c->isfloating || (floating == layout[selws-1]->arrange)) {
 			if(ev->value_mask & CWX)
 				c->x = ev->x;
 			if(ev->value_mask & CWY)
@@ -528,7 +531,7 @@ drawbar(void) {
 	drawtext(wstext, dc.norm);
 	dc.x = dc.w;
 	dc.w = blw;
-	drawtext(layout->symbol, dc.norm);
+	drawtext(layout[selws-1]->symbol, dc.norm);
 	x = dc.x + dc.w;
 	dc.w = textw(stext);
 	dc.x = sw - dc.w;
@@ -1227,9 +1230,9 @@ restack(void) {
 	drawbar();
 	if(!sel)
 		return;
-	if(sel->isfloating || (layout->arrange == floating))
+	if(sel->isfloating || (layout[selws-1]->arrange == floating))
 		XRaiseWindow(dpy, sel->win);
-	if(layout->arrange != floating) {
+	if(layout[selws-1]->arrange != floating) {
 		wc.stack_mode = Below;
 		wc.sibling = barwin;
 		if(!sel->isfloating) {
@@ -1347,8 +1350,8 @@ setlayout(const char *arg) {
 	unsigned int i;
 
 	if(!arg) {
-		if(++layout == &layouts[LENGTH(layouts)])
-			layout = &layouts[0];
+		if(++layout[selws-1] == &layouts[LENGTH(layouts)])
+			layout[selws-1] = &layouts[0];
 	}
 	else {
 		for(i = 0; i < LENGTH(layouts); i++)
@@ -1356,7 +1359,7 @@ setlayout(const char *arg) {
 				break;
 		if(i == LENGTH(layouts))
 			return;
-		layout = &layouts[i];
+		layout[selws-1] = &layouts[i];
 	}
 	if(sel)
 		arrange();
@@ -1372,16 +1375,16 @@ setmwfact(const char *arg) {
 		return;
 	/* arg handling, manipulate mwfact */
 	if(arg == NULL)
-		mwfact = MWFACT;
+		mwfact[selws-1] = MWFACT;
 	else if(sscanf(arg, "%lf", &delta) == 1) {
 		if(arg[0] == '+' || arg[0] == '-')
-			mwfact += delta;
+			mwfact[selws-1] += delta;
 		else
-			mwfact = delta;
-		if(mwfact < 0.1)
-			mwfact = 0.1;
-		else if(mwfact > 0.9)
-			mwfact = 0.9;
+			mwfact[selws-1] = delta;
+		if(mwfact[selws-1] < 0.1)
+			mwfact[selws-1] = 0.1;
+		else if(mwfact[selws-1] > 0.9)
+			mwfact[selws-1] = 0.9;
 	}
 	arrange();
 }
@@ -1448,8 +1451,10 @@ setup(void) {
 	dc.h = bh = dc.font.height + 2;
 
 	/* init layouts */
-	mwfact = MWFACT;
-	layout = &layouts[0];
+	for(i = 0; i < MAXWORKSPACES; i++) {
+		mwfact[i] = MWFACT;
+		layout[i] = &layouts[0];
+	}
 	for(blw = i = 0; i < LENGTH(layouts); i++) {
 		j = textw(layouts[i].symbol);
 		if(j > blw)
@@ -1559,7 +1564,7 @@ tile(void) {
 		n++;
 
 	/* window geoms */
-	mw = (n == 1) ? waw : mwfact * waw;
+	mw = (n == 1) ? waw : mwfact[selws-1] * waw;
 	th = (n > 1) ? wah / (n - 1) : 0;
 	if(n > 1 && th < bh)
 		th = wah;
@@ -1620,7 +1625,7 @@ togglemax(const char *arg) {
 	if(!sel || sel->isfixed)
 		return;
 	if((sel->ismax = !sel->ismax)) {
-		if((layout->arrange == floating) || sel->isfloating)
+		if((layout[selws-1]->arrange == floating) || sel->isfloating)
 			sel->wasfloating = True;
 		else {
 			togglefloating(NULL);
@@ -1676,6 +1681,7 @@ void
 wscount(const char *arg) {
 	Client *c;
 	int i;
+	unsigned int j;
 	
 	i = arg ? atoi(arg) : 0;
 	if (i == 0 )
@@ -1689,8 +1695,16 @@ wscount(const char *arg) {
 		for(c = clients; c; c = c->next)
 			if (c->workspace > selws)
 				c->workspace += i;
-		selws++; 
 		workspaces += i;
+		for(j = workspaces - 1; j >= selws + i; j--) {
+			layout[j] = layout[j-i];
+			mwfact[j] = mwfact[j-i];
+		}
+		for(j = 0; j < i; j++) {
+			layout[selws + j] = layout[selws - 1];
+			mwfact[selws + j] = mwfact[selws - 1];
+		}
+		selws++; 
 	}
 	else {
 		i = workspaces + i;
@@ -1703,6 +1717,10 @@ wscount(const char *arg) {
 				else if (c->workspace == selws) {
 					c->workspace = 0;
 				}
+			for(j = selws; j < workspaces; j++) {
+				layout[j-1] = layout[j];
+				mwfact[j-1] = mwfact[j];   
+			}
 			if (selws == workspaces)
 				selws--;
 			workspaces--;

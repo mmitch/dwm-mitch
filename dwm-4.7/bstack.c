@@ -7,7 +7,7 @@ bstack(void) {
     for(n = 0, c = nexttiled(clients); c; c = nexttiled(c->next))
         n++;
 
-    mh = (n == 1) ? wah : mwfact * wah;
+    mh = (n == 1) ? wah : mwfact[selws-1] * wah;
     tw = (n > 1) ? waw / (n - 1) : 0;
 
     nx = wax;
