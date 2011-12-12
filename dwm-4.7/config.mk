@@ -4,7 +4,7 @@ VERSION = 4.7
 # Customize below to fit your system
 
 # dwm-mitch patchlevel
-VERSION := ${VERSION}+${PATCHVERSION}
+VERSION := ${VERSION}+${PATCHVERSION}+pm
 
 # paths
 PREFIX = /usr/local
