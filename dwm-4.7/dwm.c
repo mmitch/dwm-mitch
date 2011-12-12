@@ -127,7 +127,6 @@ void destroynotify(XEvent *e);
 void detach(Client *c);
 void detachstack(Client *c);
 void drawbar(void);
-void drawsquare(Bool filled, Bool empty, unsigned long col[ColLast]);
 void drawtext(const char *text, unsigned long col[ColLast]);
 void enternotify(XEvent *e);
 void eprint(const char *errstr, ...);
@@ -544,34 +543,12 @@ drawbar(void) {
 		dc.x = x;
 		if(sel) {
 			drawtext(sel->name, dc.sel);
-			drawsquare(sel->ismax, sel->isfloating, dc.sel);
 		}
 		else
 			drawtext(NULL, dc.norm);
 	}
 	XCopyArea(dpy, dc.drawable, barwin, dc.gc, 0, 0, sw, bh, 0, 0);
 	XSync(dpy, False);
-}
-
-void
-drawsquare(Bool filled, Bool empty, unsigned long col[ColLast]) {
-	int x;
-	XGCValues gcv;
-	XRectangle r = { dc.x, dc.y, dc.w, dc.h };
-
-	gcv.foreground = col[ColFG];
-	XChangeGC(dpy, dc.gc, GCForeground, &gcv);
-	x = (dc.font.ascent + dc.font.descent + 2) / 4;
-	r.x = dc.x + 1;
-	r.y = dc.y + 1;
-	if(filled) {
-		r.width = r.height = x + 1;
-		XFillRectangles(dpy, dc.drawable, dc.gc, &r, 1);
-	}
-	else if(empty) {
-		r.width = r.height = x;
-		XDrawRectangles(dpy, dc.drawable, dc.gc, &r, 1);
-	}
 }
 
 void
