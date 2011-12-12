@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <signal.h>
 #include <sys/select.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -126,6 +127,7 @@ void configurerequest(XEvent *e);
 void destroynotify(XEvent *e);
 void detach(Client *c);
 void detachstack(Client *c);
+void doreload(void);
 void drawbar(void);
 void drawtext(const char *text, unsigned long col[ColLast]);
 void enternotify(XEvent *e);
@@ -169,6 +171,7 @@ void setclientstate(Client *c, long state);
 void setlayout(const char *arg);
 void setmwfact(const char *arg);
 void setup(void);
+void sigusr1(int notused);
 void spawn(const char *arg);
 unsigned int textnw(const char *text, unsigned int len);
 unsigned int textw(const char *text);
@@ -220,6 +223,7 @@ Bool domwfact = True;
 Bool dozoom = True;
 Bool otherwm, readin;
 Bool running = True;
+Bool reload = False;
 Bool selscreen = True;
 Client *clients = NULL;
 Client *sel = NULL;
@@ -229,6 +233,7 @@ Display *dpy;
 DC dc = {0};
 Window barwin, root;
 Regs *regs = NULL;
+char **cargv;
 
 /* predefine variables depending on config.h */
 extern double mwfact[];
@@ -376,7 +381,8 @@ checkotherwm(void) {
 
 void
 cleanup(void) {
-	close(STDIN_FILENO);
+	if (!reload)
+		close(STDIN_FILENO);
 	while(stack) {
 		unban(stack);
 		unmanage(stack);
@@ -519,6 +525,12 @@ detachstack(Client *c) {
 
 	for(tc=&stack; *tc && *tc != c; tc=&(*tc)->snext);
 	*tc = c->snext;
+}
+
+void
+doreload(void) {
+	execvp(cargv[0], cargv);
+	eprint("Can't exec: %s\n", strerror(errno));
 }
 
 void
@@ -1459,12 +1471,22 @@ setup(void) {
 	/* multihead support */
 	selscreen = XQueryPointer(dpy, root, &w, &w, &d, &d, &d, &d, &mask);
 
+	/* restart support */
+	if (signal(SIGUSR1, sigusr1) == SIG_ERR) 
+		eprint("Can't bind to signal USR1\n");
+
 	/* check initial parameters */
 	if (workspaces < 1)
 		workspaces = 1;
 	else if (workspaces > MAXWORKSPACES)
 		workspaces = MAXWORKSPACES;
 	
+}
+
+void
+sigusr1(int notused) {
+	quit(NULL);
+	reload = True;
 }
 
 void
@@ -1897,6 +1919,7 @@ main(int argc, char *argv[]) {
 		       "Jukka Salmi, Premysl Hruby, Szabolcs Nagy\n");
 	else if(argc != 1)
 		eprint("usage: dwm [-v]\n");
+	cargv = argv;
 
 	setlocale(LC_CTYPE, "");
 	if(!(dpy = XOpenDisplay(0)))
@@ -1913,5 +1936,7 @@ main(int argc, char *argv[]) {
 	cleanup();
 
 	XCloseDisplay(dpy);
+	if (reload)
+		doreload();
 	return 0;
 }
