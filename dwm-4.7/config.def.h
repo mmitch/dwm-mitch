@@ -27,11 +27,13 @@ Rule rules[] = {
 #define RESIZEHINTS		True	/* False - respect size hints in tiled resizals */
 #define SNAP			32	/* snap pixel */
 #include "bstack.c"
+#include "maximize.c"
 Layout layouts[] = {
 	/* symbol		function */
 	{ "[]=",		tile }, /* first entry is default */
 	{ "><>",		floating },
 	{ "TTT",		bstack },
+	{ "[ ]",		maximize },
 };
 
 /* key definitions */
