@@ -25,6 +25,10 @@ Rule rules[] = {
 #define INITIALWORKSPACES	 1
 #define MAXWORKSPACES		99
 #define MAXWSTEXTWIDTH		 6	/* must be 2*(strlen(MAXWORKSPACES)+1)  */
+#define MAXXINERAMASCREENS	 2
+
+/* ugly: depending on constants above but needed by layouts below */
+double mwfact[MAXXINERAMASCREENS][MAXWORKSPACES];
 
 /* layout(s) */
 #define MWFACT			0.6	/* master width factor [0.1 .. 0.9] */
