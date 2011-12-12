@@ -167,6 +167,7 @@ void resizemouse(Client *c);
 void restack(void);
 void run(void);
 void scan(void);
+void setborderbyfloat(Client *c, Bool configurewindow);
 void setclientstate(Client *c, long state);
 void setlayout(const char *arg);
 void setmwfact(const char *arg);
@@ -953,7 +954,6 @@ manage(Window w, XWindowAttributes *wa) {
 	Client *c, *t = NULL;
 	Window trans;
 	Status rettrans;
-	XWindowChanges wc;
 
 	c = emallocz(sizeof(Client));
 	c->win = w;
@@ -979,10 +979,7 @@ manage(Window w, XWindowAttributes *wa) {
 			c->y = way;
 		c->border = BORDERPX;
 	}
-	wc.border_width = c->border;
-	XConfigureWindow(dpy, w, CWBorderWidth, &wc);
 	XSetWindowBorder(dpy, w, dc.norm[ColBorder]);
-	configure(c); /* propagates border_width, if size doesn't change */
 	updatesizehints(c);
 	XSelectInput(dpy, w, EnterWindowMask | FocusChangeMask | PropertyChangeMask | StructureNotifyMask);
 	grabbuttons(c, False);
@@ -992,6 +989,7 @@ manage(Window w, XWindowAttributes *wa) {
 	applyrules(c);
 	if(!c->isfloating)
 		c->isfloating = (rettrans == Success) || c->isfixed;
+	setborderbyfloat(c, True);
 	attach(c);
 	attachstack(c);
 	XMoveResizeWindow(dpy, c->win, c->x, c->y, c->w, c->h); /* some windows require this */
@@ -1160,6 +1158,7 @@ resize(Client *c, int x, int y, int w, int h, Bool sizehints) {
 	if(y + h + 2 * c->border < sy)
 		y = sy;
 	if(c->x != x || c->y != y || c->w != w || c->h != h) {
+		setborderbyfloat(c, False);
 		c->x = wc.x = x;
 		c->y = wc.y = y;
 		c->w = wc.width = w;
@@ -1324,6 +1323,24 @@ scan(void) {
 	}
 	if(wins)
 		XFree(wins);
+}
+
+void
+setborderbyfloat(Client *c, Bool configurewindow) {
+	XWindowChanges wc;
+	unsigned int newborder;
+	
+	newborder = ((c->isfloating && !c->ismax) || (layout[selws-1]->arrange == floating)) ? FLOATBORDERPX : BORDERPX;
+	if (c->border == newborder)
+		return;
+	
+	c->border = newborder;
+	
+	if (!configurewindow)
+		return;
+	wc.border_width = c->border;
+	XConfigureWindow(dpy, c->win, CWBorderWidth, &wc);
+	configure(c);
 }
 
 void
@@ -1612,6 +1629,7 @@ togglefloating(const char *arg) {
 	if(!sel)
 		return;
 	sel->isfloating = !sel->isfloating;
+	setborderbyfloat(sel, True);
 	if(sel->isfloating)
 		resize(sel, sel->x, sel->y, sel->w, sel->h, True);
 	arrange();
@@ -1634,7 +1652,7 @@ togglemax(const char *arg) {
 		sel->ry = sel->y;
 		sel->rw = sel->w;
 		sel->rh = sel->h;
-		resize(sel, wax, way, waw - 2 * sel->border, wah - 2 * sel->border, True);
+		resize(sel, wax + sel->border, way + sel->border, waw - 2 * sel->border, wah - 2 * sel->border, True);
 	}
 	else {
 		resize(sel, sel->rx, sel->ry, sel->rw, sel->rh, True);

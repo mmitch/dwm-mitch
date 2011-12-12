@@ -3,6 +3,7 @@
 /* appearance */
 #define BARPOS			BarTop /* BarBot, BarOff */
 #define BORDERPX		1
+#define FLOATBORDERPX		1
 #define FONT			"-*-terminus-medium-*-*-*-*-*-*-*-*-*-*-*"
 #define NORMBORDERCOLOR		"#cccccc"
 #define NORMBGCOLOR		"#cccccc"
