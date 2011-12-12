@@ -35,6 +35,7 @@ Rule rules[] = {
 Layout layouts[] = {
 	/* symbol		function */
 	{ "[]=",		tile }, /* first entry is default */
+	{ "=[]",		tileleft },
 	{ "><>",		floating },
 	{ "TTT",		bstack },
 	{ "[ ]",		maximize },

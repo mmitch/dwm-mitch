@@ -177,6 +177,7 @@ void spawn(const char *arg);
 unsigned int textnw(const char *text, unsigned int len);
 unsigned int textw(const char *text);
 void tile(void);
+void tileleft(void);
 void togglebar(const char *arg);
 void togglefloating(const char *arg);
 void togglemax(const char *arg);
@@ -1596,9 +1597,54 @@ tile(void) {
 		}
 		else {  /* tile window */
 			if(i == 1) {
-				ny = way;
 				nx += mc->w + 2 * mc->border;
+				ny = way;
 				nw = waw - nx - 2 * c->border;
+			}
+			if(i + 1 == n) /* remainder */
+				nh = (way + wah) - ny - 2 * c->border;
+			else
+				nh = th - 2 * c->border;
+		}
+		resize(c, nx, ny, nw, nh, RESIZEHINTS);
+		if((RESIZEHINTS) && ((c->h < bh) || (c->h > nh) || (c->w < bh) || (c->w > nw)))
+			/* client doesn't accept size constraints */
+			resize(c, nx, ny, nw, nh, False);
+		if(n > 1 && th != wah)
+			ny = c->y + c->h + 2 * c->border;
+	}
+}
+
+void
+tileleft(void) {
+	unsigned int i, n, nx, ny, nw, nh, mw, th;
+	Client *c, *mc;
+
+	domwfact = dozoom = True;
+	for(n = 0, c = nexttiled(clients); c; c = nexttiled(c->next))
+		n++;
+
+	/* window geoms */
+	mw = (n == 1) ? waw : mwfact[selws-1] * waw;
+	th = (n > 1) ? wah / (n - 1) : 0;
+	if(n > 1 && th < bh)
+		th = wah;
+
+	nx = wax;
+	ny = way;
+	nw = 0; /* gcc stupidity requires this */
+	for(i = 0, c = mc = nexttiled(clients); c; c = nexttiled(c->next), i++) {
+		c->ismax = False;
+		if(i == 0) { /* master */
+			nx = waw - mw + 2 * c->border;
+			nw = mw - 2 * c->border;
+			nh = wah - 2 * c->border;
+		}
+		else {  /* tile window */
+			if(i == 1) {
+				nx = wax;
+				ny = way;
+				nw = waw - mw - 2 * mc->border;
 			}
 			if(i + 1 == n) /* remainder */
 				nh = (way + wah) - ny - 2 * c->border;
