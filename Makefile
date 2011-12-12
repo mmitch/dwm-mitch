@@ -3,7 +3,7 @@ DWM_VERSION = 4.7
 DMENU_VERSION = 4.4.1
 PREFIX = /usr/local
 
-DWM = dwm-$(DWM_VERSION)
+DWM = dwm
 DMENU = dmenu
 
 SUBDIRS = $(DWM) $(DMENU)
