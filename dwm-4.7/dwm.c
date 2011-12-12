@@ -586,7 +586,7 @@ drawtext(const char *text, unsigned long col[ColLast]) {
 		return; /* too long */
 	XSetForeground(dpy, dc.gc, col[ColFG]);
 	if(dc.font.set)
-		XmbDrawString(dpy, dc.drawable, dc.font.set, dc.gc, x, y, buf, len);
+		Xutf8DrawString(dpy, dc.drawable, dc.font.set, dc.gc, x, y, buf, len);
 	else
 		XDrawString(dpy, dc.drawable, dc.gc, x, y, buf, len);
 }
@@ -761,7 +761,7 @@ gettextprop(Window w, Atom atom, char *text, unsigned int size) {
 	if(name.encoding == XA_STRING)
 		strncpy(text, (char *)name.value, size - 1);
 	else {
-		if(XmbTextPropertyToTextList(dpy, &name, &list, &n) >= Success
+		if(Xutf8TextPropertyToTextList(dpy, &name, &list, &n) >= Success
 		&& n > 0 && *list) {
 			strncpy(text, *list, size - 1);
 			XFreeStringList(list);
@@ -1520,7 +1520,7 @@ textnw(const char *text, unsigned int len) {
 	XRectangle r;
 
 	if(dc.font.set) {
-		XmbTextExtents(dc.font.set, text, len, NULL, &r);
+		Xutf8TextExtents(dc.font.set, text, len, NULL, &r);
 		return r.width;
 	}
 	return XTextWidth(dc.font.xfont, text, len);
