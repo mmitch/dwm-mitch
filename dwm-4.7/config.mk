@@ -3,6 +3,9 @@ VERSION = 4.7
 
 # Customize below to fit your system
 
+# dwm-mitch patchlevel
+VERSION := ${VERSION}+${PATCHVERSION}
+
 # paths
 PREFIX = /usr/local
 MANPREFIX = ${PREFIX}/share/man
