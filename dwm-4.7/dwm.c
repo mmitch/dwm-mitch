@@ -192,6 +192,8 @@ void updatexinerama(void);
 void updatewstext(int screen);
 void view(const char *arg);
 void viewrel(const char *arg);
+void warpmouse(const char *arg);
+void warpmouserel(const char *arg);
 void wscount(const char *arg);
 unsigned int whichscreen(void);
 int xerror(Display *dpy, XErrorEvent *ee);
@@ -1586,6 +1588,40 @@ viewrel(const char *arg) {
         arrange();
 }
 
+void
+warpmouserel(const char *arg) {
+        int i, target, x, y, d;
+	Window w;
+	unsigned int mask, source;
+	
+	if (screenmax == 1)
+	        return;
+	
+	i = arg ? atoi(arg) : 0;
+	if (i == 0)
+                return;
+
+	target = source = whichscreen();
+	target += i;
+	if (target < 0)
+		target = screenmax-1;
+	if (target >= screenmax)
+		target = 0;
+
+	XQueryPointer(dpy, root, &w, &w, &x, &y, &d, &d, &mask);
+
+	x -= sx[source];
+	y -= sy[source];
+
+        if (x > sw[target])
+                x = sw[target];
+        if (y > sh[target])
+                y = sh[target];
+
+        XWarpPointer(dpy, None, root, 0, 0, 0, 0, x + sx[target], y + sy[target]);
+	focus(NULL);
+}
+
 unsigned int
 textnw(const char *text, unsigned int len) {
 	XRectangle r;
@@ -1747,6 +1783,31 @@ view(const char *arg) {
 	sel = NULL;
 	focus(NULL);
 	arrange();  
+}
+
+void
+warpmouse(const char *arg) {
+	int target, x, y, d;
+	Window w;
+	unsigned int mask, source;
+	
+	target = arg ? atoi(arg) : 0;
+	source = whichscreen();
+	if ((target < 0) || (target >= screenmax) || (target == source))
+		return;
+
+	XQueryPointer(dpy, root, &w, &w, &x, &y, &d, &d, &mask);
+
+	x -= sx[source];
+	y -= sy[source];
+
+        if (x > sw[target])
+                x = sw[target];
+        if (y > sh[target])
+                y = sh[target];
+
+        XWarpPointer(dpy, None, root, 0, 0, 0, 0, x + sx[target], y + sy[target]);
+	focus(NULL);
 }
 
 void

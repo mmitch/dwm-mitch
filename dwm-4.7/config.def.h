@@ -100,4 +100,6 @@ Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_h,		viewrel,	"-1" },
 	{ MODKEY|ShiftMask,		XK_h,		popstack,	NULL },
 	{ MODKEY|ShiftMask,		XK_q,		quit,		NULL },
+	{ MODKEY|ControlMask,		XK_l,		warpmouserel,	"1" },
+	{ MODKEY|ControlMask,		XK_h,		warpmouserel,	"-1" },
 };
