@@ -226,8 +226,6 @@ void (*handler[LASTEvent]) (XEvent *) = {
 	[UnmapNotify] = unmapnotify
 };
 Atom wmatom[WMLast], netatom[NetLast];
-Bool domwfact = True;
-Bool dozoom = True;
 Bool otherwm;
 Bool running = True;
 Bool reload = False;
@@ -681,7 +679,7 @@ void
 floating(unsigned int s) { /* default floating layout */
 	Client *c;
 
-	domwfact = dozoom = False;
+	domwfact[s] = dozoom[s] = False;
 	for(c = clients; c; c = c->next)
 		if(c->screen == s && isvisible(c))
 			resize(c, c->x, c->y, c->w, c->h, True);
@@ -1389,7 +1387,7 @@ setmwfact(const char *arg) {
 	double delta;
 	unsigned int s = whichscreen();
 
-	if(!domwfact)
+	if(!domwfact[s])
 		return;
 	/* arg handling, manipulate mwfact */
 	if(arg == NULL)
@@ -1643,7 +1641,7 @@ tile(unsigned int s) {
 	unsigned int i, n, nx, ny, nw, nh, mw, th;
 	Client *c, *mc;
 
-	domwfact = dozoom = True;
+	domwfact[s] = dozoom[s] = True;
 	for(n = 0, c = nexttiled(clients, s); c; c = nexttiled(c->next, s))
 		n++;
 
@@ -1688,7 +1686,7 @@ tileleft(unsigned int s) {
 	unsigned int i, n, nx, ny, nw, nh, mw, th;
 	Client *c, *mc;
 
-	domwfact = dozoom = True;
+	domwfact[s] = dozoom[s] = True;
 	for(n = 0, c = nexttiled(clients, s); c; c = nexttiled(c->next,s))
 		n++;
 
@@ -2071,8 +2069,9 @@ moveto(const char *arg) {
 void
 zoom(const char *arg) {
 	Client *c;
+	unsigned int s = whichscreen();
 
-	if(!sel || !dozoom || sel->isfloating)
+	if(!sel || !dozoom[s] || sel->isfloating)
 		return;
 	if((c = sel) == nexttiled(clients, c->screen))
 		if(!(c = nexttiled(c->next, c->screen)))
