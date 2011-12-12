@@ -26,13 +26,8 @@ list is regenerated with every new dwm session.  If you want it to be
 updated sooner, just delete the cache file.  The next dmenu call will
 regenerate it.
 
-The build process looks for the environment variable $DMENU_PERSOCON.
-It should point to a .diff that contains your personal configuration
-which will automatically be applied to the dmenu sources after all
-other patches have been applied.
-
-Your personal dwm changes should be kept in a separate branch in your
-personal dwm-mitch git repository.
+Your personal configuration changes should be kept in a separate
+branch in your personal dwm-mitch git repository.
 
 Use "make" or "make install" to install everything.
 Use "make uninstall" to remove installed files.
@@ -93,16 +88,9 @@ Included DWM patches:
 
 Included DMENU patches:
 
+ *  fix display of wide characters
 
- *  00_patch_dmenu_mitch_utf8widechars.diff
-    fix display of wide characters
-    written by: Christian Garbs <mitch@cgarbs.de>
-
-
- *  01_patch_dmenu_mitch_patchversion.diff
-    add dmenu-mitch patchlevel to dmenu version
-    written by: Christian Garbs <mitch@cgarbs.de>
-
+ *  add dmenu-mitch patchlevel to dmenu version
 
  (optional: personal configuration settings)
   * currently none
