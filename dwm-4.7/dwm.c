@@ -859,14 +859,18 @@ grabkeys(void)  {
 	XUngrabKey(dpy, AnyKey, AnyModifier, root);
 	for(i = 0; i < LENGTH(keys); i++) {
 		code = XKeysymToKeycode(dpy, keys[i].keysym);
-		XGrabKey(dpy, code, keys[i].mod, root, True,
-				GrabModeAsync, GrabModeAsync);
-		XGrabKey(dpy, code, keys[i].mod | LockMask, root, True,
-				GrabModeAsync, GrabModeAsync);
-		XGrabKey(dpy, code, keys[i].mod | numlockmask, root, True,
-				GrabModeAsync, GrabModeAsync);
-		XGrabKey(dpy, code, keys[i].mod | numlockmask | LockMask, root, True,
-				GrabModeAsync, GrabModeAsync);
+		if (code) {
+			XGrabKey(dpy, code, keys[i].mod, root, True,
+					GrabModeAsync, GrabModeAsync);
+			XGrabKey(dpy, code, keys[i].mod | LockMask, root, True,
+					GrabModeAsync, GrabModeAsync);
+			XGrabKey(dpy, code, keys[i].mod | numlockmask, root, True,
+					GrabModeAsync, GrabModeAsync);
+			XGrabKey(dpy, code, keys[i].mod | numlockmask | LockMask, root, True,
+					GrabModeAsync, GrabModeAsync);
+		} else {
+			fprintf(stderr, "key definition #%d resulted in NoSymbol, skipping\n", i);
+		}
 	}
 }
 
