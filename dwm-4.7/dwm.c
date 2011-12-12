@@ -66,7 +66,7 @@ struct Client {
 	int minax, maxax, minay, maxay;
 	long flags;
 	unsigned int border, oldborder, workspace;
-	Bool isbanned, isfixed, ismax, isfloating, wasfloating;
+	Bool isbanned, isfixed, ismax, isfloating;
 	Client *next;
 	Client *prev;
 	Client *snext;
@@ -1641,13 +1641,9 @@ togglemax(const char *arg) {
 
 	if(!sel || sel->isfixed)
 		return;
+	if((layout[selws-1]->arrange != floating) && ! sel->isfloating)
+		return;
 	if((sel->ismax = !sel->ismax)) {
-		if((layout[selws-1]->arrange == floating) || sel->isfloating)
-			sel->wasfloating = True;
-		else {
-			togglefloating(NULL);
-			sel->wasfloating = False;
-		}
 		sel->rx = sel->x;
 		sel->ry = sel->y;
 		sel->rw = sel->w;
@@ -1656,10 +1652,7 @@ togglemax(const char *arg) {
 	}
 	else {
 		resize(sel, sel->rx, sel->ry, sel->rw, sel->rh, True);
-		if(!sel->wasfloating)
-			togglefloating(NULL);
 	}
-	drawbar();
 	while(XCheckMaskEvent(dpy, EnterWindowMask, &ev));
 }
 
