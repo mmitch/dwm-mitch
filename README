@@ -26,10 +26,13 @@ list is regenerated with every new dwm session.  If you want it to be
 updated sooner, just delete the cache file.  The next dmenu call will
 regenerate it.
 
-The build process looks for the environment variables $DWM_PERSOCON
-and $DMENU_PERSOCON.  They should point to a .diff that contains your
-personal configuration which will automatically be applied to the
-sources after all other patches have been applied.
+The build process looks for the environment variable $DMENU_PERSOCON.
+It should point to a .diff that contains your personal configuration
+which will automatically be applied to the dmenu sources after all
+other patches have been applied.
+
+Your personal dwm changes should be kept in a separate branch in your
+personal dwm-mitch git repository.
 
 Use "make" or "make install" to install everything.
 Use "make uninstall" to remove installed files.
@@ -43,83 +46,41 @@ your changes without having to restart your X session.
 Included DWM patches:
 
 
- *  00_patch_dwm_rossmohn_bstack.diff
-    add bottom stack layout
+ *  add bottom stack layout
     written by: Ross Mohn <rpmohn@waxandwane.org>
 
+ *  add fullscreen layout
 
- *  01_patch_dwm_mitch_maximize.diff
-    add fullscreen layout
-    written by: Christian Garbs <mitch@cgarbs.de>
+ *  remove tagging and add dynamic workspaces
 
+ *  allow a different settings (layout, mwidth) on every workspace
 
- *  02_patch_dwm_mitch_workspace.diff
-    remove tagging and add dynamic workspaces
-    written by: Christian Garbs <mitch@cgarbs.de>
+ *  remove square boxes in status line
 
+ *  fix display of wide characters
 
- *  03_patch_dwm_mitch_perworkspace.diff
-    allow a different settings (layout, mwidth) on every workspace
-    written by: Christian Garbs <mitch@cgarbs.de>
+ *  add dwm-mitch patchlevel to dwm version
 
-
- *  04_patch_dwm_mitch_clientstyle.diff
-    remove square boxes in status line
-    written by: Christian Garbs <mitch@cgarbs.de>
-
-
- *  05_patch_dwm_mitch_utf8widechars.diff
-    fix display of wide characters
-    written by: Christian Garbs <mitch@cgarbs.de>
-
-
- *  06_patch_dwm_mitch_patchversion.diff
-    add dwm-mitch patchlevel to dwm version
-    written by: Christian Garbs <mitch@cgarbs.de>
-
-
- *  07_patch_dwm_anydot_reload.diff
-    add dwm reload via SIGUSR1
+ *  add dwm reload via SIGUSR1
     written by: anydot <dfenze@gmail.com>
     also applied suggestions by: Jukka Salmi <j+dwm@2007.salmi.ch>
 
+ *  allow different border sizes for floating and non-floating clients
 
- *  08_patch_dwm_mitch_floatborder.diff
-    allow different border sizes for floating and non-floating clients
-    written by: Christian Garbs <mitch@cgarbs.de>
-
-
- *  09_patch_dwm_mitch_maxfloat.diff
-    togglemax only works for floating clients
+ *  togglemax only works for floating clients
     (this allows the same key for zoom and togglemax and it does the
     right thing[tm] depending on whether the client is floating or not)
-    written by: Christian Garbs <mitch@cgarbs.de>
 
+ *  add tile layout with stack on the left side
 
- *  10_patch_dwm_mitch_tileleft.diff
-    add tile layout with stack on the left side
-    written by: Christian Garbs <mitch@cgarbs.de>
+ *  add Xinerama support
 
-
- *  11_patch_dwm_mitch_xinerama.diff
-    add Xinerama support
-    written by: Christian Garbs <mitch@cgarbs.de>
-
-
- *  12_patch_dwm_mitch_xsetroot.diff
-    read status line from X root window instead of stdin
+ *  read status line from X root window instead of stdin
     use "xsetroot -name $foo" to update
-    written by: Christian Garbs <mitch@cgarbs.de>
 
+ *  skip keybindings to unknown symbols
 
- *  13_patch_dwm_mitch_fixkeygrab.diff
-    skip keybindings to unknown symbols
-    written by: Christian Garbs <mitch@cgarbs.de>
-
-
- *  14_patch_dwm_mitch_warpscreen.diff
-    move mouse pointer via keyboard across Xinerama screens
-    written by: Christian Garbs <mitch@cgarbs.de>
+ *  move mouse pointer via keyboard across Xinerama screens
 
 
  (optional: personal configuration settings)
