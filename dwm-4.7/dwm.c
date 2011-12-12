@@ -45,7 +45,6 @@
 #define BUTTONMASK		(ButtonPressMask | ButtonReleaseMask)
 #define CLEANMASK(mask)		(mask & ~(numlockmask | LockMask))
 #define LENGTH(x)		(sizeof x / sizeof x[0])
-#define MAXTAGLEN		16
 #define MOUSEMASK		(BUTTONMASK | PointerMotionMask)
 
 
@@ -65,9 +64,8 @@ struct Client {
 	int basew, baseh, incw, inch, maxw, maxh, minw, minh;
 	int minax, maxax, minay, maxay;
 	long flags;
-	unsigned int border, oldborder;
+	unsigned int border, oldborder, workspace;
 	Bool isbanned, isfixed, ismax, isfloating, wasfloating;
-	Bool *tags;
 	Client *next;
 	Client *prev;
 	Client *snext;
@@ -103,16 +101,16 @@ typedef struct {
 
 typedef struct {
 	const char *prop;
-	const char *tags;
 	Bool isfloating;
+	unsigned int workspace;
 } Rule;
 
 typedef struct {
 	regex_t *propregex;
-	regex_t *tagregex;
 } Regs;
 
 /* function declarations */
+void *emallocz(unsigned int size);
 void applyrules(Client *c);
 void arrange(void);
 void attach(Client *c);
@@ -131,7 +129,6 @@ void detachstack(Client *c);
 void drawbar(void);
 void drawsquare(Bool filled, Bool empty, unsigned long col[ColLast]);
 void drawtext(const char *text, unsigned long col[ColLast]);
-void *emallocz(unsigned int size);
 void enternotify(XEvent *e);
 void eprint(const char *errstr, ...);
 void expose(XEvent *e);
@@ -146,9 +143,7 @@ long getstate(Window w);
 Bool gettextprop(Window w, Atom atom, char *text, unsigned int size);
 void grabbuttons(Client *c, Bool focused);
 void grabkeys(void);
-unsigned int idxoftag(const char *tag);
 void initfont(const char *fontstr);
-Bool isoccupied(unsigned int t);
 Bool isprotodel(Client *c);
 Bool isvisible(Client *c);
 void keypress(XEvent *e);
@@ -157,9 +152,14 @@ void leavenotify(XEvent *e);
 void manage(Window w, XWindowAttributes *wa);
 void mappingnotify(XEvent *e);
 void maprequest(XEvent *e);
-void movemouse(Client *c);
 Client *nexttiled(Client *c);
+void movemouse(Client *c);
+void moveto(const char *arg);
+void moveto(const char *arg);
+void popstack(const char *arg);
+void processrules(Client *c);
 void propertynotify(XEvent *e);
+void pushstack(const char *arg);
 void quit(const char *arg);
 void resize(Client *c, int x, int y, int w, int h, Bool sizehints);
 void resizemouse(Client *c);
@@ -171,23 +171,22 @@ void setlayout(const char *arg);
 void setmwfact(const char *arg);
 void setup(void);
 void spawn(const char *arg);
-void tag(const char *arg);
 unsigned int textnw(const char *text, unsigned int len);
 unsigned int textw(const char *text);
 void tile(void);
 void togglebar(const char *arg);
 void togglefloating(const char *arg);
 void togglemax(const char *arg);
-void toggletag(const char *arg);
-void toggleview(const char *arg);
 void unban(Client *c);
 void unmanage(Client *c);
 void unmapnotify(XEvent *e);
 void updatebarpos(void);
 void updatesizehints(Client *c);
 void updatetitle(Client *c);
+void updatewstext(void);
 void view(const char *arg);
-void viewprevtag(const char *arg);	/* views previous selected tags */
+void viewrel(const char *arg);
+void wscount(const char *arg);
 int xerror(Display *dpy, XErrorEvent *ee);
 int xerrordummy(Display *dsply, XErrorEvent *ee);
 int xerrorstart(Display *dsply, XErrorEvent *ee);
@@ -200,7 +199,9 @@ int screen, sx, sy, sw, sh, wax, way, waw, wah;
 int (*xerrorxlib)(Display *, XErrorEvent *);
 unsigned int bh, bpos;
 unsigned int blw = 0;
+int wstextwidth = 0;
 unsigned int numlockmask = 0;
+unsigned int selws = 1;
 void (*handler[LASTEvent]) (XEvent *) = {
 	[ButtonPress] = buttonpress,
 	[ConfigureRequest] = configurerequest,
@@ -235,15 +236,16 @@ Regs *regs = NULL;
 /* configuration, allows nested code to access above variables */
 #include "config.h"
 
-Bool prevtags[LENGTH(tags)];
+/* variables depending on config.h */
+char wstext[MAXWSTEXTWIDTH];
+unsigned int workspaces = INITIALWORKSPACES;
 
 /* function implementations */
 void
 applyrules(Client *c) {
 	static char buf[512];
-	unsigned int i, j;
+	unsigned int i;
 	regmatch_t tmp;
-	Bool matched = False;
 	XClassHint ch = { 0 };
 
 	/* rule matching */
@@ -254,19 +256,13 @@ applyrules(Client *c) {
 	for(i = 0; i < LENGTH(rules); i++)
 		if(regs[i].propregex && !regexec(regs[i].propregex, buf, 1, &tmp, 0)) {
 			c->isfloating = rules[i].isfloating;
-			for(j = 0; regs[i].tagregex && j < LENGTH(tags); j++) {
-				if(!regexec(regs[i].tagregex, tags[j], 1, &tmp, 0)) {
-					matched = True;
-					c->tags[j] = True;
-				}
-			}
+			if((rules[i].workspace > 0) && (rules[i].workspace <= workspaces))
+				c->workspace = rules[i].workspace;
 		}
 	if(ch.res_class)
 		XFree(ch.res_class);
 	if(ch.res_name)
 		XFree(ch.res_name);
-	if(!matched)
-		memcpy(c->tags, seltags, sizeof seltags);
 }
 
 void
@@ -307,32 +303,31 @@ ban(Client *c) {
 
 void
 buttonpress(XEvent *e) {
-	unsigned int i, x;
+	unsigned int x;
 	Client *c;
 	XButtonPressedEvent *ev = &e->xbutton;
 
 	if(ev->window == barwin) {
-		x = 0;
-		for(i = 0; i < LENGTH(tags); i++) {
-			x += textw(tags[i]);
-			if(ev->x < x) {
-				if(ev->button == Button1) {
-					if(ev->state & MODKEY)
-						tag(tags[i]);
-					else
-						view(tags[i]);
-				}
-				else if(ev->button == Button3) {
-					if(ev->state & MODKEY)
-						toggletag(tags[i]);
-					else
-						toggleview(tags[i]);
-				}
-				return;
+		x = textw(wstext);
+		if(ev->x < x) {
+			if(ev->button == Button1) {
+				if(ev->state & MODKEY)
+					viewrel("-1");
+				else
+					viewrel("1");
 			}
+			else if(ev->button == Button3) {
+				if(ev->state & MODKEY)  
+					wscount("-1");  
+				else
+					wscount("1");
+			}
+			return;
 		}
-		if((ev->x < x + blw) && ev->button == Button1)
+                if((ev->x < x + blw) && ev->button == Button1) {
 			setlayout(NULL);
+			return;
+		}
 	}
 	else if((c = getclient(ev->window))) {
 		focus(c);
@@ -414,13 +409,6 @@ compileregs(void) {
 				free(reg);
 			else
 				regs[i].propregex = reg;
-		}
-		if(rules[i].tags) {
-			reg = emallocz(sizeof(regex_t));
-			if(regcomp(reg, rules[i].tags, REG_EXTENDED))
-				free(reg);
-			else
-				regs[i].tagregex = reg;
 		}
 	}
 }
@@ -533,21 +521,12 @@ detachstack(Client *c) {
 
 void
 drawbar(void) {
-	int i, x;
+	int x;
 
 	dc.x = dc.y = 0;
-	for(i = 0; i < LENGTH(tags); i++) {
-		dc.w = textw(tags[i]);
-		if(seltags[i]) {
-			drawtext(tags[i], dc.sel);
-			drawsquare(sel && sel->tags[i], isoccupied(i), dc.sel);
-		}
-		else {
-			drawtext(tags[i], dc.norm);
-			drawsquare(sel && sel->tags[i], isoccupied(i), dc.norm);
-		}
-		dc.x += dc.w;
-	}
+	dc.w = wstextwidth;
+	drawtext(wstext, dc.norm);
+	dc.x = dc.w;
 	dc.w = blw;
 	drawtext(layout->symbol, dc.norm);
 	x = dc.x + dc.w;
@@ -869,14 +848,6 @@ grabkeys(void)  {
 	}
 }
 
-unsigned int
-idxoftag(const char *tag) {
-	unsigned int i;
-
-	for(i = 0; (i < LENGTH(tags)) && (tags[i] != tag); i++);
-	return (i < LENGTH(tags)) ? i : 0;
-}
-
 void
 initfont(const char *fontstr) {
 	char *def, **missing;
@@ -920,16 +891,6 @@ initfont(const char *fontstr) {
 }
 
 Bool
-isoccupied(unsigned int t) {
-	Client *c;
-
-	for(c = clients; c; c = c->next)
-		if(c->tags[t])
-			return True;
-	return False;
-}
-
-Bool
 isprotodel(Client *c) {
 	int i, n;
 	Atom *protocols;
@@ -946,12 +907,7 @@ isprotodel(Client *c) {
 
 Bool
 isvisible(Client *c) {
-	unsigned int i;
-
-	for(i = 0; i < LENGTH(tags); i++)
-		if(c->tags[i] && seltags[i])
-			return True;
-	return False;
+	return (c->workspace == selws);
 }
 
 void
@@ -1008,8 +964,8 @@ manage(Window w, XWindowAttributes *wa) {
 	XWindowChanges wc;
 
 	c = emallocz(sizeof(Client));
-	c->tags = emallocz(sizeof seltags);
 	c->win = w;
+	c->workspace = selws;
 	c->x = wa->x;
 	c->y = wa->y;
 	c->w = wa->width;
@@ -1041,8 +997,6 @@ manage(Window w, XWindowAttributes *wa) {
 	updatetitle(c);
 	if((rettrans = XGetTransientForHint(dpy, w, &trans) == Success))
 		for(t = clients; t && t->win != trans; t = t->next);
-	if(t)
-		memcpy(c->tags, t->tags, sizeof seltags);
 	applyrules(c);
 	if(!c->isfloating)
 		c->isfloating = (rettrans == Success) || c->isfixed;
@@ -1480,8 +1434,7 @@ setup(void) {
 	/* grab keys */
 	grabkeys();
 
-	/* init tags */
-	memcpy(prevtags, seltags, sizeof seltags);
+	/* init workspaces */
 	compileregs();
 
 	/* init appearance */
@@ -1524,6 +1477,12 @@ setup(void) {
 	/* multihead support */
 	selscreen = XQueryPointer(dpy, root, &w, &w, &d, &d, &d, &d, &mask);
 
+	/* check initial parameters */
+	if (workspaces < 1)
+		workspaces = 1;
+	else if (workspaces > MAXWORKSPACES)
+		workspaces = MAXWORKSPACES;
+	
 }
 
 void
@@ -1551,15 +1510,27 @@ spawn(const char *arg) {
 }
 
 void
-tag(const char *arg) {
-	unsigned int i;
+updatewstext(void) {
+	snprintf(wstext, MAXWSTEXTWIDTH, "%d/%d", selws, workspaces);
+	wstextwidth = textw(wstext);
+}
 
-	if(!sel)
+void
+viewrel(const char *arg) {
+	int i;
+	
+	if (workspaces == 1)
 		return;
-	for(i = 0; i < LENGTH(tags); i++)
-		sel->tags[i] = (NULL == arg);
-	sel->tags[idxoftag(arg)] = True;
-	arrange();
+	i = arg ? atoi(arg) : 0;
+	if (i == 0)
+                return;
+	selws += i;
+	if (selws > workspaces)
+		selws = 1;
+	if (selws < 1)
+		selws = workspaces;
+	updatewstext();
+        arrange();
 }
 
 unsigned int
@@ -1671,28 +1642,73 @@ togglemax(const char *arg) {
 }
 
 void
-toggletag(const char *arg) {
-	unsigned int i, j;
-
-	if(!sel)
+view(const char *arg) {
+	int i;
+	
+	i = arg ? atoi(arg) : 0;
+	if ((i < 1) || (i > workspaces) || (i == selws))
 		return;
-	i = idxoftag(arg);
-	sel->tags[i] = !sel->tags[i];
-	for(j = 0; j < LENGTH(tags) && !sel->tags[j]; j++);
-	if(j == LENGTH(tags))
-		sel->tags[i] = True; /* at least one tag must be enabled */
+	selws = i;
+	updatewstext();
+	arrange();  
+}
+
+void
+pushstack(const char *arg) {
+	if (!sel)
+		return;
+	sel->workspace = 0;
+	focus(NULL);
 	arrange();
 }
 
 void
-toggleview(const char *arg) {
-	unsigned int i, j;
+popstack(const char *arg) {
+	Client *c;
+	for(c = stack; c && c->workspace; c = c->snext);
+	if (c)
+		c->workspace = selws;
+	focus(c);
+	arrange();
+}
 
-	i = idxoftag(arg);
-	seltags[i] = !seltags[i];
-	for(j = 0; j < LENGTH(tags) && !seltags[j]; j++);
-	if(j == LENGTH(tags))
-		seltags[i] = True; /* at least one tag must be viewed */
+void
+wscount(const char *arg) {
+	Client *c;
+	int i;
+	
+	i = arg ? atoi(arg) : 0;
+	if (i == 0 )
+		return;   
+	if (i > 0) {
+		if (workspaces + i > MAXWORKSPACES) {
+			i = MAXWORKSPACES - workspaces;
+			if (i == 0)
+				return;
+		}
+		for(c = clients; c; c = c->next)
+			if (c->workspace > selws)
+				c->workspace += i;
+		selws++; 
+		workspaces += i;
+	}
+	else {
+		i = workspaces + i;
+		if (i < 1)
+			i = 1;
+		while (i < workspaces) {
+			for(c = clients; c; c = c->next)
+				if (c->workspace > selws)
+					c->workspace--;
+				else if (c->workspace == selws) {
+					c->workspace = 0;
+				}
+			if (selws == workspaces)
+				selws--;
+			workspaces--;
+		}
+	}
+	updatewstext();
 	arrange();
 }
 
@@ -1719,7 +1735,6 @@ unmanage(Client *c) {
 		focus(NULL);
 	XUngrabButton(dpy, AnyButton, AnyModifier, c->win);
 	setclientstate(c, WithdrawnState);
-	free(c->tags);
 	free(c);
 	XSync(dpy, False);
 	XSetErrorHandler(xerror);
@@ -1853,24 +1868,16 @@ xerrorstart(Display *dsply, XErrorEvent *ee) {
 }
 
 void
-view(const char *arg) {
+moveto(const char *arg) {
 	unsigned int i;
-
-	memcpy(prevtags, seltags, sizeof seltags);
-	for(i = 0; i < LENGTH(tags); i++)
-		seltags[i] = (NULL == arg);
-	seltags[idxoftag(arg)] = True;
-	arrange();
-}
-
-void
-viewprevtag(const char *arg) {
-	static Bool tmp[LENGTH(tags)];
-
-	memcpy(tmp, seltags, sizeof seltags);
-	memcpy(seltags, prevtags, sizeof seltags);
-	memcpy(prevtags, tmp, sizeof seltags);
-	arrange();
+	
+	if (!sel)
+		return;
+	i = arg ? atoi(arg) : 0;   
+	if ((i < 1) || (i > workspaces))
+		return;
+	sel->workspace = i;
+        arrange();
 }
 
 void
@@ -1904,6 +1911,7 @@ main(int argc, char *argv[]) {
 
 	checkotherwm();
 	setup();
+	updatewstext();
 	drawbar();
 	scan();
 	run();
