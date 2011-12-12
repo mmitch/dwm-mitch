@@ -2,7 +2,7 @@ void
 maximize(unsigned int s) {
 	Client *c;
 	
-	domwfact = dozoom = False;        
+	domwfact[s] = dozoom[s] = False;        
         for(c = clients; c; c = c->next)
 		if (c->screen == s)
 			if (isvisible(c)) {

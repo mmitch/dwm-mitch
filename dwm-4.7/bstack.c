@@ -3,7 +3,7 @@ bstack(unsigned int s) {
     unsigned int i, n, nx, ny, nw, nh, mh, tw;
     Client *c, *mc;
 
-    domwfact = dozoom = True;
+    domwfact[s] = dozoom[s] = True;
     for(n = 0, c = nexttiled(clients, s); c; c = nexttiled(c->next, s))
 	    n++;
     

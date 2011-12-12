@@ -43,6 +43,8 @@ Rule rules[] = {
 
 /* ugly: depending on constants above but needed by layouts below */
 double mwfact[MAXXINERAMASCREENS][MAXWORKSPACES];
+Bool domwfact[MAXXINERAMASCREENS] = {True};
+Bool dozoom[MAXXINERAMASCREENS] = {True};
 
 /* layout(s) */
 #define MWFACT			0.65	/* master width factor [0.1 .. 0.9] */
