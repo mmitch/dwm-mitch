@@ -1,6 +1,9 @@
 # dmenu version
 VERSION = 4.4.1
 
+# dwm-mitch patchlevel
+VERSION := ${VERSION}+${PATCHVERSION}
+
 # paths
 PREFIX = /usr/local
 MANPREFIX = ${PREFIX}/share/man
