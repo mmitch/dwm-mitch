@@ -8,12 +8,12 @@ widescreen(unsigned int s) {
                 n++;
 
         /* window geoms */
-        mw = (n == 1) ? waw[s] : mwfact[s][selws[s]-1] * waw[s];
+        mw = mwfact[s][selws[s]-1] * waw[s];
         th = (n > 1) ? wah[s] / (n / 2) : 0;
         if(n > 1 && th < bh)
                 th = wah[s];
 
-	tw = (n > 1) ? (waw[s] - mw) / 2 : 0;
+	tw = (waw[s] - mw) / 2;
 
 	lx = wax[s];
         nx = lx + tw;
@@ -26,8 +26,6 @@ widescreen(unsigned int s) {
                 if(i == 0) { /* master */
                         nw = mw - 2 * c->border;
                         nh = wah[s] - 2 * c->border;
-			if (n == 0)
-				nx = 0;
                 }
                 else {  /* tile window */
 		  if(i % 2) {
