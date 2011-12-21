@@ -46,6 +46,8 @@ Included DWM patches:
 
  *  add fullscreen layout
 
+ *  add widescreen layout
+
  *  remove tagging and add dynamic workspaces
 
  *  allow a different settings (layout, mwidth) on every workspace
