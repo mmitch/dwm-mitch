@@ -37,6 +37,8 @@ widescreen(unsigned int s) {
 		    nx = lx;
 		    nw = tw - 2 * c->border;
 		    nh = th - 2 * c->border;
+		    if(i+3 > n) /* last client in stack */
+		      nh = wah[s] - ly - 2 * c->border;
 		  } else {
 		    if(i > 2)
 		      ry += th;
@@ -44,6 +46,8 @@ widescreen(unsigned int s) {
 		    nx = rx;
 		    nw = tw - 2 * c->border;
 		    nh = th - 2 * c->border;
+		    if(i+3 > n) /* last client in stack */
+		      nh = wah[s] - ry - 2 * c->border;
 		  }
                 }
                 resize(c, nx, ny, nw, nh, RESIZEHINTS);
@@ -52,4 +56,3 @@ widescreen(unsigned int s) {
                         resize(c, nx, ny, nw, nh, False);
         }
 }
-
