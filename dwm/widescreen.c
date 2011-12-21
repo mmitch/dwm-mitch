@@ -1,4 +1,5 @@
-foo(unsigned int s) {
+void
+widescreen(unsigned int s) {
   unsigned int i, n, lx, ly, rx, ry, nx, ny, nw, nh, mw, th, tw;
         Client *c, *mc;
 
