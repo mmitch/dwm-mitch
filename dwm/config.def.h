@@ -93,20 +93,35 @@ Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_4,		setlayout,	" |-" },
 	{ MODKEY|ShiftMask,		XK_5,		setlayout,	"-| " },
 	{ MODKEY|ShiftMask,		XK_6,		setlayout,	"= =" },
+	{ MODKEY|ControlMask,		XK_2,		warpmouserel,	"1" },
+	{ MODKEY|ControlMask,		XK_1,		warpmouserel,	"-1" },
+
+	/* "macros" using multiple commands on the same keybinding */
 	{ MODKEY|ControlMask,		XK_w,		pushstack,	NULL },
 	{ MODKEY|ControlMask,		XK_w,		viewrel,	"1" },
 	{ MODKEY|ControlMask,		XK_w,		popstack,	NULL },
+
 	{ MODKEY|ControlMask,		XK_q,		pushstack,	NULL },
 	{ MODKEY|ControlMask,		XK_q,		viewrel,	"-1" },
 	{ MODKEY|ControlMask,		XK_q,		popstack,	NULL },
-	{ MODKEY|ControlMask,		XK_2,		warpmouserel,	"1" },
-	{ MODKEY|ControlMask,		XK_1,		warpmouserel,	"-1" },
-/* Thinkpad special keys XF86Forward/XF86Back */
+
+	{ MODKEY|ShiftMask|ControlMask,	XK_2,		pushstack,	NULL },
+	{ MODKEY|ShiftMask|ControlMask,	XK_2,		warpmouserel,	"1" },
+	{ MODKEY|ShiftMask|ControlMask,	XK_2,		popstack,	NULL },
+
+	{ MODKEY|ShiftMask|ControlMask,	XK_1,		pushstack,	NULL },
+	{ MODKEY|ShiftMask|ControlMask,	XK_1,		warpmouserel,	"-1" },
+	{ MODKEY|ShiftMask|ControlMask,	XK_1,		popstack,	NULL },
+
+
+	/* Thinkpad special keys XF86Forward/XF86Back */
 	{ 0,				0x1008ff27,	viewrel,	"1" },
 	{ 0,				0x1008ff26,	viewrel,	"-1" },
+
 	{ ControlMask,			0x1008ff27,	pushstack,	NULL },
 	{ ControlMask,			0x1008ff27,	viewrel,	"1" },
 	{ ControlMask,			0x1008ff27,	popstack,	NULL },
+
 	{ ControlMask,			0x1008ff26,	pushstack,	NULL },
 	{ ControlMask,			0x1008ff26,	viewrel,	"-1" },
 	{ ControlMask,			0x1008ff26,	popstack,	NULL },
