@@ -1062,8 +1062,8 @@ movemouse(Client *c) {
 	unsigned int dui;
 	Window dummy;
 	XEvent ev;
-	int bartop = (BARPOS == BarTop) ? bh : 0;
-	int barbot = (BARPOS == BarBot) ? bh : 0;
+	int bartop = (bpos == BarTop) ? bh : 0;
+	int barbot = (bpos == BarBot) ? bh : 0;
 	
 	ocx = nx = c->x;
 	ocy = ny = c->y;
