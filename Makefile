@@ -48,5 +48,6 @@ clean:
 dist:	clean
 	mkdir dwm-mitch-$(VERSION)
 	-cp * dwm-mitch-$(VERSION)/
+	-cp -R dwm/ dmenu/ dwm-mitch-$(VERSION)/
 	tar -czvf dwm-mitch-$(VERSION).tar.gz dwm-mitch-$(VERSION)/
 	rm -rf dwm-mitch-$(VERSION)/
