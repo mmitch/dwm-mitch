@@ -3,7 +3,7 @@ title: floating zoom window error
 desc: when borders are active, zooming a floating window will offset the window by bordersize pixels to the right and down
 type: :bugfix
 component: dwm-mitch
-release: "3.7"
+release: 
 reporter: Christian Garbs <mitch@cgarbs.de>
 status: :unstarted
 disposition: 
@@ -15,4 +15,8 @@ log_events:
 - - 2010-05-15 18:46:16.943750 Z
   - Christian Garbs <mitch@cgarbs.de>
   - created
+  - ""
+- - 2012-01-15 14:27:00.280866 Z
+  - Christian Garbs <mitch@cgarbs.de>
+  - unassigned from release 3.7
   - ""
