@@ -348,6 +348,11 @@ buttonpress(XEvent *e) {
 				setlayout(NULL);
 				return;
 			}
+			if (ev->button == Button1)
+				focusnext(NULL);
+			else
+				focusprev(NULL);
+			return;
 		}
 	
 	if((c = getclient(ev->window))) {
