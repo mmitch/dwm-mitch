@@ -1,8 +1,29 @@
 dwm-mitch history
 
-### v3.7    unreleased
+### v3.7    2012-01-15
 
- -
+ - important changes (fix your configuration):
+   - read status line input from root window name instead of stdin
+   - trash patchset handling and apply all patches directly and
+     permanently to source tree
+
+ - changes/improvements:
+   - add a CHEATSHEET to document default keybindings
+   - add keybinding to warp mouse cursor across Xinerama screens
+   - add widescreen layout
+
+ - bugfixes:
+   - fix zoom/maximize with Xinerama screens
+   - don't grab all keys on unknown key symbols
+   - honor domwfact and dozoom on maximze()
+     (no known bug, but fixed anyway)
+
+ - dmenu:
+   - update to dmenu 4.4.1
+
+ - dwm-choose:
+   - move dmenu history handling to dwm-choose
+   - make history size configurable
 
 ### v3.6    2010-03-19
 

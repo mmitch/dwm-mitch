@@ -1,6 +1,4 @@
-VERSION = 3.7+git
-DWM_VERSION = 4.7
-DMENU_VERSION = 4.4.1
+VERSION = 3.8+git
 PREFIX = /usr/local
 
 DWM = dwm
@@ -50,5 +48,6 @@ clean:
 dist:	clean
 	mkdir dwm-mitch-$(VERSION)
 	-cp * dwm-mitch-$(VERSION)/
+	-cp -R dwm/ dmenu/ dwm-mitch-$(VERSION)/
 	tar -czvf dwm-mitch-$(VERSION).tar.gz dwm-mitch-$(VERSION)/
 	rm -rf dwm-mitch-$(VERSION)/

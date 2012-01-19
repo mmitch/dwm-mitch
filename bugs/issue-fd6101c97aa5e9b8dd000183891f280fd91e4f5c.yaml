@@ -3,7 +3,7 @@ title: dmenu bar height
 desc: dmenu bar seems to be 1 pixel smaller than the dwm status bar.  it does not obscure it completely.
 type: :bugfix
 component: dwm-mitch
-release: "3.7"
+release: 
 reporter: Christian Garbs <mitch@cgarbs.de>
 status: :unstarted
 disposition: 
@@ -19,4 +19,8 @@ log_events:
 - - 2010-02-20 11:22:47.444549 Z
   - Christian Garbs <mitch@cgarbs.de>
   - assigned to release 3.7 from 3.6
+  - ""
+- - 2012-01-15 14:26:51.128909 Z
+  - Christian Garbs <mitch@cgarbs.de>
+  - unassigned from release 3.7
   - ""
