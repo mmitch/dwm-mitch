@@ -1597,6 +1597,12 @@ warpmouserel(const char *arg) {
 	Window w;
 	unsigned int mask, source;
 	
+	/* code duplication with warpmouse() because
+	 * calling one from the other would involve
+	 * converting target to a char* again or adding
+	 * a third function warpmouse_intern(int).
+	 */
+
 	if (screenmax == 1)
 	        return;
 	
