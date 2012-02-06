@@ -1622,10 +1622,10 @@ warpmouserel(const char *arg) {
 	x -= sx[source];
 	y -= sy[source];
 
-        if (x > sw[target])
-                x = sw[target];
-        if (y > sh[target])
-                y = sh[target];
+        if (x >= sw[target])
+                x = sw[target]-1;
+        if (y >= sh[target])
+                y = sh[target]-1;
 
         XWarpPointer(dpy, None, root, 0, 0, 0, 0, x + sx[target], y + sy[target]);
 	focus(NULL);
@@ -1810,10 +1810,10 @@ warpmouse(const char *arg) {
 	x -= sx[source];
 	y -= sy[source];
 
-        if (x > sw[target])
-                x = sw[target];
-        if (y > sh[target])
-                y = sh[target];
+        if (x >= sw[target])
+                x = sw[target]-1;
+        if (y >= sh[target])
+                y = sh[target]-1;
 
         XWarpPointer(dpy, None, root, 0, 0, 0, 0, x + sx[target], y + sy[target]);
 	focus(NULL);
