@@ -1597,6 +1597,12 @@ warpmouserel(const char *arg) {
 	Window w;
 	unsigned int mask, source;
 	
+	/* code duplication with warpmouse() because
+	 * calling one from the other would involve
+	 * converting target to a char* again or adding
+	 * a third function warpmouse_intern(int).
+	 */
+
 	if (screenmax == 1)
 	        return;
 	
@@ -1606,20 +1612,20 @@ warpmouserel(const char *arg) {
 
 	target = source = whichscreen();
 	target += i;
-	if (target < 0)
-		target = screenmax-1;
-	if (target >= screenmax)
-		target = 0;
+	while (target < 0)
+		target += screenmax;
+	while (target >= screenmax)
+		target -= screenmax;
 
 	XQueryPointer(dpy, root, &w, &w, &x, &y, &d, &d, &mask);
 
 	x -= sx[source];
 	y -= sy[source];
 
-        if (x > sw[target])
-                x = sw[target];
-        if (y > sh[target])
-                y = sh[target];
+        if (x >= sw[target])
+                x = sw[target]-1;
+        if (y >= sh[target])
+                y = sh[target]-1;
 
         XWarpPointer(dpy, None, root, 0, 0, 0, 0, x + sx[target], y + sy[target]);
 	focus(NULL);
@@ -1804,10 +1810,10 @@ warpmouse(const char *arg) {
 	x -= sx[source];
 	y -= sy[source];
 
-        if (x > sw[target])
-                x = sw[target];
-        if (y > sh[target])
-                y = sh[target];
+        if (x >= sw[target])
+                x = sw[target]-1;
+        if (y >= sh[target])
+                y = sh[target]-1;
 
         XWarpPointer(dpy, None, root, 0, 0, 0, 0, x + sx[target], y + sy[target]);
 	focus(NULL);
