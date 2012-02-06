@@ -1612,10 +1612,10 @@ warpmouserel(const char *arg) {
 
 	target = source = whichscreen();
 	target += i;
-	if (target < 0)
-		target = screenmax-1;
-	if (target >= screenmax)
-		target = 0;
+	while (target < 0)
+		target += screenmax;
+	while (target >= screenmax)
+		target -= screenmax;
 
 	XQueryPointer(dpy, root, &w, &w, &x, &y, &d, &d, &mask);
 
