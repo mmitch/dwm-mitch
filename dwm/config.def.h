@@ -53,6 +53,7 @@ Bool dozoom[MAXXINERAMASCREENS] = {True};
 #include "bstack.c"
 #include "maximize.c"
 #include "widescreen.c"
+#include "wow.c"
 Layout layouts[] = {
 	/* symbol		function */
 	{ "TTT",		bstack },
@@ -61,6 +62,7 @@ Layout layouts[] = {
 	{ " |-",		tile },
 	{ "-| ",		tileleft },
 	{ "= =",		widescreen },
+	{ "WoW",		wow },
 };
 
 /* key definitions */
@@ -93,6 +95,7 @@ Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_4,		setlayout,	" |-" },
 	{ MODKEY|ShiftMask,		XK_5,		setlayout,	"-| " },
 	{ MODKEY|ShiftMask,		XK_6,		setlayout,	"= =" },
+	{ MODKEY|ShiftMask,		XK_7,		setlayout,	"WoW" },
 	{ MODKEY|ControlMask,		XK_2,		warpmouserel,	"1" },
 	{ MODKEY|ControlMask,		XK_1,		warpmouserel,	"-1" },
 
