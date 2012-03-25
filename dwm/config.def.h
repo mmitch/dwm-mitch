@@ -2,8 +2,8 @@
 
 /* appearance */
 #define BARPOS			BarTop /* BarBot, BarOff */
-#define BORDERPX		1
-#define FLOATBORDERPX		1
+#define DEFAULTBORDERPX		1
+#define DEFAULTFLOATBORDERPX	1
 #define FONT			"-*-terminus-medium-*-*-*-*-*-*-*-*-*-*-*"
 #define NORMBORDERCOLOR		"#cccccc"
 #define NORMBGCOLOR		"#cccccc"
@@ -22,6 +22,7 @@ Rule rules[] = {
 	{ "MPlayer",			True,		0 },
 	{ "Acroread",			True,		0 },
 };
+#define MAXBORDERPX		99
 #define INITIALWORKSPACES	 1
 #define MAXWORKSPACES		99
 #define MAXWSTEXTWIDTH		 6	/* must be 2*(strlen(MAXWORKSPACES)+1)  */
@@ -106,4 +107,18 @@ Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_q,		quit,		NULL },
 	{ MODKEY|ControlMask,		XK_l,		warpmouserel,	"1" },
 	{ MODKEY|ControlMask,		XK_h,		warpmouserel,	"-1" },
+
+	/* unassigned actions:
+
+  	       set border size:
+	           setborderpx,         "5"
+		   setborderpxrel,      "1"
+		   setborderpxrel,      "-1"
+
+	       set floating border size:
+	           setfloatborderpx,    "5"
+		   setfloatborderpxrel, "1"
+		   setfloatborderpxrel, "-1"
+
+	*/
 };

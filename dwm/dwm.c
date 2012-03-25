@@ -167,6 +167,10 @@ void resizemouse(Client *c);
 void restack(void);
 void run(void);
 void scan(void);
+void setborderpx(const char *arg);
+void setborderpxrel(const char *arg);
+void setfloatborderpx(const char *arg);
+void setfloatborderpxrel(const char *arg);
 void setborderbyfloat(Client *c, Bool configurewindow);
 void setclientstate(Client *c, long state);
 void setlayout(const char *arg);
@@ -243,6 +247,7 @@ char **cargv;
 /* predefine variables depending on config.h */
 extern int wax[], way[], waw[], wah[];
 extern unsigned int selws[];
+extern unsigned int borderpx, floatborderpx;
 
 /* configuration, allows nested code to access above variables */
 #include "config.h"
@@ -256,6 +261,8 @@ int wax[MAXXINERAMASCREENS], way[MAXXINERAMASCREENS], waw[MAXXINERAMASCREENS], w
 int wstextwidth[MAXXINERAMASCREENS];
 Window barwin[MAXXINERAMASCREENS];
 
+unsigned int borderpx = DEFAULTBORDERPX;
+unsigned int floatborderpx = DEFAULTFLOATBORDERPX;
 
 /* function implementations */
 void
@@ -1017,7 +1024,7 @@ manage(Window w, XWindowAttributes *wa) {
 			c->x = wax[s];
 		if(c->y < way[s])
 			c->y = way[s];
-		c->border = BORDERPX;
+		c->border = borderpx;
 	}
 	XSetWindowBorder(dpy, w, dc.norm[ColBorder]);
 	updatesizehints(c);
@@ -1343,7 +1350,7 @@ setborderbyfloat(Client *c, Bool configurewindow) {
 	XWindowChanges wc;
 	unsigned int newborder;
 	
-	newborder = ((c->isfloating && !c->ismax) || (layout[c->screen][selws[c->screen]-1]->arrange == floating)) ? FLOATBORDERPX : BORDERPX;
+	newborder = ((c->isfloating && !c->ismax) || (layout[c->screen][selws[c->screen]-1]->arrange == floating)) ? floatborderpx : borderpx;
 	if (c->border == newborder)
 		return;
 	
@@ -1629,6 +1636,114 @@ warpmouserel(const char *arg) {
 
         XWarpPointer(dpy, None, root, 0, 0, 0, 0, x + sx[target], y + sy[target]);
 	focus(NULL);
+}
+
+void
+setborderpx(const char *arg) {
+        int i;
+        
+        /* code duplication with set*borderpx*() because
+         * calling one from the other would involve
+         * converting target to a char* again.
+         */
+
+        if (MAXBORDERPX == 0)
+                return;
+        
+        i = arg ? atoi(arg) : 0;
+        
+        if (i < 0)
+                i = 0;
+        if (i > MAXBORDERPX)
+                i = MAXBORDERPX;
+        if (i == borderpx)
+                return;
+
+        borderpx = i;
+        arrange();
+}
+
+void
+setborderpxrel(const char *arg) {
+        int i;
+        
+        /* code duplication with set*borderpx*() because
+         * calling one from the other would involve
+         * converting target to a char* again.
+         */
+
+        if (MAXBORDERPX == 0)
+                return;
+        
+        i = arg ? atoi(arg) : 0;
+        if (i == 0)
+                return;
+
+        i += borderpx;
+
+        if (i < 0)
+                i = 0;
+        if (i > MAXBORDERPX)
+                i = MAXBORDERPX;
+        if (i == borderpx)
+                return;
+
+        borderpx = i;
+        arrange();
+}
+
+void
+setfloatborderpx(const char *arg) {
+        int i;
+        
+        /* code duplication with set*borderpx*() because
+         * calling one from the other would involve
+         * converting target to a char* again.
+         */
+
+        if (MAXBORDERPX == 0)
+                return;
+        
+        i = arg ? atoi(arg) : 0;
+        
+        if (i < 0)
+                i = 0;
+        if (i > MAXBORDERPX)
+                i = MAXBORDERPX;
+        if (i == floatborderpx)
+                return;
+
+        floatborderpx = i;
+        arrange();
+}
+
+void
+setfloatborderpxrel(const char *arg) {
+        int i;
+        
+        /* code duplication with set*borderpx*() because
+         * calling one from the other would involve
+         * converting target to a char* again.
+         */
+
+        if (MAXBORDERPX == 0)
+                return;
+        
+        i = arg ? atoi(arg) : 0;
+        if (i == 0)
+                return;
+
+        i += floatborderpx;
+
+        if (i < 0)
+                i = 0;
+        if (i > MAXBORDERPX)
+                i = MAXBORDERPX;
+        if (i == floatborderpx)
+                return;
+
+        floatborderpx = i;
+        arrange();
 }
 
 unsigned int

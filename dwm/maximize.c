@@ -8,7 +8,7 @@ maximize(unsigned int s) {
 			if (isvisible(c)) {
 				unban(c);
 				if(! c->isfloating)
-					resize(c, wax[s], way[s], waw[s] - 2 * BORDERPX, wah[s] - 2 * BORDERPX, True);
+					resize(c, wax[s], way[s], waw[s] - 2 * borderpx, wah[s] - 2 * borderpx, True);
 			} else {
 				ban(c);
 			}
