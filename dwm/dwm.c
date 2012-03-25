@@ -1713,7 +1713,7 @@ tileleft(unsigned int s) {
 	for(i = 0, c = mc = nexttiled(clients, s); c; c = nexttiled(c->next, s), i++) {
 		c->ismax = False;
 		if(i == 0) { /* master */
-			nx = wax[s] + waw[s] - mw + 2 * c->border;
+			nx = wax[s] + waw[s] - mw;
 			nw = mw - 2 * c->border;
 			nh = wah[s] - 2 * c->border;
 		}
