@@ -156,7 +156,6 @@ void maprequest(XEvent *e);
 Client *nexttiled(Client *c, unsigned int screen);
 void movemouse(Client *c);
 void moveto(const char *arg);
-void moveto(const char *arg);
 void popstack(const char *arg);
 void processrules(Client *c);
 void propertynotify(XEvent *e);
