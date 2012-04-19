@@ -1766,6 +1766,7 @@ togglemax(const char *arg) {
 	if((layout[sel->screen][selws[sel->screen]-1]->arrange != floating) && ! sel->isfloating)
 		return;
 	if((sel->ismax = !sel->ismax)) {
+		setborderbyfloat(sel, False);
 		sel->rx = sel->x;
 		sel->ry = sel->y;
 		sel->rw = sel->w;
