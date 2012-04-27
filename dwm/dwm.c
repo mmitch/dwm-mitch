@@ -1620,6 +1620,8 @@ warpmouserel(const char *arg) {
 
 	x -= sx[source];
 	y -= sy[source];
+	x = (double)x / (double)sw[source] * sw[target];
+	y = (double)y / (double)sh[source] * sh[target];
 
         if (x >= sw[target])
                 x = sw[target]-1;
@@ -1809,6 +1811,8 @@ warpmouse(const char *arg) {
 
 	x -= sx[source];
 	y -= sy[source];
+	x = (double)x / (double)sw[source] * sw[target];
+	y = (double)y / (double)sh[source] * sh[target];
 
         if (x >= sw[target])
                 x = sw[target]-1;
