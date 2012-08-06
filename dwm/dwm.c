@@ -47,6 +47,9 @@
 #define LENGTH(x)		(sizeof x / sizeof x[0])
 #define MOUSEMASK		(BUTTONMASK | PointerMotionMask)
 
+/* constants */
+const char* NULL2 = "";  /* ugly, dirty hack for out of band communication */
+
 /* enums */
 enum { BarTop, BarBot, BarOff };			/* bar position */
 enum { CurNormal, CurResize, CurMove, CurLast };	/* cursor */
@@ -356,8 +359,9 @@ buttonpress(XEvent *e) {
 						setlayout(NULL);
 						break;
 
+					case Button3:
 					case Button5:
-						// layout can only be switched forward :(
+						setlayout(NULL2);
 						break;
 				}
 				return;
@@ -1391,7 +1395,11 @@ setlayout(const char *arg) {
 	unsigned int i;
 	unsigned int s = whichscreen();
 
-	if(!arg) {
+	if(arg == NULL2) {
+		if(layout[s][selws[s]-1]-- == &layouts[0])
+			layout[s][selws[s]-1] = &layouts[LENGTH(layouts)-1];
+	}
+	else if(!arg) {
 		if(++layout[s][selws[s]-1] == &layouts[LENGTH(layouts)])
 			layout[s][selws[s]-1] = &layouts[0];
 	}
