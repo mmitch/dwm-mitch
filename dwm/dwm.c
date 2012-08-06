@@ -341,16 +341,39 @@ buttonpress(XEvent *e) {
 					else
 						wscount("1");
 				}
+				else if(ev->button == Button4) {
+					viewrel("1");
+				}
+				else if(ev->button == Button5) {
+					viewrel("-1");
+				}
 				return;
 			}
-			if((ev->x < x + blw) && ev->button == Button1) {
-				setlayout(NULL);
+			if(ev->x < x + blw) {
+				switch (ev->button) {
+					case Button1:
+					case Button4:
+						setlayout(NULL);
+						break;
+
+					case Button5:
+						// layout can only be switched forward :(
+						break;
+				}
 				return;
 			}
-			if (ev->button == Button1)
-				focusnext(NULL);
-			else
-				focusprev(NULL);
+			switch (ev->button) {
+
+				case Button1:
+				case Button4:
+					focusnext(NULL);
+					break;
+
+				case Button5:
+				default:
+					focusprev(NULL);
+					break;
+			}
 			return;
 		}
 	
