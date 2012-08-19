@@ -128,4 +128,14 @@ Key keys[] = {
 	{ ControlMask,			0x1008ff26,	pushstack,	NULL },
 	{ ControlMask,			0x1008ff26,	viewrel,	"-1" },
 	{ ControlMask,			0x1008ff26,	popstack,	NULL },
+
+	/* special keys on Fujitsu Grenn IT keyboard
+	   XF86HomePage            0x1008ff18
+	   XF86Mail                0x1008ff19
+	   XF86AudioLowerVolume    0x1008ff11
+	   XF86AudioMute           0x1008ff12
+	   XF86AudioRaiseVolume    0x1008ff13
+	   XF86Sleep               0x1008ff2f */
+	{ 0,				0x1008ff11,	spawn,	"amixer set Master 8%-" },
+	{ 0,				0x1008ff13,	spawn,	"amixer set Master 8%+" },
 };
