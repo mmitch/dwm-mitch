@@ -129,7 +129,7 @@ Key keys[] = {
 	{ ControlMask,			0x1008ff26,	viewrel,	"-1" },
 	{ ControlMask,			0x1008ff26,	popstack,	NULL },
 
-	/* special keys on Fujitsu Grenn IT keyboard
+	/* special keys on Fujitsu Green IT keyboard
 	   XF86HomePage            0x1008ff18
 	   XF86Mail                0x1008ff19
 	   XF86AudioLowerVolume    0x1008ff11
