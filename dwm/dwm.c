@@ -368,13 +368,11 @@ buttonpress(XEvent *e) {
 			}
 			switch (ev->button) {
 
-				case Button1:
 				case Button4:
 					focusnext(NULL);
 					break;
 
 				case Button5:
-				default:
 					focusprev(NULL);
 					break;
 			}
