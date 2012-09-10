@@ -1,7 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-#define BARPOS			BarTop /* BarBot, BarOff */
+#define BARPOS			BarBot // BarTop /* BarBot, BarOff */
 #define BORDERPX		0
 #define FLOATBORDERPX		2
 #define FONT			"-misc-fixed-medium-r-normal-*-13-*-*-*-*-*-*-*"

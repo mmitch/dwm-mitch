@@ -35,9 +35,9 @@ fi
 
 # run dmenu
 if [ "$DMENU_COLORS" ] ; then
-    COMMAND=$(cat "$histfile" "$cachefile" | dmenu $DMENU_COLORS)
+    COMMAND=$(cat "$histfile" "$cachefile" | dmenu -i -b $DMENU_COLORS)
 else
-    COMMAND=$(cat "$histfile" "$cachefile" | dmenu)
+    COMMAND=$(cat "$histfile" "$cachefile" | dmenu -i -b)
 fi
 
 # prepend COMMAND to history while removing duplicates
