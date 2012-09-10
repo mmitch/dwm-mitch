@@ -174,7 +174,8 @@ void setclientstate(Client *c, long state);
 void setlayout(const char *arg);
 void setmwfact(const char *arg);
 void setup(void);
-void sigusr1(int notused);
+void sigchld(int unused);
+void sigusr1(int unused);
 void spawn(const char *arg);
 unsigned int textnw(const char *text, unsigned int len);
 unsigned int textw(const char *text);
@@ -1448,6 +1449,9 @@ setup(void) {
 	XModifierKeymap *modmap;
 	XSetWindowAttributes wa;
 
+	/* clean up any zombies immediately */
+	sigchld(0);
+
 	/* init atoms */
 	wmatom[WMProtocols] = XInternAtom(dpy, "WM_PROTOCOLS", False);
 	wmatom[WMDelete] = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
@@ -1565,7 +1569,16 @@ createbarwins(void) {
 }
 
 void
-sigusr1(int notused) {
+sigchld(int unused) {
+	if(signal(SIGCHLD, sigchld) == SIG_ERR) {
+		perror("Can't install SIGCHLD handler");
+		exit(EXIT_FAILURE);
+	}
+	while(0 < waitpid(-1, NULL, WNOHANG));
+}
+
+void
+sigusr1(int unused) {
 	quit(NULL);
 	reload = True;
 }
@@ -1578,20 +1591,16 @@ spawn(const char *arg) {
 		shell = "/bin/sh";
 	if(!arg)
 		return;
-	/* The double-fork construct avoids zombie processes and keeps the code
-	 * clean from stupid signal handlers. */
+
 	if(fork() == 0) {
-		if(fork() == 0) {
-			if(dpy)
-				close(ConnectionNumber(dpy));
-			setsid();
-			execl(shell, shell, "-c", arg, (char *)NULL);
-			fprintf(stderr, "dwm: execl '%s -c %s'", shell, arg);
-			perror(" failed");
-		}
-		exit(0);
+		if(dpy)
+			close(ConnectionNumber(dpy));
+		setsid();
+		execl(shell, shell, "-c", arg, (char *)NULL);
+		fprintf(stderr, "dwm: execl '%s -c %s'", shell, arg);
+		perror(" failed");
+		exit(EXIT_SUCCESS);
 	}
-	wait(0);
 }
 
 void
