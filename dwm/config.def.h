@@ -137,5 +137,6 @@ Key keys[] = {
 	   XF86AudioRaiseVolume    0x1008ff13
 	   XF86Sleep               0x1008ff2f */
 	{ 0,				0x1008ff11,	spawn,	"amixer set Master 5%-" },
+	{ 0,				0x1008ff12,	spawn,	"pa-togglemute" },
 	{ 0,				0x1008ff13,	spawn,	"amixer set Master 5%+" },
 };
