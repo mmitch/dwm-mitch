@@ -79,6 +79,8 @@ Included DWM patches:
 
  *  move mouse pointer via keyboard across Xinerama screens
 
+ *  switch workspace, layout and window via mousewheel on statusbar
+
  *  volume control via rightmost part of statusbar
     (configurable via config.def.h)
 
