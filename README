@@ -79,6 +79,8 @@ Included DWM patches:
 
  *  move mouse pointer via keyboard across Xinerama screens
 
+ *  volume control via rightmost part of statusbar
+    (configurable via config.def.h)
 
  (optional: personal configuration settings)
   * dwm_personal_configuration.mitch.diff

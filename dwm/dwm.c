@@ -367,6 +367,22 @@ buttonpress(XEvent *e) {
 				}
 				return;
 			}
+#ifdef VOLUME
+			if(ev->x > sw[s] - vw) {
+				switch (ev->button) {
+					case Button1:
+					case Button4:
+						spawn(volup);
+						break;
+
+					case Button3:
+					case Button5:
+						spawn(voldown);
+						break;
+				}
+				return;
+			}
+#endif
 			switch (ev->button) {
 
 				case Button4:
