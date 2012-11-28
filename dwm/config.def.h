@@ -135,6 +135,10 @@ Key keys[] = {
 	{ ControlMask,			0x1008ff26,	viewrel,	"-1" },
 	{ ControlMask,			0x1008ff26,	popstack,	NULL },
 
+	/* ordinary volume control */
+	{ MODKEY,			XK_Down,	spawn,	"amixer set Master 5%-" },
+	{ MODKEY,			XK_Up,		spawn,	"amixer set Master 5%+" },
+	
 	/* special keys on Fujitsu Green IT keyboard
 	   XF86HomePage            0x1008ff18
 	   XF86Mail                0x1008ff19
