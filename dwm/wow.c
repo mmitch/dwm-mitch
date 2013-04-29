@@ -11,7 +11,7 @@ wow(unsigned int s) {
 			if (isvisible(c)) {
 				unban(c);
 				if(! c->isfloating)
-					resize(c, wax[s] + wempty, way[s], waw[s] - 2 * BORDERPX - wempty, wah[s] - 2 * BORDERPX, True);
+					resize(c, wax[s] + wempty * (sx[s] != 0), way[s], waw[s] - 2 * BORDERPX - wempty, wah[s] - 2 * BORDERPX, True);
 			} else {
 				ban(c);
 			}

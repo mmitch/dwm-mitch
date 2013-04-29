@@ -245,6 +245,7 @@ char **cargv;
 
 /* predefine variables depending on config.h */
 extern int wax[], way[], waw[], wah[];
+extern int sx[], sy[], sw[], sh[];
 extern unsigned int selws[];
 
 /* configuration, allows nested code to access above variables */
