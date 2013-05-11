@@ -1,13 +1,21 @@
+dwm-mitch
+=========
 
 This is my patchset for the dynamic window manager (http://dwm.suckless.org).
 Get the most current version from http://www.cgarbs.de/dwm-mitch.en.html
 or better yet: https://github.com/mmitch/dwm-mitch
+
+history
+-------
 
 I was a big fan of wmii-2.  I liked the dynamic workspaces, but I did
 not like the tags-approach of wmii-3.  Then I came upon dwm, which had
 all the core functionality of wmii - unluckily of wmii-3 and not of
 wmii-2.  But because dwm is easy to extend, I was able to make dwm
 behave like my beloved wmii-2.
+
+configuration
+-------------
 
 The included file "dwm-mitch" is a start script that initializes a
 dmenu-cache, starts a loop for the status line (showing current time
@@ -30,9 +38,15 @@ regenerate it.
 Your personal configuration changes should be kept in a separate
 branch in your personal dwm-mitch git repository.
 
+installation
+------------
+
 Use "make" or "make install" to install everything.
 Use "make uninstall" to remove installed files.
 Installation propably needs root privileges.
+
+running
+-------
 
 A running dwm can be restarted by "kill -s USR1 $pid_of_dwm".  Use this
 if you have changed some configuration and did a "make install" to see
@@ -40,7 +54,8 @@ your changes without having to restart your X session.
 
 
 
-Included DWM patches:
+included DWM patches
+--------------------
 
  *  add bottom stack layout
     written by: Ross Mohn <rpmohn@waxandwane.org>
@@ -87,7 +102,8 @@ Included DWM patches:
 
 
 
-Included DMENU patches:
+included DMENU patches
+----------------------
 
  *  fix display of wide characters
 
