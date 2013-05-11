@@ -1,4 +1,4 @@
-VERSION = 3.8+git
+VERSION = 3.8
 PREFIX = /usr/local
 
 DWM = dwm
