@@ -1,5 +1,28 @@
 dwm-mitch history
 
+### v3.8    2013-05-11
+
+ - changes/improvements:
+   - statusbar
+     - change workspace via mousewheel
+     - change layout via mousewheel
+     - change focus via mousewheel or click
+     - change volume via mousewheel on rightmost part,
+       see new options in config.def.h
+   - workspace warping:
+     - honor warpmouserel() offset properly on wraparound,
+       don't cling to first/last screen 
+     - mouse pointer is warped relative to screen size,
+       useful when changing between screens with different orientation
+
+ - bugfixes:
+   - change sigchld handler to prevent zombies
+   - fix border calculation for
+     - maximization of floating windows
+     - master window position in tileleft layout
+   - fix off-by-one error in warpmouse bounding code
+   - fix deprecation warning for XKeycodeToKeysym during build
+
 ### v3.7    2012-01-15
 
  - important changes (fix your configuration):
