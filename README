@@ -39,6 +39,7 @@ if you have changed some configuration and did a "make install" to see
 your changes without having to restart your X session.
 
 
+
 Included DWM patches:
 
  *  add bottom stack layout
@@ -83,12 +84,6 @@ Included DWM patches:
 
  *  volume control via rightmost part of statusbar
     (configurable via config.def.h)
-
- (optional: personal configuration settings)
-  * dwm_personal_configuration.mitch.diff
-    written by: Christian Garbs <mitch@cgarbs.de>
-  * dwm_personal_configuration.andy.diff
-    written by: Andreas Geisenhainer <psycorama@opensecure.de>
 
 
 
