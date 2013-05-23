@@ -2017,7 +2017,7 @@ updatebarpos(void) {
 			XMoveWindow(dpy, barwin[s], sx[s], sy[s] + wah[s]);
 			break;
 		case BarOff:
-			XMoveWindow(dpy, barwin[s], sx[s], sy[s] - bh);
+			XMoveWindow(dpy, barwin[s], sx[s], -bh);
 			break;
 		}
 	}
