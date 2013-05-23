@@ -2199,7 +2199,6 @@ updatexinerama(void) {
 			c->workspace = 0;
 	XFree(xinescreens);
 	dc.drawable = XCreatePixmap(dpy, root, totalw, bh, DefaultDepth(dpy, screen)); 
-	createbarwins();
 }
 
 int
