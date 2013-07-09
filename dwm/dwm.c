@@ -1973,14 +1973,14 @@ swapscreen(const char *arg) {
 	if (i == 0)
 		return;
 
-	for(c = clients; c; c = c->next) {
-		s = c->screen;
-		s += i;
-		if (s >= screenmax)
-			s -= screenmax;
-		c->screen = s;
-		c->workspace = selws[s];
-	}
+	for(c = clients; c; c = c->next)
+		if (c->workspace == selws[s = c->screen]) {
+			s += i;
+			if (s >= screenmax)
+				s -= screenmax;
+			c->screen = s;
+			c->workspace = selws[s];
+		}
 	arrange();
 }
 
