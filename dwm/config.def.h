@@ -81,6 +81,7 @@ Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_Tab,		focusprev,	NULL },
 	{ MODKEY|ShiftMask,		XK_space,	togglefloating,	NULL },
 	{ MODKEY|ShiftMask,		XK_c,		killclient,	NULL },
+	{ MODKEY|ShiftMask,		XK_s,		swapscreen,	"1" },
 	{ MODKEY,			XK_1,		view,		"1" },
 	{ MODKEY,			XK_2,		view,		"2" },
 	{ MODKEY,			XK_3,		view,		"3" },

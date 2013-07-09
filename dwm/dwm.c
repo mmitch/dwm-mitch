@@ -177,6 +177,7 @@ void setup(void);
 void sigchld(int unused);
 void sigusr1(int unused);
 void spawn(const char *arg);
+void swapscreen(const char *arg);
 unsigned int textnw(const char *text, unsigned int len);
 unsigned int textw(const char *text);
 void tile(unsigned int s);
@@ -1955,6 +1956,31 @@ wscount(const char *arg) {
 		}
 	}
 	updatewstext(s);
+	arrange();
+}
+
+void
+swapscreen(const char *arg) {
+	Client *c;
+	int i;
+	unsigned int s;
+	
+	i = arg ? atoi(arg) : 0;
+	while (i < 0)
+		i += screenmax;
+	while (i >= screenmax)
+		i -= screenmax;
+	if (i == 0)
+		return;
+
+	for(c = clients; c; c = c->next) {
+		s = c->screen;
+		s += i;
+		if (s >= screenmax)
+			s -= screenmax;
+		c->screen = s;
+		c->workspace = selws[s];
+	}
 	arrange();
 }
 
