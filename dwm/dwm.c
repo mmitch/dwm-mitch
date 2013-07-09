@@ -1912,7 +1912,7 @@ wscount(const char *arg) {
 	unsigned int s = whichscreen();
 	
 	i = arg ? atoi(arg) : 0;
-	if (i == 0 )
+	if (i == 0)
 		return;   
 	if (i > 0) {
 		if (workspaces[s] + i > MAXWORKSPACES) {
