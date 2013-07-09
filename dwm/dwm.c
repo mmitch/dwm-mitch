@@ -1962,7 +1962,6 @@ void
 swapscreen(const char *arg) {
 	Client *c;
 	int i;
-	unsigned int s;
 	
 	i = arg ? atoi(arg) : 0;
 	while (i < 0)
@@ -1972,14 +1971,13 @@ swapscreen(const char *arg) {
 	if (i == 0)
 		return;
 
-	for(c = clients; c; c = c->next) {
-		s = c->screen;
-		s += i;
-		if (s >= screenmax)
-			s -= screenmax;
-		c->screen = s;
-		c->workspace = selws[s];
-	}
+	for(c = clients; c; c = c->next)
+		if (c->workspace == selws[c->screen]) {
+			c->screen += i;
+			if (c->screen >= screenmax)
+				c->screen -= screenmax;
+			c->workspace = selws[c->screen];
+		}
 	arrange();
 }
 
