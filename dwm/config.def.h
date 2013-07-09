@@ -96,6 +96,7 @@ Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_7,		setlayout,	"WoW" },
 	{ MODKEY|ControlMask,		XK_2,		warpmouserel,	"1" },
 	{ MODKEY|ControlMask,		XK_1,		warpmouserel,	"-1" },
+	{ MODKEY|ControlMask,		XK_x,		swapscreen,	"1" },
 
 	/* "macros" using multiple commands on the same keybinding */
 	{ MODKEY|ControlMask,		XK_w,		pushstack,	NULL },

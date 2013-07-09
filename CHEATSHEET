@@ -26,6 +26,8 @@ M+S+l		move window to next workspace
 M+S+h		move window to previous workspace
 M+C+l		move mouse pointer to next screen (xinerama only)
 M+C+h		move mouse pointer to previous screen (xinerama only)
+M+S+s		move all clients one screen around (xinerama only,
+  		     effectively swaps screens on dual-monitor setup)
 M+1		view workspace 1
 M+2		view workspace 2
 [...]
