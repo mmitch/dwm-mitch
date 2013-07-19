@@ -27,11 +27,15 @@ Rule rules[] = {
 #define MAXWSTEXTWIDTH		 6	/* must be 2*(strlen(MAXWORKSPACES)+1)  */
 #define MAXXINERAMASCREENS	 2
 
+
+/* rotate layouts on swapscreen() - undefine SWAPSCREEN_LAYOUT to deactivate */
+#define SWAPSCREEN_LAYOUT
+
 /* volume management via status bar - undefine VOLUME to deactivate */
 #define VOLUME
-int vw = 16; /* pixels from the right to activate volume management on bar */
 const char *volup   = "amixer set Master 5%+";
 const char *voldown = "amixer set Master 5%-";
+int vw = 16; /* pixels from the right to activate volume management on bar */
 
 /* ugly: depending on constants above but needed by layouts below */
 double mwfact[MAXXINERAMASCREENS][MAXWORKSPACES];
@@ -39,7 +43,7 @@ Bool domwfact[MAXXINERAMASCREENS] = {True};
 Bool dozoom[MAXXINERAMASCREENS] = {True};
 
 /* layout(s) */
-#define MWFACT			0.6	/* master width factor [0.1 .. 0.9] */
+#define MWFACT			0.6	/* default master width factor [0.1 .. 0.9] */
 #define RESIZEHINTS		True	/* False - respect size hints in tiled resizals */
 #define SNAP			32	/* snap pixel */
 #include "bstack.c"
