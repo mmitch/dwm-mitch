@@ -33,9 +33,12 @@ Rule rules[] = {
 
 /* volume management via status bar - undefine VOLUME to deactivate */
 #define VOLUME
+/* volume management configuration: */
+#ifdef VOLUME
 const char *volup   = "amixer set Master 5%+";
 const char *voldown = "amixer set Master 5%-";
 int vw = 16; /* pixels from the right to activate volume management on bar */
+#endif
 
 /* ugly: depending on constants above but needed by layouts below */
 double mwfact[MAXXINERAMASCREENS][MAXWORKSPACES];
