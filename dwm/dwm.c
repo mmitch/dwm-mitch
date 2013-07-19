@@ -1961,13 +1961,11 @@ wscount(const char *arg) {
 void
 swapscreen(const char *arg) {
 	Client *c;
-	int i;
+	int i, sl, sn;
+	Layout *l;
 	
 	i = arg ? atoi(arg) : 0;
-	while (i < 0)
-		i += screenmax;
-	while (i >= screenmax)
-		i -= screenmax;
+	i %= screenmax;
 	if (i == 0)
 		return;
 
@@ -1978,6 +1976,19 @@ swapscreen(const char *arg) {
 				c->screen -= screenmax;
 			c->workspace = selws[c->screen];
 		}
+
+#ifdef SWAPSCREEN_LAYOUT
+	sl = 0;
+	l = layout[sl][selws[sl]];
+	sn = (sl + i) % screenmax;
+	while (sn) {
+		layout[sl][selws[sl]] = layout[sn][selws[sn]];
+		sl = sn;
+		sn = (sl + i) % screenmax;
+	}
+	layout[sl][selws[sl]] = l;
+#endif
+
 	arrange();
 }
 
