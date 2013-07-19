@@ -1966,10 +1966,7 @@ swapscreen(const char *arg) {
 	Layout *l;
 	
 	i = arg ? atoi(arg) : 0;
-	while (i < 0)
-		i += screenmax;
-	while (i >= screenmax)
-		i -= screenmax;
+	i %= screenmax;
 	if (i == 0)
 		return;
 
