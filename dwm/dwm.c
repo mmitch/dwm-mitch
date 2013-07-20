@@ -1135,7 +1135,7 @@ movemouse(Client *c) {
 			XSync(dpy, False);
 			nx = ocx + (ev.xmotion.x - x1);
 			ny = ocy + (ev.xmotion.y - y1);
-			// TODO: snap to screen borders instead of global borders?
+			/* TODO: snap to screen borders instead of global borders? */
 			if(abs(totalx + nx) < SNAP)
 				nx = totalx;
 			else if(abs((totalx + totalw) - (nx + c->w + 2 * c->border)) < SNAP)
@@ -1527,7 +1527,7 @@ setup(void) {
 	dc.h = bh = dc.font.height + 2;
 
 	/* init geometry */
-	// init to simple width, expand and update later if xinerama is detected
+	/* init to simple width, expand and update later if xinerama is detected */
 	dc.drawable = XCreatePixmap(dpy, root, DisplayWidth(dpy, screen), bh, DefaultDepth(dpy, screen)); 
 	updatexinerama();
 
@@ -2227,7 +2227,7 @@ updatexinerama(void) {
 		if (sy[screenmax-1] + sh[screenmax-1] > totalh)
 			totalh = sy[screenmax-1] + sh[screenmax-1];
 	}
-	// if screens have been removed, move clients to stack
+	/* if screens have been removed, move clients to stack */
 	for(c = clients; c; c = c->next)
 		if(c->screen >= screenmax)
 			c->workspace = 0;
