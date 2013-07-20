@@ -76,8 +76,6 @@ Key keys[] = {
 	{ MODKEY,			XK_k,		focusprev,	NULL },
 	{ MODKEY,			XK_g,		setmwfact,	"-0.05" },
 	{ MODKEY,			XK_s,		setmwfact,	"+0.05" },
-/*	{ MODKEY|ShiftMask,		XK_g,		incnmaster,	"1" }, */
-/*	{ MODKEY|ShiftMask,		XK_s,		incnmaster,	"-1" }, */
 	{ MODKEY,			XK_a,		popstack,	NULL },
 	{ MODKEY,			XK_d,		pushstack,	NULL },
 	{ MODKEY|ControlMask,		XK_y,		wscount,	"1" },
