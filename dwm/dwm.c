@@ -1981,11 +1981,9 @@ swapscreen(const char *arg) {
 #ifdef SWAPSCREEN_LAYOUT
 	sl = 0;
 	l = layout[sl][selws[sl]-1];
-	sn = (sl + i) % screenmax;
-	while (sn) {
+	while (sn = (sl + i) % screenmax) {
 		layout[sl][selws[sl]-1] = layout[sn][selws[sn]-1];
 		sl = sn;
-		sn = (sl + i) % screenmax;
 	}
 	layout[sl][selws[sl]-1] = l;
 #endif
