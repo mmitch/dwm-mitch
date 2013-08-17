@@ -1,7 +1,13 @@
 #!/bin/bash
 STATUS_SCRIPT=~/.dwm-status
+STARTUP_SCRIPT=~/.dwm-startup
 DWM=/usr/local/bin/dwm
 DWMCHOOSE=/usr/local/bin/dwm-choose
+
+# source startup script into running session
+if [ -r "${STARTUP_SCRIPT}" ] ; then
+    . "${STARTUP_SCRIPT}"
+fi
 
 # refresh cache
 ${DWMCHOOSE} --clearcache

@@ -29,12 +29,20 @@ configuration
 -------------
 
 The included file ``dwm-mitch`` is a start script that initializes a
-dmenu-cache, starts a loop for the status line (showing current time
-and system load) and runs dwm.  If it finds an executable file in
-``$HOME/.dwm-status``, it will be run for status line updates instead.
+dmenu-cache, sources your startup script, starts a loop for the status
+line (showing current time and system load) and runs dwm.
+
+``dwm-mitch`` looks for ``$HOME/.dwm-startup`` and, if found, sources
+and executes it just before starting dwm.  This allows you to
+automatically start some programs after your X session is completely
+intialized (ssh-agent, session manager etc.) and is useful if your
+login manager starts dwm-mitch via the ``dwm-mitch.desktop`` entry.
+
+If ``dwm-mitch`` finds an executable file in ``$HOME/.dwm-status``, it
+will be run for status line updates instead of the built-in default.
 To update the status line, change the title of the X root window,
-e.g. call ``xsetroot -name $content`` regularly.  See the ``dwm-mitch``
-script for an example.
+e.g. call ``xsetroot -name $content`` regularly.  See the
+``dwm-mitch`` script for an example.
 
 The environment variable ``DMENU_COLORS`` is used for changing the
 colors of dmenu on the dwm-choose script.  Set it like this:
