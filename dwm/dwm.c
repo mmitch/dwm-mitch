@@ -508,7 +508,9 @@ configurenotify(XEvent *e) {
 	XConfigureEvent *ev = &e->xconfigure;
 
 	if(ev->window == root) {
+		destroybarwins();
 		updatexinerama();
+		createbarwins();
 		arrange();
 		
 	}
@@ -2219,7 +2221,6 @@ updatexinerama(void) {
 		return;
 	}
 	
-	destroybarwins();
 	XFreePixmap(dpy, dc.drawable);
         xinescreens = XineramaQueryScreens(dpy, &xinescreencount);
 	screenmax = 0;
