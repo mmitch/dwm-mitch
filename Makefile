@@ -27,7 +27,9 @@ install:	stamp-built
 	cp -f dwm-choose ${DESTDIR}${PREFIX}/bin
 	chmod 755 ${DESTDIR}${PREFIX}/bin/dwm-mitch
 	chmod 755 ${DESTDIR}${PREFIX}/bin/dwm-choose
-	-[ -d /usr/share/xsessions ] && cp -f dwm-mitch.desktop /usr/share/xsessions/ && chmod 644 /usr/share/xsessions/dwm-mitch.desktop
+	mkdir -p /usr/share/xsessions
+	cp -f dwm-mitch.desktop /usr/share/xsessions/
+	chmod 644 /usr/share/xsessions/dwm-mitch.desktop
 
 uninstall:
 	$(MAKE) -C $(DWM) uninstall
@@ -35,6 +37,7 @@ uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/dwm-mitch
 	rm -f ${DESTDIR}${PREFIX}/bin/dwm-choose
 	rm -f /usr/share/xsessions/dwm-mitch.desktop
+	-rmdir /usr/share/xsessions
 
 clean:
 	$(MAKE) -C $(DWM) clean

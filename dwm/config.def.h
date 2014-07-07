@@ -27,6 +27,7 @@ Rule rules[] = {
 	{ ":zenity:",				True,	0 }, \
 	{ ":VICE:",				True,	0 }, \
 	{ "Xnest",				True,	0 }, \
+	{ "Wine:Diablo III.exe",		True,	0 }, \
 };
 #define INITIALWORKSPACES	 2
 #define MAXWORKSPACES		99
