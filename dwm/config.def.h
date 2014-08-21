@@ -28,7 +28,7 @@ Rule rules[] = {
 	{ ":VICE:",				True,	0 }, \
 	{ "Xnest",				True,	0 }, \
 	{ "Wine:Diablo III.exe",		True,	0 }, \
-	{ "de-cgarbs-knittr-Knittr:",		True,	2 }, \
+	{ "de-cgarbs-knittr-Knittr:",		True,	0 }, \
 };
 #define INITIALWORKSPACES	 2
 #define MAXWORKSPACES		99
