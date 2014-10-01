@@ -16,20 +16,20 @@
 /* Query class:instance:title for regex matching info with following command:
  * xprop | awk -F '"' '/^WM_CLASS/ { printf("%s:%s:",$4,$2) }; /^WM_NAME/ { printf("%s\n",$2) }' */
 Rule rules[] = {
-	/* class:instance:title regex		isfloat	workspace (0=current) */ \
-	{ "MPlayer:",				True,	0 }, \
-	{ "[Vv]ncviewer:",			True,	0 }, \
-	{ "VNC Viewer:",			True,	0 }, \
-	{ "VNC::",				True,	0 }, \
-	{ "Gimp",				True,	0 }, \
-	{ ":xsane:",				True,	0 }, \
-	{ ":Xdialog:",				True,	0 }, \
-	{ ":zenity:",				True,	0 }, \
-	{ ":VICE:",				True,	0 }, \
-	{ "Xnest",				True,	0 }, \
-	{ "Wine:Diablo III.exe",		True,	0 }, \
-	{ "de-cgarbs-knittr-Knittr:",		True,	0 }, \
-	{ "Hugin:hugin:Panorama Tools",		True,	0 }, \
+	/* class:instance:title regex		isfloat	workspace (0=current) */
+	{ "MPlayer:",				True,	0 },
+	{ "[Vv]ncviewer:",			True,	0 },
+	{ "VNC Viewer:",			True,	0 },
+	{ "VNC::",				True,	0 },
+	{ "Gimp",				True,	0 },
+	{ ":xsane:",				True,	0 },
+	{ ":Xdialog:",				True,	0 },
+	{ ":zenity:",				True,	0 },
+	{ ":VICE:",				True,	0 },
+	{ "Xnest",				True,	0 },
+	{ "Wine:Diablo III.exe",		True,	0 },
+	{ "de-cgarbs-knittr-Knittr:",		True,	0 },
+	{ "Hugin:hugin:Panorama Tools",		True,	0 },
 };
 #define INITIALWORKSPACES	 2
 #define MAXWORKSPACES		99
