@@ -21,7 +21,6 @@ Rule rules[] = {
 	{ "[Vv]ncviewer:",			True,	0 },
 	{ "VNC Viewer:",			True,	0 },
 	{ "VNC::",				True,	0 },
-	{ "Gimp",				True,	0 },
 	{ ":xsane:",				True,	0 },
 	{ ":Xdialog:",				True,	0 },
 	{ ":zenity:",				True,	0 },
