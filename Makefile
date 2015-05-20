@@ -30,6 +30,12 @@ install:	stamp-built
 	mkdir -p /usr/share/xsessions
 	cp -f dwm-mitch.desktop /usr/share/xsessions/
 	chmod 644 /usr/share/xsessions/dwm-mitch.desktop
+	mkdir -p /usr/share/pixmaps
+	cp -f dwm-mitch.png /usr/share/pixmaps/
+	chmod 644 /usr/share/pixmaps/dwm-mitch.png
+	mkdir -p /usr/share/unity-greeter
+	cp -f custom_dwm-mitch_badge.png /usr/share/unity-greeter/
+	chmod 644 /usr/share/unity-greeter/custom_dwm-mitch_badge.png
 
 uninstall:
 	$(MAKE) -C $(DWM) uninstall
@@ -38,6 +44,10 @@ uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/dwm-choose
 	rm -f /usr/share/xsessions/dwm-mitch.desktop
 	-rmdir /usr/share/xsessions
+	rm -f /usr/share/pixmaps/dwm-mitch.png
+	-rmdir /usr/share/pixmaps
+	rm -f /usr/share/unity-greeter/custom_dwm-mitch_png.png
+	-rmdir /usr/share/unity-greeter
 
 clean:
 	$(MAKE) -C $(DWM) clean

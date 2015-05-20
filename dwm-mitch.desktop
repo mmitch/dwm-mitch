@@ -4,3 +4,4 @@ Name=DWM-mitch
 Comment=dynamic window manager (mitch)
 Exec=/usr/local/bin/dwm-mitch
 Type=XSession
+Icon=dwm-mitch.png
