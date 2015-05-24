@@ -1,5 +1,25 @@
 dwm-mitch history
 
+### v3.9    2015-05-24
+
+ - changes/improvements:
+   - new command 'swapscreen' (default keybinding: M+S+s)
+     Allow moving all clients to another screen at once, effectively
+     providing a "swap screens" function on dual-monitor setups.
+     Set SWAPSCREEN_LAYOUT to control whether layouts are also swapped
+     or kept.
+   - execute ~/.dwm-startup on dwm start, useful for autostarting
+     things when running via dwm-mitch.desktop Xsession
+   - remove status script ownership check
+   - add a dwm-mitch logo as icon for Xsession and Unity greeter
+   - create and remove /usr/share/xsessions as needed on (un)install
+
+ - bugfixes:
+   - hide disabled bar on an above/below multiscreen configuration
+   - fix partly concealed background on bottom bar configuration
+   - fix position of popups on multiscreen configuration, don't always
+     appear on screen 0
+
 ### v3.8.1  2013-05-11
 
  - documentation updates
