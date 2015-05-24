@@ -1,5 +1,8 @@
-VERSION = 3.9+git
+DISTVERSION =
 PREFIX = /usr/local
+
+# get version from git if available, otherwise take version from distribution tarball
+VERSION = $(shell if [ -d .git ]; then git describe; else echo $(DISTVERSION); fi )
 
 DWM = dwm
 DMENU = dmenu
@@ -51,6 +54,7 @@ clean:
 dist:	clean
 	mkdir dwm-mitch-$(VERSION)
 	-cp * dwm-mitch-$(VERSION)/
+	sed -e 's/^DISTVERSION.*/DISTVERSION = $(VERSION)/' < Makefile > dwm-mitch-$(VERSION)/Makefile
 	-cp -R dwm/ dmenu/ dwm-mitch-$(VERSION)/
 	tar -czvf dwm-mitch-$(VERSION).tar.gz dwm-mitch-$(VERSION)/
 	rm -rf dwm-mitch-$(VERSION)/
