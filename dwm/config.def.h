@@ -116,9 +116,7 @@ Key keys[] = {
 };
 
 /* button definitions */
-/* click can be ClkWsNumber, ClkLtSymbol, ClkWinTitle or ClkStatusText */
-/* FIXME: add ClkClientWin */
-/* FIXME: add ClkRootWin */
+/* click can be ClkWsNumber, ClkLtSymbol, ClkWinTitle, ClkStatusText, ClkClientWin or ClkRootWin */
 Button buttons[] = {
 	/* click		modifier	button		function	argument */
 	{ ClkWsNumber,		0,		Button1,	viewrel,	"1" },
@@ -140,4 +138,9 @@ Button buttons[] = {
 	{ ClkStatusText,	0,		Button4,	spawn,		"amixer set Master 5%+" },
 	{ ClkStatusText,	0,		Button3,	spawn,		"amixer set Master 5%-" },
 	{ ClkStatusText,	0,		Button5,	spawn,		"amixer set Master 5%-" },
+	{ ClkClientWin,		MODKEY,		Button1,	movemouse,	NULL },
+	{ ClkClientWin,		MODKEY,		Button2,	zoom,		NULL },
+	{ ClkClientWin,		MODKEY,		Button2,	togglemax,	NULL },
+	{ ClkClientWin,		MODKEY,		Button3,	resizemouse,	NULL },
+	{ ClkRootWin,		0,		Button1,	spawn,		"exec uxterm" },
 };
