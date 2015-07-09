@@ -35,8 +35,6 @@ Rule rules[] = {
 #define VOLUME
 /* volume management configuration: */
 #ifdef VOLUME
-const char *volup   = "amixer set Master 5%+";
-const char *voldown = "amixer set Master 5%-";
 int vw = 16; /* pixels from the right to activate volume management on bar */
 #endif
 
@@ -122,4 +120,32 @@ Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_q,		quit,		NULL },
 	{ MODKEY|ControlMask,		XK_l,		warpmouserel,	"1" },
 	{ MODKEY|ControlMask,		XK_h,		warpmouserel,	"-1" },
+};
+
+/* button definitions */
+/* click can be ClkWsNumber, ClkLtSymbol, ClkWinTitle or ClkStatusVolume */
+/* FIXME: add ClkStatusText, throw out ClkStatusVolume */
+/* FIXME: add ClkClientWin */
+/* FIXME: add ClkRootWin */
+Button buttons[] = {
+	/* click		modifier	button		function	argument */
+	{ ClkWsNumber,		0,		Button1,	viewrel,	"1" },
+	{ ClkWsNumber,		MODKEY,		Button1,	viewrel,	"-1" },
+	{ ClkWsNumber,		0,		Button3,	wscount,	"1" },
+	{ ClkWsNumber,		MODKEY,		Button3,	wscount,	"-1" },
+	{ ClkWsNumber,		0,		Button4,	viewrel,	"1" },
+	{ ClkWsNumber,		0,		Button5,	viewrel,	"-1" },
+	{ ClkLtSymbol,		0,		Button1,	setlayout,	NULL },
+	{ ClkLtSymbol,		0,		Button4,	setlayout,	NULL },
+	{ ClkLtSymbol,		0,		Button3,	setlayout,	NULL2 },
+	{ ClkLtSymbol,		0,		Button5,	setlayout,	NULL2 },
+	{ ClkWinTitle,		0,		Button1,	focusnext,	NULL },
+	{ ClkWinTitle,		0,		Button4,	focusnext,	NULL },
+	{ ClkWinTitle,		0,		Button3,	focusprev,	NULL },
+	{ ClkWinTitle,		0,		Button5,	focusprev,	NULL },
+	{ ClkWinTitle,		0,		Button2,	zoom,		NULL },
+	{ ClkStatusVolume,	0,		Button1,	spawn,		"amixer set Master 5%+" },
+	{ ClkStatusVolume,	0,		Button4,	spawn,		"amixer set Master 5%+" },
+	{ ClkStatusVolume,	0,		Button3,	spawn,		"amixer set Master 5%-" },
+	{ ClkStatusVolume,	0,		Button5,	spawn,		"amixer set Master 5%-" },
 };
