@@ -1070,9 +1070,6 @@ movemouse(const char *arg) {
 		return;
 	c->ismax = False;
 	XQueryPointer(dpy, root, &dummy, &dummy, &x1, &y1, &di, &di, &dui);
-#ifdef SNAPLOCALBORDERS
-	s = whichscreen(); /* screen of pointer, not client */
-#endif
 	for(;;) {
 		XMaskEvent(dpy, MOUSEMASK | ExposureMask | SubstructureRedirectMask, &ev);
 		switch (ev.type) {
@@ -1091,14 +1088,17 @@ movemouse(const char *arg) {
 			if (!c->isfloating)
 				togglefloating(NULL);
 #ifdef SNAPLOCALBORDERS
-			if(abs(sx[s] - nx) < SNAP)
-				nx = sx[s];
-			else if(abs((sx[s] + sw[s]) - (nx + c->w + 2 * c->border)) < SNAP)
-				nx = sx[s] + sw[s] - c->w - 2 * c->border;
-			if(abs((sy[s] + bartop) - ny) < SNAP)
-				ny = sy[s] + bartop;
-			else if(abs((sy[s] + sh[s] - barbot) - (ny + c->h + 2 * c->border)) < SNAP)
-				ny = sy[s] + sh[s] - barbot - c->h - 2 * c->border;
+			/* snap to ALL the borders! */
+			for(s = 0; s < screenmax; s++) {
+				if(abs(sx[s] - nx) < SNAP)
+					nx = sx[s];
+				else if(abs((sx[s] + sw[s]) - (nx + c->w + 2 * c->border)) < SNAP)
+					nx = sx[s] + sw[s] - c->w - 2 * c->border;
+				if(abs((sy[s] + bartop) - ny) < SNAP)
+					ny = sy[s] + bartop;
+				else if(abs((sy[s] + sh[s] - barbot) - (ny + c->h + 2 * c->border)) < SNAP)
+					ny = sy[s] + sh[s] - barbot - c->h - 2 * c->border;
+			}
 #else
 			if(abs(totalx - nx) < SNAP)
 				nx = totalx;
