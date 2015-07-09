@@ -55,7 +55,7 @@ enum { CurNormal, CurResize, CurMove, CurLast };	/* cursor */
 enum { ColBorder, ColFG, ColBG, ColLast };		/* color */
 enum { NetSupported, NetWMName, NetLast };		/* EWMH atoms */
 enum { WMProtocols, WMDelete, WMName, WMState, WMLast };/* default atoms */
-enum { ClkWsNumber, ClkLtSymbol, ClkWinTitle, ClkStatusVolume };
+enum { ClkWsNumber, ClkLtSymbol, ClkWinTitle, ClkStatusText, ClkClientWin, ClkRootWin };
 
 /* typedefs */
 typedef struct Client Client;
@@ -165,7 +165,7 @@ void manage(Window w, XWindowAttributes *wa);
 void mappingnotify(XEvent *e);
 void maprequest(XEvent *e);
 Client *nexttiled(Client *c, unsigned int screen);
-void movemouse(Client *c);
+void movemouse(const char *arg);
 void moveto(const char *arg);
 void popstack(const char *arg);
 void processrules(Client *c);
@@ -173,7 +173,7 @@ void propertynotify(XEvent *e);
 void pushstack(const char *arg);
 void quit(const char *arg);
 void resize(Client *c, int x, int y, int w, int h, Bool sizehints);
-void resizemouse(Client *c);
+void resizemouse(const char *arg);
 void restack(void);
 void run(void);
 void scan(void);
@@ -335,57 +335,35 @@ ban(Client *c) {
 
 void
 buttonpress(XEvent *e) {
-	unsigned int x, s, click, i;
+	unsigned int x, s, click, i, stextw;
 	Client *c;
 	XButtonPressedEvent *ev = &e->xbutton;
 
-	for(s = 0; s < screenmax; s++)
-		if(ev->window == barwin[s]) {
-			x = textw(wstext[s]);
-			if(ev->x < x)
-				click = ClkWsNumber;
-			else if(ev->x < x + blw)
-				click = ClkLtSymbol;
-#ifdef VOLUME
-			else if(ev->x > sw[s] - vw)
-				click = ClkStatusVolume;
-#endif
-			else
-				click = ClkWinTitle;
-			for(i = 0; i < LENGTH(buttons); i++)
-				if(click == buttons[i].click && buttons[i].func && buttons[i].button == ev->button
-				   && CLEANMASK(buttons[i].mod) == CLEANMASK(ev->state))
-					buttons[i].func(buttons[i].arg);
-			// FIXME: CLEANMASK() is computed over and over again…
-			return;
-		}
-	
+	click = ClkRootWin;
 	if((c = getclient(ev->window))) {
 		focus(c);
 		s = c->screen;
-		if(CLEANMASK(ev->state) != MODKEY)
-			return;
-		if(ev->button == Button1) {
-			if((layout[s][selws[s]-1]->arrange == floating) || c->isfloating)
-				restack();
-			else
-				togglefloating(NULL);
-			movemouse(c);
-		}
-		else if(ev->button == Button2) {
-			if((floating != layout[s][selws[s]-1]->arrange) && c->isfloating)
-				togglefloating(NULL);
-			else
-				zoom(NULL);
-		}
-		else if(ev->button == Button3 && !c->isfixed) {
-			if((floating == layout[s][selws[s]-1]->arrange) || c->isfloating)
-				restack();
-			else
-				togglefloating(NULL);
-			resizemouse(c);
-		}
+		click = ClkClientWin;
 	}
+	else for(s = 0; s < screenmax; s++)
+		     if(ev->window == barwin[s]) {
+			     /* FIXME: textw() is computed all over again and again… */
+			     x = textw(wstext[s]);
+			     stextw = textw(stext);
+			     if(ev->x < x)
+				     click = ClkWsNumber;
+			     else if(ev->x < x + blw)
+				     click = ClkLtSymbol;
+			     else if(ev->x > sw[s] - stextw)
+				     click = ClkStatusText;
+			     else
+				     click = ClkWinTitle;
+		     }
+	for(i = 0; i < LENGTH(buttons); i++)
+		if(click == buttons[i].click && buttons[i].func && buttons[i].button == ev->button
+		   && CLEANMASK(buttons[i].mod) == CLEANMASK(ev->state))
+			buttons[i].func(buttons[i].arg);
+	/* FIXME: CLEANMASK() is computed over and over again… */
 }
 
 void
@@ -963,7 +941,7 @@ keypress(XEvent *e) {
 			if(keys[i].func)
 				keys[i].func(keys[i].arg);
 		}
-	// FIXME: CLEANMASK() is computed over and over again…
+	/* FIXME: CLEANMASK() is computed over and over again… */
 }
 
 void
@@ -1070,14 +1048,18 @@ maprequest(XEvent *e) {
 }
 
 void
-movemouse(Client *c) {
+movemouse(const char *arg) {
 	int x1, y1, ocx, ocy, di, nx, ny;
 	unsigned int dui;
 	Window dummy;
 	XEvent ev;
 	int bartop = (bpos == BarTop) ? bh : 0;
 	int barbot = (bpos == BarBot) ? bh : 0;
+	Client *c;
 	
+	if (!(c = sel))
+		return;
+
 	ocx = nx = c->x;
 	ocy = ny = c->y;
 	if(XGrabPointer(dpy, root, False, MOUSEMASK, GrabModeAsync, GrabModeAsync,
@@ -1100,6 +1082,8 @@ movemouse(Client *c) {
 			XSync(dpy, False);
 			nx = ocx + (ev.xmotion.x - x1);
 			ny = ocy + (ev.xmotion.y - y1);
+			if (!c->isfloating)
+				togglefloating(NULL);
 			/* TODO: snap to screen borders instead of global borders? */
 			if(abs(totalx + nx) < SNAP)
 				nx = totalx;
@@ -1240,10 +1224,14 @@ resize(Client *c, int x, int y, int w, int h, Bool sizehints) {
 }
 
 void
-resizemouse(Client *c) {
+resizemouse(const char *arg) {
 	int ocx, ocy;
 	int nw, nh;
 	XEvent ev;
+	Client *c;
+
+	if (!(c = sel))
+		return;
 
 	ocx = c->x;
 	ocy = c->y;
@@ -1268,6 +1256,8 @@ resizemouse(Client *c) {
 			break;
 		case MotionNotify:
 			XSync(dpy, False);
+			if (!c->isfloating)
+				togglefloating(NULL);
 			if((nw = ev.xmotion.x - ocx - 2 * c->border + 1) <= 0)
 				nw = 1;
 			if((nh = ev.xmotion.y - ocy - 2 * c->border + 1) <= 0)
@@ -1461,7 +1451,7 @@ setup(void) {
 	/* select for events */
 	wa.event_mask = SubstructureRedirectMask | SubstructureNotifyMask
 		| EnterWindowMask | LeaveWindowMask | StructureNotifyMask
-		| PropertyChangeMask;
+		| PropertyChangeMask | ButtonPressMask;
 	wa.cursor = cursor[CurNormal];
 	XChangeWindowAttributes(dpy, root, CWEventMask | CWCursor, &wa);
 	XSelectInput(dpy, root, wa.event_mask);
