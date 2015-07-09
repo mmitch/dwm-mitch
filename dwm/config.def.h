@@ -31,13 +31,6 @@ Rule rules[] = {
 /* rotate layouts on swapscreen() - undefine SWAPSCREEN_LAYOUT to deactivate */
 #define SWAPSCREEN_LAYOUT
 
-/* volume management via status bar - undefine VOLUME to deactivate */
-#define VOLUME
-/* volume management configuration: */
-#ifdef VOLUME
-int vw = 16; /* pixels from the right to activate volume management on bar */
-#endif
-
 /* ugly: depending on constants above but needed by layouts below */
 double mwfact[MAXXINERAMASCREENS][MAXWORKSPACES];
 Bool domwfact[MAXXINERAMASCREENS] = {True};
@@ -123,8 +116,7 @@ Key keys[] = {
 };
 
 /* button definitions */
-/* click can be ClkWsNumber, ClkLtSymbol, ClkWinTitle or ClkStatusVolume */
-/* FIXME: add ClkStatusText, throw out ClkStatusVolume */
+/* click can be ClkWsNumber, ClkLtSymbol, ClkWinTitle or ClkStatusText */
 /* FIXME: add ClkClientWin */
 /* FIXME: add ClkRootWin */
 Button buttons[] = {
@@ -144,8 +136,8 @@ Button buttons[] = {
 	{ ClkWinTitle,		0,		Button3,	focusprev,	NULL },
 	{ ClkWinTitle,		0,		Button5,	focusprev,	NULL },
 	{ ClkWinTitle,		0,		Button2,	zoom,		NULL },
-	{ ClkStatusVolume,	0,		Button1,	spawn,		"amixer set Master 5%+" },
-	{ ClkStatusVolume,	0,		Button4,	spawn,		"amixer set Master 5%+" },
-	{ ClkStatusVolume,	0,		Button3,	spawn,		"amixer set Master 5%-" },
-	{ ClkStatusVolume,	0,		Button5,	spawn,		"amixer set Master 5%-" },
+	{ ClkStatusText,	0,		Button1,	spawn,		"amixer set Master 5%+" },
+	{ ClkStatusText,	0,		Button4,	spawn,		"amixer set Master 5%+" },
+	{ ClkStatusText,	0,		Button3,	spawn,		"amixer set Master 5%-" },
+	{ ClkStatusText,	0,		Button5,	spawn,		"amixer set Master 5%-" },
 };

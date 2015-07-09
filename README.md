@@ -112,8 +112,7 @@ included dwm patches
 
  *  switch workspace, layout and window via mousewheel on statusbar
 
- *  volume control via rightmost part of statusbar
-    (configurable via ``config.def.h``)
+ *  volume control via statusbar text
 
 included dmenu patches
 ----------------------

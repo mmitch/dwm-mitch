@@ -55,7 +55,7 @@ enum { CurNormal, CurResize, CurMove, CurLast };	/* cursor */
 enum { ColBorder, ColFG, ColBG, ColLast };		/* color */
 enum { NetSupported, NetWMName, NetLast };		/* EWMH atoms */
 enum { WMProtocols, WMDelete, WMName, WMState, WMLast };/* default atoms */
-enum { ClkWsNumber, ClkLtSymbol, ClkWinTitle, ClkStatusVolume };
+enum { ClkWsNumber, ClkLtSymbol, ClkWinTitle, ClkStatusText };
 
 /* typedefs */
 typedef struct Client Client;
@@ -334,21 +334,21 @@ ban(Client *c) {
 
 void
 buttonpress(XEvent *e) {
-	unsigned int x, s, click, i;
+	unsigned int x, s, click, i, stextw;
 	Client *c;
 	XButtonPressedEvent *ev = &e->xbutton;
 
 	for(s = 0; s < screenmax; s++)
 		if(ev->window == barwin[s]) {
+			// FIXME: TextWidth is computed all over again and again…
 			x = textw(wstext[s]);
+			stextw = textw(stext);
 			if(ev->x < x)
 				click = ClkWsNumber;
 			else if(ev->x < x + blw)
 				click = ClkLtSymbol;
-#ifdef VOLUME
-			else if(ev->x > sw[s] - vw)
-				click = ClkStatusVolume;
-#endif
+			else if(ev->x > sw[s] - stextw)
+				click = ClkStatusText;
 			else
 				click = ClkWinTitle;
 			for(i = 0; i < LENGTH(buttons); i++)
