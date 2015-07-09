@@ -1,9 +1,12 @@
 dwm-mitch
 =========
 
-This is my patchset for the dynamic window manager (http://dwm.suckless.org).
-Get the most current version from http://www.cgarbs.de/dwm-mitch.en.html
-or better yet: https://github.com/mmitch/dwm-mitch
+This is my version for the dynamic window manager (http://dwm.suckless.org).
+Get the most current version from https://github.com/mmitch/dwm-mitch
+Older versions were hosted at http://www.cgarbs.de/dwm-mitch.en.html
+
+dwm-mitch is based von dwm 4.7 from December 2007, so patches from
+current dwm versions will propably not apply cleanly.
 
 installation
 ------------
