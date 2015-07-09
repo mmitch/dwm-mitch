@@ -39,6 +39,10 @@ Rule rules[] = {
 /* rotate layouts on swapscreen() - undefine SWAPSCREEN_LAYOUT to deactivate */
 #define SWAPSCREEN_LAYOUT
 
+/* snap clients to local screen borders on mousemove() - undefine to snap to global borders */
+/* only relevant with multiple screens */
+#define SNAPLOCALBORDERS
+
 /* ugly: depending on constants above but needed by layouts below */
 double mwfact[MAXXINERAMASCREENS][MAXWORKSPACES];
 Bool domwfact[MAXXINERAMASCREENS] = {True};

@@ -1056,6 +1056,9 @@ movemouse(const char *arg) {
 	int bartop = (bpos == BarTop) ? bh : 0;
 	int barbot = (bpos == BarBot) ? bh : 0;
 	Client *c;
+#ifdef SNAPLOCALBORDERS
+	unsigned int s;
+#endif
 	
 	if (!(c = sel))
 		return;
@@ -1067,6 +1070,9 @@ movemouse(const char *arg) {
 		return;
 	c->ismax = False;
 	XQueryPointer(dpy, root, &dummy, &dummy, &x1, &y1, &di, &di, &dui);
+#ifdef SNAPLOCALBORDERS
+	s = whichscreen(); /* screen of pointer, not client */
+#endif
 	for(;;) {
 		XMaskEvent(dpy, MOUSEMASK | ExposureMask | SubstructureRedirectMask, &ev);
 		switch (ev.type) {
@@ -1084,8 +1090,17 @@ movemouse(const char *arg) {
 			ny = ocy + (ev.xmotion.y - y1);
 			if (!c->isfloating)
 				togglefloating(NULL);
-			/* TODO: snap to screen borders instead of global borders? */
-			if(abs(totalx + nx) < SNAP)
+#ifdef SNAPLOCALBORDERS
+			if(abs(sx[s] - nx) < SNAP)
+				nx = sx[s];
+			else if(abs((sx[s] + sw[s]) - (nx + c->w + 2 * c->border)) < SNAP)
+				nx = sx[s] + sw[s] - c->w - 2 * c->border;
+			if(abs((sy[s] + bartop) - ny) < SNAP)
+				ny = sy[s] + bartop;
+			else if(abs((sy[s] + sh[s] - barbot) - (ny + c->h + 2 * c->border)) < SNAP)
+				ny = sy[s] + sh[s] - barbot - c->h - 2 * c->border;
+#else
+			if(abs(totalx - nx) < SNAP)
 				nx = totalx;
 			else if(abs((totalx + totalw) - (nx + c->w + 2 * c->border)) < SNAP)
 				nx = totalx + totalw - c->w - 2 * c->border;
@@ -1093,6 +1108,7 @@ movemouse(const char *arg) {
 				ny = totaly + bartop;
 			else if(abs((totaly + totalh - barbot) - (ny + c->h + 2 * c->border)) < SNAP)
 				ny = totaly + totalh - barbot - c->h - 2 * c->border;
+#endif
 			resize(c, nx, ny, c->w, c->h, False);
 			break;
 		}
