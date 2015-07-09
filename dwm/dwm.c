@@ -47,7 +47,7 @@
 #define MOUSEMASK		(BUTTONMASK | PointerMotionMask)
 
 /* constants */
-const char* NULL2 = "";  /* ugly, dirty hack for out of band communication */
+const char NULL2[] = "";  /* ugly, dirty hack for out of band communication */
 
 /* enums */
 enum { BarTop, BarBot, BarOff };			/* bar position */
@@ -55,6 +55,7 @@ enum { CurNormal, CurResize, CurMove, CurLast };	/* cursor */
 enum { ColBorder, ColFG, ColBG, ColLast };		/* color */
 enum { NetSupported, NetWMName, NetLast };		/* EWMH atoms */
 enum { WMProtocols, WMDelete, WMName, WMState, WMLast };/* default atoms */
+enum { ClkWsNumber, ClkLtSymbol, ClkWinTitle, ClkStatusVolume };
 
 /* typedefs */
 typedef struct Client Client;
@@ -87,6 +88,14 @@ typedef struct {
 		XFontStruct *xfont;
 	} font;
 } DC; /* draw context */
+
+typedef struct {
+	unsigned long click;
+	unsigned long mod;
+	unsigned long button;
+	void (*func)(const char *arg);
+	const char *arg;
+} Button;
 
 typedef struct {
 	unsigned long mod;
@@ -326,74 +335,28 @@ ban(Client *c) {
 
 void
 buttonpress(XEvent *e) {
-	unsigned int x, s;
+	unsigned int x, s, click, i;
 	Client *c;
 	XButtonPressedEvent *ev = &e->xbutton;
 
 	for(s = 0; s < screenmax; s++)
 		if(ev->window == barwin[s]) {
 			x = textw(wstext[s]);
-			if(ev->x < x) {
-				if(ev->button == Button1) {
-					if(ev->state & MODKEY)
-						viewrel("-1");
-					else
-						viewrel("1");
-				}
-				else if(ev->button == Button3) {
-					if(ev->state & MODKEY)  
-						wscount("-1");  
-					else
-						wscount("1");
-				}
-				else if(ev->button == Button4) {
-					viewrel("1");
-				}
-				else if(ev->button == Button5) {
-					viewrel("-1");
-				}
-				return;
-			}
-			if(ev->x < x + blw) {
-				switch (ev->button) {
-					case Button1:
-					case Button4:
-						setlayout(NULL);
-						break;
-
-					case Button3:
-					case Button5:
-						setlayout(NULL2);
-						break;
-				}
-				return;
-			}
+			if(ev->x < x)
+				click = ClkWsNumber;
+			else if(ev->x < x + blw)
+				click = ClkLtSymbol;
 #ifdef VOLUME
-			if(ev->x > sw[s] - vw) {
-				switch (ev->button) {
-					case Button1:
-					case Button4:
-						spawn(volup);
-						break;
-
-					case Button3:
-					case Button5:
-						spawn(voldown);
-						break;
-				}
-				return;
-			}
+			else if(ev->x > sw[s] - vw)
+				click = ClkStatusVolume;
 #endif
-			switch (ev->button) {
-
-				case Button4:
-					focusnext(NULL);
-					break;
-
-				case Button5:
-					focusprev(NULL);
-					break;
-			}
+			else
+				click = ClkWinTitle;
+			for(i = 0; i < LENGTH(buttons); i++)
+				if(click == buttons[i].click && buttons[i].func && buttons[i].button == ev->button
+				   && CLEANMASK(buttons[i].mod) == CLEANMASK(ev->state))
+					buttons[i].func(buttons[i].arg);
+			// FIXME: CLEANMASK() is computed over and over again…
 			return;
 		}
 	
@@ -1000,6 +963,7 @@ keypress(XEvent *e) {
 			if(keys[i].func)
 				keys[i].func(keys[i].arg);
 		}
+	// FIXME: CLEANMASK() is computed over and over again…
 }
 
 void
