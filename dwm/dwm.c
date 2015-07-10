@@ -16,7 +16,7 @@
  * doubly-linked client list, the focus history is remembered through a global
  * stack list.
  *
- * Keys and other things are organized as arrays and defined in config.h.
+ * Keys and other things are organized as arrays and defined in config.def.h.
  *
  * To understand everything else, start reading main().
  */
@@ -252,13 +252,13 @@ Window root;
 Regs *regs = NULL;
 char **cargv;
 
-/* predefine variables depending on config.h */
+/* predefine variables depending on config.def.h */
 extern int wax[], way[], waw[], wah[];
 extern int sx[], sy[], sw[], sh[];
 extern unsigned int selws[];
 
 /* configuration, allows nested code to access above variables */
-#include "config.h"
+#include "config.def.h"
 
 /* variables depending on config.h */
 Layout *layout[MAXXINERAMASCREENS][MAXWORKSPACES];

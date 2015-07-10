@@ -36,3 +36,35 @@ M+S+1		move window to workspace 1
 M+S+2		move window to workspace 2
 [...]
 M+S+0		move window to workspace 10
+
+
+These are the default mouse button bindings.
+
+  click on workspace display:
+left button     view next workspace
+right button    view previous workspace
+left button+M   add new workspace
+right button+M	remove current workspace (push current windows to stack)
+scroll up       view next workspace
+scroll down     view previous workspace
+
+  click on layout symbol:
+left button     toggle layout
+right button    toggle layout (backwards)
+scroll up       toggle layout
+scroll down     toggle layout (backwards)
+
+  click on window title in status bar:
+left button     focus next client
+right button    focus previous client
+scroll up       focus next client
+scroll down     focus previous client
+
+  click on status text in status bar:
+left button     volume up (needs amixer)
+right button    volume down (needs amixer)
+scroll up       volume up (needs amixer)
+scroll down     volume down (needs amixer)
+
+  click on root window:
+left button     spawn a terminal
