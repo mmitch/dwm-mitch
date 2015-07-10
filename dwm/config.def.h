@@ -61,9 +61,7 @@ Layout layouts[] = {
 #define MODKEY			Mod1Mask
 Key keys[] = {
 	/* modifier			key		function	argument */
-	{ MODKEY,			XK_p,		spawn,
-		"exe=`dmenu_path | dmenu -fn '"FONT"' -nb '"NORMBGCOLOR"' -nf '"NORMFGCOLOR"'"
-		" -sb '"SELBGCOLOR"' -sf '"SELFGCOLOR"'` && exec $exe" },
+	{ MODKEY,			XK_p,		spawn,		"exec dwm-choose" },
 	{ MODKEY|ShiftMask,		XK_Return,	spawn, "exec uxterm" },
 	{ MODKEY,			XK_space,	setlayout,	NULL },
 	{ MODKEY,			XK_b,		togglebar,	NULL },
