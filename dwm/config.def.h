@@ -124,8 +124,8 @@ Key keys[] = {
 Button buttons[] = {
 	/* click		modifier	button		function	argument */
 	{ ClkWsNumber,		0,		Button1,	viewrel,	"1" },
-	{ ClkWsNumber,		MODKEY,		Button1,	viewrel,	"-1" },
-	{ ClkWsNumber,		0,		Button3,	wscount,	"1" },
+	{ ClkWsNumber,		0,		Button3,	viewrel,	"-1" },
+	{ ClkWsNumber,		MODKEY,		Button1,	wscount,	"1" },
 	{ ClkWsNumber,		MODKEY,		Button3,	wscount,	"-1" },
 	{ ClkWsNumber,		0,		Button4,	viewrel,	"1" },
 	{ ClkWsNumber,		0,		Button5,	viewrel,	"-1" },

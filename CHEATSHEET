@@ -42,8 +42,8 @@ These are the default mouse button bindings.
 
   click on workspace display:
 left button     view next workspace
-left button+M   view previous workspace
-right button    add new workspace
+right button    view previous workspace
+left button+M   add new workspace
 right button+M	remove current workspace (push current windows to stack)
 scroll up       view next workspace
 scroll down     view previous workspace
