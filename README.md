@@ -58,7 +58,12 @@ to be updated sooner, just delete the cache file.  The next dmenu
 call will regenerate it.
 
 Your personal configuration changes should be kept in a separate
-branch in your personal dwm-mitch git repository.
+branch in your personal dwm-mitch git repository.  Edit
+``dwm/config.def.h`` to your needs and check it into your local
+branch.  Changes to the master branch will might result in merge
+conflics that you have to clean up, but at least you'll notice that
+things have changed.  My setup does NOT use the ``dwm/config.h``
+intermediate file like the original dwm.
 
 history
 -------
