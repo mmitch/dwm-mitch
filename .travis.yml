@@ -4,9 +4,11 @@ addons:
     packages:
       - libx11-dev
       - libxinerama-dev
-script: make
-env:
-  - PREFIX=/tmp
+script:
+  - make PREFIX=/tmp/usr/local PREFIXSHARE=/tmp/usr/share
+  - make uninstall PREFIX=/tmp/usr/local PREFIXSHARE=/tmp/usr/share
+  - make clean
+  - make dist
 compiler:
   - clang
   - gcc

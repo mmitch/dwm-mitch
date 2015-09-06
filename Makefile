@@ -1,5 +1,7 @@
 DISTVERSION =
 PREFIX = /usr/local
+# for some files (eg. sessions and session images), /usr/local is not checked
+PREFIXSHARE = /usr/share
 
 # get version from git if available, otherwise take version from distribution tarball
 VERSION = $(shell if [ -d .git ]; then git describe; else echo $(DISTVERSION); fi )
@@ -31,21 +33,22 @@ install:	stamp-built
 	chmod 755 ${DESTDIR}${PREFIX}/bin/dwm-mitch
 	chmod 755 ${DESTDIR}${PREFIX}/bin/dwm-choose
 # xsession
-	mkdir -p /usr/share/xsessions
-	cp -f dwm-mitch.desktop /usr/share/xsessions/
-	chmod 644 /usr/share/xsessions/dwm-mitch.desktop
+	mkdir -p ${PREFIXSHARE}/xsessions
+	cp -f dwm-mitch.desktop ${PREFIXSHARE}/xsessions/
+	chmod 644 ${PREFIXSHARE}/xsessions/dwm-mitch.desktop
 # icon as pixmap for plain .xsession
-	mkdir -p /usr/share/pixmaps
-	cp -f dwm-mitch.png /usr/share/pixmaps/
-	chmod 644 /usr/share/pixmaps/dwm-mitch.png
+	mkdir -p ${PREFIXSHARE}/pixmaps
+	cp -f dwm-mitch.png ${PREFIXSHARE}/pixmaps/
+	chmod 644 ${PREFIXSHARE}/pixmaps/dwm-mitch.png
 # icon for LightDM/Debian Jessie lightdm-gtk-greeter - strange filenames this one wants
-	mkdir -p /usr/share/icons/hicolor/16x16/apps/
-	cp -f dwm-mitch_badge-symbolic.png /usr/share/icons/hicolor/16x16/apps/
-	chmod 644 /usr/share/icons/hicolor/16x16/apps/dwm-mitch_badge-symbolic.png
+# try to just rename the 32x32 icon
+	mkdir -p ${PREFIXSHARE}/icons/hicolor/16x16/apps/
+	cp -f dwm-mitch.png ${PREFIXSHARE}/icons/hicolor/16x16/apps/dwm-mitch_badge-symbolic.png
+	chmod 644 ${PREFIXSHARE}/icons/hicolor/16x16/apps/dwm-mitch_badge-symbolic.png
 # icon for LightDM/Ubuntu Unity greeter - this one also needs strange names, but ok, it needs a round icon
-	mkdir -p /usr/share/unity-greeter
-	cp -f custom_dwm-mitch_badge.png /usr/share/unity-greeter/
-	chmod 644 /usr/share/unity-greeter/custom_dwm-mitch_badge.png
+	mkdir -p ${PREFIXSHARE}/unity-greeter
+	cp -f custom_dwm-mitch_badge.png ${PREFIXSHARE}/unity-greeter/
+	chmod 644 ${PREFIXSHARE}/unity-greeter/custom_dwm-mitch_badge.png
 
 uninstall:
 	$(MAKE) -C $(DWM) uninstall
@@ -53,17 +56,19 @@ uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/dwm-mitch
 	rm -f ${DESTDIR}${PREFIX}/bin/dwm-choose
 # xsession
-	rm -f /usr/share/xsessions/dwm-mitch.desktop
-	-rmdir -p /usr/share/xsessions
+	rm -f ${PREFIXSHARE}/xsessions/dwm-mitch.desktop
+	-rmdir -p ${PREFIXSHARE}/xsessions
 # icon as pixmap for plain .xsession
-	rm -f /usr/share/pixmaps/dwm-mitch.png
-	-rmdir -p /usr/share/pixmaps
+	rm -f ${PREFIXSHARE}/pixmaps/dwm-mitch.png
+	-rmdir -p ${PREFIXSHARE}/pixmaps
 # icon for LightDM/Debian Jessie lightdm-gtk-greeter - strange filenames this one wants
-	rm -f /usr/share/icons/hicolor/16x16/apps/dwm-mitch_badge-symbolic.png
-	-rmdir -p /usr/share/icons/hicolor/16x16/apps
+	rm -f ${PREFIXSHARE}/icons/hicolor/16x16/apps/dwm-mitch_badge-symbolic.png
+	-rmdir -p ${PREFIXSHARE}/icons/hicolor/16x16/apps
 # icon for LightDM/Ubuntu Unity greeter - this one also needs strange names, but ok, it needs a round icon
-	rm -f /usr/share/unity-greeter/custom_dwm-mitch_png.png
-	-rmdir -p /usr/share/unity-greeter
+	rm -f ${PREFIXSHARE}/unity-greeter/custom_dwm-mitch_png.png
+	-rmdir -p ${PREFIXSHARE}/unity-greeter
+# clean up, if possible
+	-rmdir -p ${PREFIXSHARE}
 
 clean:
 	$(MAKE) -C $(DWM) clean
