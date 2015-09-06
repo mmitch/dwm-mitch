@@ -1,0 +1,12 @@
+language: c
+addons:
+  apt:
+    packages:
+      - libx11-dev
+      - libxinerama-dev
+script: make
+env:
+  - PREFIX=/tmp/usr/local PREFIXSHARE=/tmp/usr/share
+compiler:
+  - clang
+  - gcc
