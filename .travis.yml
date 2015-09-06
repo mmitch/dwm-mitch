@@ -4,3 +4,5 @@ addons:
     packages:
       - libx11-dev
       - libxinerama-dev
+script:
+  - make
