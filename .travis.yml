@@ -1,0 +1,6 @@
+language: c
+addons:
+  apt:
+    packages:
+      - libx11-dev
+      - libxinerama-dev
