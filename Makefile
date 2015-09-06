@@ -43,7 +43,7 @@ install:	stamp-built
 # icon for LightDM/Debian Jessie lightdm-gtk-greeter - strange filenames this one wants
 # try to just rename the 32x32 icon
 	mkdir -p ${PREFIXSHARE}/icons/hicolor/16x16/apps/
-	cp -f dwm-mitch.png ${PREFIXSHARE}/icons/hicolor/16x16/apps/
+	cp -f dwm-mitch.png ${PREFIXSHARE}/icons/hicolor/16x16/apps/dwm-mitch_badge-symbolic.png
 	chmod 644 ${PREFIXSHARE}/icons/hicolor/16x16/apps/dwm-mitch_badge-symbolic.png
 # icon for LightDM/Ubuntu Unity greeter - this one also needs strange names, but ok, it needs a round icon
 	mkdir -p ${PREFIXSHARE}/unity-greeter
