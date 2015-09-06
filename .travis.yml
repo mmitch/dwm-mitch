@@ -5,3 +5,8 @@ addons:
       - libx11-dev
       - libxinerama-dev
 script: make
+env:
+  - PREFIX=/tmp
+compiler:
+  - clang
+  - gcc
