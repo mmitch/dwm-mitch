@@ -65,10 +65,8 @@ uninstall:
 	rm -f ${PREFIXSHARE}/icons/hicolor/16x16/apps/dwm-mitch_badge-symbolic.png
 	-rmdir -p ${PREFIXSHARE}/icons/hicolor/16x16/apps
 # icon for LightDM/Ubuntu Unity greeter - this one also needs strange names, but ok, it needs a round icon
-	rm -f ${PREFIXSHARE}/unity-greeter/custom_dwm-mitch_png.png
+	rm -f ${PREFIXSHARE}/unity-greeter/custom_dwm-mitch_badge.png
 	-rmdir -p ${PREFIXSHARE}/unity-greeter
-# clean up, if possible
-	-rmdir -p ${PREFIXSHARE}
 
 clean:
 	$(MAKE) -C $(DWM) clean
