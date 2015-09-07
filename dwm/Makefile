@@ -50,9 +50,9 @@ install: all
 uninstall:
 	@echo removing executable file from ${DESTDIR}${PREFIX}/bin
 	@rm -f ${DESTDIR}${PREFIX}/bin/dwm
-	@rmdir -p ${DESTDIR}${PREFIX}/bin
+	@-rmdir -p ${DESTDIR}${PREFIX}/bin
 	@echo removing manual page from ${DESTDIR}${MANPREFIX}/man1
 	@rm -f ${DESTDIR}${MANPREFIX}/man1/dwm.1
-	@rmdir -p ${DESTDIR}${MANPREFIX}/man1/
+	@-rmdir -p ${DESTDIR}${MANPREFIX}/man1/
 
 .PHONY: all options clean dist install uninstall
