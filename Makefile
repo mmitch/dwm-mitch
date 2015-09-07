@@ -56,7 +56,6 @@ uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/dwm-mitch
 	rm -f ${DESTDIR}${PREFIX}/bin/dwm-choose
 	-rmdir -p ${DESTDIR}${PREFIX}/bin
-	-rmdir -p ${DESTDIR}${PREFIX}/share/man/man1
 # xsession
 	rm -f ${DESTDIR}${PREFIXSHARE}/xsessions/dwm-mitch.desktop
 	-rmdir -p ${DESTDIR}${PREFIXSHARE}/xsessions

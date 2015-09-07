@@ -59,8 +59,10 @@ uninstall:
 	@rm -f ${DESTDIR}${PREFIX}/bin/dmenu
 	@rm -f ${DESTDIR}${PREFIX}/bin/dmenu_run
 	@rm -f ${DESTDIR}${PREFIX}/bin/lsx
+	@rmdir -p ${DESTDIR}${PREFIX}/bin
 	@echo removing manual page from ${DESTDIR}${MANPREFIX}/man1
 	@rm -f ${DESTDIR}${MANPREFIX}/man1/dmenu.1
 	@rm -f ${DESTDIR}${MANPREFIX}/man1/lsx.1
+	@rmdir -p ${DESTDIR}${MANPREFIX}/man1
 
 .PHONY: all options clean dist install uninstall
