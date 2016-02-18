@@ -53,7 +53,8 @@ const char NULL2[] = "";  /* ugly, dirty hack for out of band communication */
 enum { BarTop, BarBot, BarOff };			/* bar position */
 enum { CurNormal, CurResize, CurMove, CurLast };	/* cursor */
 enum { ColBorder, ColFG, ColBG, ColLast };		/* color */
-enum { NetSupported, NetWMName, NetLast };		/* EWMH atoms */
+enum { NetSupported, NetWMName, NetWMState,
+       NetWMFullscreen, NetLast };			/* EWMH atoms */
 enum { WMProtocols, WMDelete, WMName, WMState, WMLast };/* default atoms */
 enum { ClkWsNumber, ClkLtSymbol, ClkWinTitle, ClkStatusText, ClkClientWin, ClkRootWin };
 
@@ -129,6 +130,7 @@ void ban(Client *c);
 void buttonpress(XEvent *e);
 void checkotherwm(void);
 void cleanup(void);
+void clientmessage(XEvent *e);
 void compileregs(void);
 void configure(Client *c);
 void configurenotify(XEvent *e);
@@ -179,6 +181,7 @@ void run(void);
 void scan(void);
 void setborderbyfloat(Client *c, Bool configurewindow);
 void setclientstate(Client *c, long state);
+void setfullscreen(Client *c, int fullscreen);
 void setlayout(const char *arg);
 void setmwfact(const char *arg);
 void setup(void);
@@ -200,8 +203,8 @@ void updatebarpos(void);
 void updatesizehints(Client *c);
 void updatestatus(void);
 void updatetitle(Client *c);
-void updatexinerama(void);
 void updatewstext(int screen);
+void updatexinerama(void);
 void view(const char *arg);
 void viewrel(const char *arg);
 void warpmouse(const char *arg);
@@ -224,6 +227,7 @@ unsigned int blw = 0;
 unsigned int numlockmask = 0;
 void (*handler[LASTEvent]) (XEvent *) = {
 	[ButtonPress] = buttonpress,
+	[ClientMessage] = clientmessage,
 	[ConfigureRequest] = configurerequest,
 	[ConfigureNotify] = configurenotify,
 	[DestroyNotify] = destroynotify,
@@ -431,6 +435,26 @@ compileregs(void) {
 				regs[i].propregex = reg;
 		}
 	}
+}
+
+void
+clientmessage(XEvent *e)
+{
+	XClientMessageEvent *cme = &e->xclient;
+	Client *c = getclient(cme->window);
+	if (!c)
+		return;
+	if (cme->message_type == netatom[NetWMState])
+		if (cme->data.l[1] == netatom[NetWMFullscreen] || cme->data.l[2] == netatom[NetWMFullscreen])
+			setfullscreen(c, (cme->data.l[0] == 1 /* _NET_WM_STATE_ADD    */
+				      || (cme->data.l[0] == 2 /* _NET_WM_STATE_TOGGLE */ && !c->ismax)));
+/*	} else if (cme->message_type == netatom[NetActiveWindow]) {
+		if (!ISVISIBLE(c)) {
+			c->mon->seltags ^= 1;
+			c->mon->tagset[c->mon->seltags] = c->tags;
+		}
+		pop(c);
+		} */
 }
 
 void
@@ -1379,6 +1403,18 @@ setclientstate(Client *c, long state) {
 }
 
 void
+setfullscreen(Client *c, int fullscreen)
+{
+	/* TODO: cheap hack, no meaningful interaction yet. just pretend to have been doing something. */
+	if (fullscreen)
+		XChangeProperty(dpy, c->win, netatom[NetWMState], XA_ATOM, 32,
+		                PropModeReplace, (unsigned char*)&netatom[NetWMFullscreen], 1);
+	else
+		XChangeProperty(dpy, c->win, netatom[NetWMState], XA_ATOM, 32,
+		                PropModeReplace, (unsigned char*)0, 0);
+}
+
+void
 setlayout(const char *arg) {
 	unsigned int i;
 	unsigned int s = whichscreen();
@@ -1446,6 +1482,8 @@ setup(void) {
 	wmatom[WMState] = XInternAtom(dpy, "WM_STATE", False);
 	netatom[NetSupported] = XInternAtom(dpy, "_NET_SUPPORTED", False);
 	netatom[NetWMName] = XInternAtom(dpy, "_NET_WM_NAME", False);
+	netatom[NetWMFullscreen] = XInternAtom(dpy, "_NET_WM_STATE_FULLSCREEN", False);
+	netatom[NetWMState] = XInternAtom(dpy, "_NET_WM_STATE", False);
 	XChangeProperty(dpy, root, netatom[NetSupported], XA_ATOM, 32,
 			PropModeReplace, (unsigned char *) netatom, NetLast);
 
