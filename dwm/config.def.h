@@ -72,9 +72,9 @@ Layout layouts[] = {
 Key keys[] = {
 	/* modifier			key		function	argument */
 	{ MODKEY|ShiftMask,		XK_a,		spawn,		"exec x-terminal-emulator" },
-	{ MODKEY|ShiftMask,		XK_s,		spawn,		"exec dwm-choose" },
-	{ MODKEY|ControlMask,		XK_s,		spawn,		"exec ssh -X yggdrasil.mitch.h.shuttle.de dwm-choose" },
 	{ MODKEY|ShiftMask|ControlMask,	XK_r,		spawn,		"exec killall -SIGUSR1 dwm" },
+	{ MODKEY|ShiftMask,		XK_s,		spawn,		"exec dwm-choose" },
+	{ MODKEY|ControlMask,		XK_s,		togglesticky,	NULL },
 	{ MODKEY,			XK_Tab,		focusnext,	NULL },
 	{ MODKEY|ShiftMask,		XK_Tab,		focusprev,	NULL },
 	{ MODKEY,			XK_Return,	zoom,		NULL },
