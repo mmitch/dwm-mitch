@@ -188,7 +188,7 @@ void setborderbyfloat(Client *c, Bool configurewindow);
 void setclientstate(Client *c, long state);
 void setfullscreen(Client *c, int fullscreen);
 void setlayout(const char *arg);
-void setlayout_intern(const char *arg, unsigned int s, unsigned int ws);
+void setlayout_(const char *arg, unsigned int s, unsigned int ws);
 void setmwfact(const char *arg);
 void setup(void);
 void sigchld(int unused);
@@ -970,7 +970,7 @@ importstatus(void) {
 		c->isfloating = getatomint(c->win, dwmatom[dwmFloating], c->isfloating);
 		c->issticky = getatomint(c->win, dwmatom[dwmSticky], c->issticky);
 		if(gettextprop(c->win, dwmatom[dwmLayout], buf, sizeof buf))
-			setlayout_intern(buf, c->screen, c->workspace-1);
+			setlayout_(buf, c->screen, c->workspace-1);
 	}
 
 	/* reset workspaces, wscount_() can mess this up */
@@ -1511,11 +1511,11 @@ void
 setlayout(const char *arg) {
 	unsigned int s = whichscreen();
 
-	setlayout_intern(arg, s, selws[s]-1);
+	setlayout_(arg, s, selws[s]-1);
 }
 
 void
-setlayout_intern(const char *arg, unsigned int s, unsigned int ws) {
+setlayout_(const char *arg, unsigned int s, unsigned int ws) {
 	unsigned int i;
 
 	if(arg == NULL2) {
