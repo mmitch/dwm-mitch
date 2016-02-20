@@ -50,11 +50,15 @@
 const char NULL2[] = "";  /* ugly, dirty hack for out of band communication */
 
 /* enums */
-enum { BarTop, BarBot, BarOff };			/* bar position */
+ { BarTop, BarBot, BarOff };			/* bar position */
 enum { CurNormal, CurResize, CurMove, CurLast };	/* cursor */
 enum { ColBorder, ColFG, ColBG, ColLast };		/* color */
 enum { NetSupported, NetWMName, NetWMState,
-       NetWMFullscreen, NetLast };			/* EWMH atoms */
+       NetWMFullscreen, NetWMWindowType,
+       NetWMWindowTypeDialog, NetWMWindowTypeSplash,
+       NetLast };					/* EWMH atoms */
+enum { dwmScreen, dwmWorkspace, dwmFloating, dwmSticky,
+       dwmLayout, dwmLast };				/* DWM specific atoms */
 enum { WMProtocols, WMDelete, WMName, WMState, WMLast };/* default atoms */
 enum { ClkWsNumber, ClkLtSymbol, ClkWinTitle, ClkStatusText, ClkClientWin, ClkRootWin };
 
@@ -146,6 +150,7 @@ void drawtext(const char *text, unsigned long col[ColLast]);
 void enternotify(XEvent *e);
 void eprint(const char *errstr, ...);
 void expose(XEvent *e);
+void exportstatus(void);
 void floating(unsigned int s); /* default floating layout */
 void focus(Client *c);
 void focusin(XEvent *e);
@@ -154,9 +159,12 @@ void focusprev(const char *arg);
 Client *getclient(Window w);
 unsigned long getcolor(const char *colstr);
 long getstate(Window w);
-Bool gettextprop(Window w, Atom atom, char *text, unsigned int size);
+Atom getatom(Window w, Atom prop);
+unsigned int getatomint(Window w, Atom prop, unsigned int initial);
+Bool gettextprop(Window w, Atom prop, char *text, unsigned int size);
 void grabbuttons(Client *c, Bool focused);
 void grabkeys(void);
+void importstatus(void);
 void initfont(const char *fontstr);
 Bool isprotodel(Client *c);
 Bool isvisible(Client *c);
@@ -183,6 +191,7 @@ void setborderbyfloat(Client *c, Bool configurewindow);
 void setclientstate(Client *c, long state);
 void setfullscreen(Client *c, int fullscreen);
 void setlayout(const char *arg);
+void setlayout_(const char *arg, unsigned int s, unsigned int ws);
 void setmwfact(const char *arg);
 void setup(void);
 void sigchld(int unused);
@@ -210,7 +219,9 @@ void view(const char *arg);
 void viewrel(const char *arg);
 void warpmouse(const char *arg);
 void warpmouserel(const char *arg);
+void warpmouse_(unsigned int source, unsigned int target);
 void wscount(const char *arg);
+void wscount_(int i, unsigned int s);
 unsigned int whichscreen(void);
 int xerror(Display *dpy, XErrorEvent *ee);
 int xerrordummy(Display *dsply, XErrorEvent *ee);
@@ -242,7 +253,7 @@ void (*handler[LASTEvent]) (XEvent *) = {
 	[PropertyNotify] = propertynotify,
 	[UnmapNotify] = unmapnotify
 };
-Atom wmatom[WMLast], netatom[NetLast];
+Atom wmatom[WMLast], netatom[NetLast], dwmatom[dwmLast];
 Bool otherwm;
 Bool running = True;
 Bool reload = False;
@@ -697,6 +708,34 @@ expose(XEvent *e) {
 }
 
 void
+exportstatus(void) {
+	Client *c;
+	unsigned int intdata;
+	const char *chardata;
+
+	for(c = clients; c; c = c->next) {
+		intdata = c->screen;
+		XChangeProperty(dpy, c->win, dwmatom[dwmScreen], XA_CARDINAL, 16, PropModeReplace,
+				(unsigned char *) &intdata, 1);
+		intdata = c->workspace;
+		XChangeProperty(dpy, c->win, dwmatom[dwmWorkspace], XA_CARDINAL, 16, PropModeReplace,
+				(unsigned char *) &intdata, 1);
+		intdata = 1;
+		if (c->isfloating)
+			XChangeProperty(dpy, c->win, dwmatom[dwmFloating], XA_CARDINAL, 16, PropModeReplace,
+					(unsigned char *) &intdata, 1);
+		if (c->issticky)
+			XChangeProperty(dpy, c->win, dwmatom[dwmSticky], XA_CARDINAL, 16, PropModeReplace,
+					(unsigned char *) &intdata, 1);
+		if (c->workspace > 0) {
+			chardata = layout[c->screen][c->workspace-1]->symbol;
+			XChangeProperty(dpy, c->win, dwmatom[dwmLayout], XA_STRING, 8, PropModeReplace,
+					chardata, strlen(chardata));
+		}
+	}
+}
+
+void
 floating(unsigned int s) { /* default floating layout */
 	Client *c;
 
@@ -796,6 +835,40 @@ getcolor(const char *colstr) {
 	return color.pixel;
 }
 
+Atom
+getatom(Window w, Atom prop)
+{
+	int di;
+	unsigned long dl;
+	unsigned char *p = NULL;
+	Atom da, atom = None;
+
+	if (XGetWindowProperty(dpy, w, prop, 0L, sizeof atom, False, XA_ATOM,
+	                      &da, &di, &dl, &dl, &p) == Success && p) {
+		atom = *(Atom *)p;
+		XFree(p);
+	}
+	return atom;
+}
+
+unsigned int
+getatomint(Window w, Atom prop, unsigned int initial) {
+	int format, status;
+	unsigned int result = initial;
+	unsigned char *p = NULL;
+	unsigned long n, extra;
+	Atom real;
+
+	status = XGetWindowProperty(dpy, w, prop, 0L, 1L, False, XA_CARDINAL,
+			&real, &format, &n, &extra, (unsigned char **)&p);
+	if(status != Success)
+		return initial;
+	if(n != 0)
+		result = *p;
+	XFree(p);
+	return result;
+}
+
 long
 getstate(Window w) {
 	int format, status;
@@ -815,7 +888,7 @@ getstate(Window w) {
 }
 
 Bool
-gettextprop(Window w, Atom atom, char *text, unsigned int size) {
+gettextprop(Window w, Atom prop, char *text, unsigned int size) {
 	char **list = NULL;
 	int n;
 	XTextProperty name;
@@ -823,7 +896,7 @@ gettextprop(Window w, Atom atom, char *text, unsigned int size) {
 	if(!text || size == 0)
 		return False;
 	text[0] = '\0';
-	XGetTextProperty(dpy, w, &name, atom);
+	XGetTextProperty(dpy, w, &name, prop);
 	if(!name.nitems)
 		return False;
 	if(name.encoding == XA_STRING)
@@ -898,6 +971,37 @@ grabkeys(void)  {
 			fprintf(stderr, "key definition #%d resulted in NoSymbol, skipping\n", i);
 		}
 	}
+}
+
+void
+importstatus(void) {
+	Client *c;
+	unsigned int s;
+	char buf[256];
+
+	for(c = clients; c; c = c->next) {
+		c->screen = getatomint(c->win, dwmatom[dwmScreen], c->screen);
+		if (c->screen >= screenmax)
+			c->screen = screenmax - 1;
+
+		c->workspace = getatomint(c->win, dwmatom[dwmWorkspace], c->workspace);
+		if (c->workspace > workspaces[c->screen]) {
+			wscount_(c->workspace - workspaces[c->screen], c->screen);
+			c->workspace = workspaces[c->screen];
+		}
+
+		c->isfloating = getatomint(c->win, dwmatom[dwmFloating], c->isfloating);
+		c->issticky = getatomint(c->win, dwmatom[dwmSticky], c->issticky);
+		if(gettextprop(c->win, dwmatom[dwmLayout], buf, sizeof buf))
+			setlayout_(buf, c->screen, c->workspace-1);
+	}
+
+	/* reset workspaces, wscount_() can mess this up */
+	for(s = 0; s < screenmax; s++) {
+		selws[s] = 1;
+		updatewstext(s);
+	}
+	arrange();
 }
 
 void
@@ -1015,6 +1119,7 @@ manage(Window w, XWindowAttributes *wa) {
 	Window trans;
 	Status rettrans;
 	unsigned int s = whichscreen();
+	Atom wtype = getatom(w, netatom[NetWMWindowType]);
 
 	c = emallocz(sizeof(Client));
 	c->win = w;
@@ -1042,6 +1147,8 @@ manage(Window w, XWindowAttributes *wa) {
 		c->border = BORDERPX;
 	}
 	XSetWindowBorder(dpy, w, dc.norm[ColBorder]);
+	if (wtype == netatom[NetWMWindowTypeDialog] || wtype == netatom[NetWMWindowTypeSplash])
+		c->isfloating = True;
 	updatesizehints(c);
 	XSelectInput(dpy, w, EnterWindowMask | FocusChangeMask | PropertyChangeMask | StructureNotifyMask);
 	grabbuttons(c, False);
@@ -1428,16 +1535,22 @@ setfullscreen(Client *c, int fullscreen)
 
 void
 setlayout(const char *arg) {
-	unsigned int i;
 	unsigned int s = whichscreen();
 
+	setlayout_(arg, s, selws[s]-1);
+}
+
+void
+setlayout_(const char *arg, unsigned int s, unsigned int ws) {
+	unsigned int i;
+
 	if(arg == NULL2) {
-		if(layout[s][selws[s]-1]-- == &layouts[0])
-			layout[s][selws[s]-1] = &layouts[LENGTH(layouts)-1];
+		if(layout[s][ws]-- == &layouts[0])
+			layout[s][ws] = &layouts[LENGTH(layouts)-1];
 	}
 	else if(!arg) {
-		if(++layout[s][selws[s]-1] == &layouts[LENGTH(layouts)])
-			layout[s][selws[s]-1] = &layouts[0];
+		if(++layout[s][ws] == &layouts[LENGTH(layouts)])
+			layout[s][ws] = &layouts[0];
 	}
 	else {
 		for(i = 0; i < LENGTH(layouts); i++)
@@ -1445,7 +1558,7 @@ setlayout(const char *arg) {
 				break;
 		if(i == LENGTH(layouts))
 			return;
-		layout[s][selws[s]-1] = &layouts[i];
+		layout[s][ws] = &layouts[i];
 	}
 	if(sel)
 		arrange();
@@ -1494,8 +1607,16 @@ setup(void) {
 	wmatom[WMState] = XInternAtom(dpy, "WM_STATE", False);
 	netatom[NetSupported] = XInternAtom(dpy, "_NET_SUPPORTED", False);
 	netatom[NetWMName] = XInternAtom(dpy, "_NET_WM_NAME", False);
+	netatom[NetWMWindowType] = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE", False);
+	netatom[NetWMWindowTypeDialog] = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_DIALOG", False);
+	netatom[NetWMWindowTypeSplash] = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_SPLASH", False);
 	XChangeProperty(dpy, root, netatom[NetSupported], XA_ATOM, 32,
 			PropModeReplace, (unsigned char *) netatom, NetLast);
+	dwmatom[dwmScreen] = XInternAtom(dpy, "DWM_MITCH_SCREEN", False);
+	dwmatom[dwmWorkspace] = XInternAtom(dpy, "DWM_MITCH_WORKSPACE", False);
+	dwmatom[dwmFloating] = XInternAtom(dpy, "DWM_MITCH_FLOATING", False);
+	dwmatom[dwmSticky] = XInternAtom(dpy, "DWM_MITCH_STICKY", False);
+	dwmatom[dwmLayout] = XInternAtom(dpy, "DWM_MITCH_LAYOUT", False);
 
 	/* hack: initialize these atoms but don't advertize them */
 	netatom[NetWMFullscreen] = XInternAtom(dpy, "_NET_WM_STATE_FULLSCREEN", False);
@@ -1667,48 +1788,6 @@ viewrel(const char *arg) {
 	sel = NULL;
 	focus(NULL);
         arrange();
-}
-
-void
-warpmouserel(const char *arg) {
-        int i, target, x, y, d;
-	Window w;
-	unsigned int mask, source;
-	
-	/* code duplication with warpmouse() because
-	 * calling one from the other would involve
-	 * converting target to a char* again or adding
-	 * a third function warpmouse_intern(int).
-	 */
-
-	if (screenmax == 1)
-	        return;
-	
-	i = arg ? atoi(arg) : 0;
-	if (i == 0)
-                return;
-
-	target = source = whichscreen();
-	target += i;
-	while (target < 0)
-		target += screenmax;
-	while (target >= screenmax)
-		target -= screenmax;
-
-	XQueryPointer(dpy, root, &w, &w, &x, &y, &d, &d, &mask);
-
-	x -= sx[source];
-	y -= sy[source];
-	x = (double)x / (double)sw[source] * sw[target];
-	y = (double)y / (double)sh[source] * sh[target];
-
-        if (x >= sw[target])
-                x = sw[target]-1;
-        if (y >= sh[target])
-                y = sh[target]-1;
-
-        XWarpPointer(dpy, None, root, 0, 0, 0, 0, x + sx[target], y + sy[target]);
-	focus(NULL);
 }
 
 unsigned int
@@ -1888,14 +1967,44 @@ view(const char *arg) {
 
 void
 warpmouse(const char *arg) {
-	int target, x, y, d;
-	Window w;
-	unsigned int mask, source;
+	int target;
+	unsigned int source;
 	
 	target = arg ? atoi(arg) : 0;
 	source = whichscreen();
 	if ((target < 0) || (target >= screenmax) || (target == source))
 		return;
+
+	warpmouse_(source, target);
+}
+
+void
+warpmouserel(const char *arg) {
+        int i, target;
+	unsigned int source;
+
+	if (screenmax == 1)
+	        return;
+
+	i = arg ? atoi(arg) : 0;
+	if (i == 0)
+                return;
+
+	target = source = whichscreen();
+	target += i;
+	while (target < 0)
+		target += screenmax;
+	while (target >= screenmax)
+		target -= screenmax;
+
+	warpmouse_(source, target);
+}
+
+void
+warpmouse_(unsigned int source, unsigned int target) {
+	int x, y, d;
+	Window w;
+	unsigned int mask;
 
 	XQueryPointer(dpy, root, &w, &w, &x, &y, &d, &d, &mask);
 
@@ -1939,12 +2048,17 @@ popstack(const char *arg) {
 
 void
 wscount(const char *arg) {
-	Client *c;
 	int i;
-	unsigned int j;
-	unsigned int s = whichscreen();
-	
+
 	i = arg ? atoi(arg) : 0;
+	wscount_(i, whichscreen());
+}
+
+void
+wscount_(int i, unsigned int s) {
+	Client *c;
+	unsigned int j;
+	
 	if (i == 0)
 		return;   
 	if (i > 0) {
@@ -2285,7 +2399,9 @@ main(int argc, char *argv[]) {
 	setup();
 	drawbar();
 	scan();
+	importstatus();
 	run();
+	exportstatus();
 	cleanup();
 
 	XCloseDisplay(dpy);
