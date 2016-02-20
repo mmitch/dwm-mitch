@@ -570,6 +570,7 @@ void
 drawbar(void) {
 	int x;
 	unsigned int s;
+	char buf[256];
 
 	for(s = 0; s < screenmax; s++) {
 		dc.x = dc.y = 0;
@@ -589,7 +590,11 @@ drawbar(void) {
 		if((dc.w = dc.x - x) > bh) {
 			dc.x = x;
 			if(sel && sel->screen == s) {
-				drawtext(sel->name, dc.sel);
+				snprintf(buf, sizeof buf, "%c  %s",
+					 (sel && sel->isfloating) ? 'f' : ' ',
+					 sel->name
+					);
+				drawtext(buf, dc.sel);
 			}
 			else
 				drawtext(NULL, dc.norm);
