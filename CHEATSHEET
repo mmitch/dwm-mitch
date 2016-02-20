@@ -6,6 +6,7 @@ S is Shift.
 M+p		spawn dmenu
 M+S+Return	spawn a terminal
 M+Space		toggle layout
+M+S+Space	toggle floating of client
 M+C+s		toggle sticky (client visible on every workspace)
 M+b		toggle status bar visibility
 M+j		focus next client
@@ -16,7 +17,7 @@ M+a		pop window from stack ("deiconify")
 M+d		push window to stack ("iconify")
 M+C+y		add new workspace
 M+C+r		remove current workspace (push current windows to stack)
-M+m		toggle maximization
+M+m		toggle maximization of client
 M+Return	zoom window
 M+Tab		focus next window
 M+S+Tab		focus previous window
