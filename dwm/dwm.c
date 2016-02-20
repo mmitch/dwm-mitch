@@ -50,7 +50,7 @@
 const char NULL2[] = "";  /* ugly, dirty hack for out of band communication */
 
 /* enums */
- { BarTop, BarBot, BarOff };			/* bar position */
+enum { BarTop, BarBot, BarOff };			/* bar position */
 enum { CurNormal, CurResize, CurMove, CurLast };	/* cursor */
 enum { ColBorder, ColFG, ColBG, ColLast };		/* color */
 enum { NetSupported, NetWMName, NetWMState,
