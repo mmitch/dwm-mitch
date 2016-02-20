@@ -68,7 +68,7 @@ struct Client {
 	int minax, maxax, minay, maxay;
 	long flags;
 	unsigned int border, oldborder, workspace, screen;
-	Bool isbanned, isfixed, ismax, isfloating;
+	Bool isbanned, isfixed, ismax, isfloating, issticky;
 	Client *next;
 	Client *prev;
 	Client *snext;
@@ -196,6 +196,7 @@ void tileleft(unsigned int s);
 void togglebar(const char *arg);
 void togglefloating(const char *arg);
 void togglemax(const char *arg);
+void togglesticky(const char *arg);
 void unban(Client *c);
 void unmanage(Client *c);
 void unmapnotify(XEvent *e);
@@ -573,6 +574,7 @@ void
 drawbar(void) {
 	int x;
 	unsigned int s;
+	char buf[256];
 
 	for(s = 0; s < screenmax; s++) {
 		dc.x = dc.y = 0;
@@ -592,7 +594,12 @@ drawbar(void) {
 		if((dc.w = dc.x - x) > bh) {
 			dc.x = x;
 			if(sel && sel->screen == s) {
-				drawtext(sel->name, dc.sel);
+				snprintf(buf, sizeof buf, "%c%c  %s",
+					 (sel && sel->isfloating) ? 'f' : ' ',
+					 (sel && sel->issticky) ? 's' : ' ',
+					 sel->name
+					);
+				drawtext(buf, dc.sel);
 			}
 			else
 				drawtext(NULL, dc.norm);
@@ -703,8 +710,13 @@ void
 focus(Client *c) {
 	unsigned int s = whichscreen();
 
-	if((!c && selscreen) || (c && (!isvisible(c) || (c->screen != s && !c->isfloating && layout[c->screen][c->workspace-1]->arrange != floating))))
-		for(c = stack; c && (!isvisible(c) || c->screen != s); c = c->snext);
+	if((!c && selscreen) || (c && (!isvisible(c) || (c->screen != s && !c->isfloating && layout[c->screen][c->workspace-1]->arrange != floating)))) {
+		/* make two runs, ignore sticky and floating windows in the first one */
+		/* TODO: check out if "when sticky, floating and mouseover, then _do_ focus" comes more naturally */
+		for(c = stack; c && ((c->issticky && c->isfloating) || !isvisible(c) || c->screen != s); c = c->snext);
+		if (!c)
+			for(c = stack; c && (!isvisible(c) || c->screen != s); c = c->snext);
+	}
 	if(sel && sel != c) {
 		grabbuttons(sel, False);
 		XSetWindowBorder(dpy, sel->win, dc.norm[ColBorder]);
@@ -947,7 +959,7 @@ isprotodel(Client *c) {
 
 Bool
 isvisible(Client *c) {
-	return (c->workspace == selws[c->screen]);
+	return (c->workspace == selws[c->screen] || (c->workspace && c->issticky));
 }
 
 void
@@ -1846,6 +1858,17 @@ togglemax(const char *arg) {
 		resize(sel, sel->rx, sel->ry, sel->rw, sel->rh, True);
 	}
 	while(XCheckMaskEvent(dpy, EnterWindowMask, &ev));
+}
+
+void
+togglesticky(const char *arg) {
+	if(!sel)
+		return;
+	sel->issticky = !sel->issticky;
+	if (sel->issticky)
+		drawbar();
+	else
+		arrange();
 }
 
 void
