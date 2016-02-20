@@ -50,11 +50,13 @@
 const char NULL2[] = "";  /* ugly, dirty hack for out of band communication */
 
 /* enums */
-enum { BarTop, BarBot, BarOff };			/* bar position */
+ { BarTop, BarBot, BarOff };			/* bar position */
 enum { CurNormal, CurResize, CurMove, CurLast };	/* cursor */
 enum { ColBorder, ColFG, ColBG, ColLast };		/* color */
 enum { NetSupported, NetWMName, NetWMState,
-       NetWMFullscreen, NetLast };			/* EWMH atoms */
+       NetWMFullscreen, NetWMWindowType,
+       NetWMWindowTypeDialog, NetWMWindowTypeSplash,
+       NetLast };					/* EWMH atoms */
 enum { dwmScreen, dwmWorkspace, dwmFloating, dwmSticky,
        dwmLayout, dwmLast };				/* DWM specific atoms */
 enum { WMProtocols, WMDelete, WMName, WMState, WMLast };/* default atoms */
@@ -157,8 +159,9 @@ void focusprev(const char *arg);
 Client *getclient(Window w);
 unsigned long getcolor(const char *colstr);
 long getstate(Window w);
-unsigned int getatomint(Window w, Atom atom, unsigned int initial);
-Bool gettextprop(Window w, Atom atom, char *text, unsigned int size);
+Atom getatom(Window w, Atom prop);
+unsigned int getatomint(Window w, Atom prop, unsigned int initial);
+Bool gettextprop(Window w, Atom prop, char *text, unsigned int size);
 void grabbuttons(Client *c, Bool focused);
 void grabkeys(void);
 void importstatus(void);
@@ -829,15 +832,31 @@ getcolor(const char *colstr) {
 	return color.pixel;
 }
 
+Atom
+getatom(Window w, Atom prop)
+{
+	int di;
+	unsigned long dl;
+	unsigned char *p = NULL;
+	Atom da, atom = None;
+
+	if (XGetWindowProperty(dpy, w, prop, 0L, sizeof atom, False, XA_ATOM,
+	                      &da, &di, &dl, &dl, &p) == Success && p) {
+		atom = *(Atom *)p;
+		XFree(p);
+	}
+	return atom;
+}
+
 unsigned int
-getatomint(Window w, Atom atom, unsigned int initial) {
+getatomint(Window w, Atom prop, unsigned int initial) {
 	int format, status;
 	unsigned int result = initial;
 	unsigned char *p = NULL;
 	unsigned long n, extra;
 	Atom real;
 
-	status = XGetWindowProperty(dpy, w, atom, 0L, 1L, False, XA_CARDINAL,
+	status = XGetWindowProperty(dpy, w, prop, 0L, 1L, False, XA_CARDINAL,
 			&real, &format, &n, &extra, (unsigned char **)&p);
 	if(status != Success)
 		return initial;
@@ -866,7 +885,7 @@ getstate(Window w) {
 }
 
 Bool
-gettextprop(Window w, Atom atom, char *text, unsigned int size) {
+gettextprop(Window w, Atom prop, char *text, unsigned int size) {
 	char **list = NULL;
 	int n;
 	XTextProperty name;
@@ -874,7 +893,7 @@ gettextprop(Window w, Atom atom, char *text, unsigned int size) {
 	if(!text || size == 0)
 		return False;
 	text[0] = '\0';
-	XGetTextProperty(dpy, w, &name, atom);
+	XGetTextProperty(dpy, w, &name, prop);
 	if(!name.nitems)
 		return False;
 	if(name.encoding == XA_STRING)
@@ -1097,6 +1116,7 @@ manage(Window w, XWindowAttributes *wa) {
 	Window trans;
 	Status rettrans;
 	unsigned int s = whichscreen();
+	Atom wtype = getatom(w, netatom[NetWMWindowType]);
 
 	c = emallocz(sizeof(Client));
 	c->win = w;
@@ -1124,6 +1144,8 @@ manage(Window w, XWindowAttributes *wa) {
 		c->border = BORDERPX;
 	}
 	XSetWindowBorder(dpy, w, dc.norm[ColBorder]);
+	if (wtype == netatom[NetWMWindowTypeDialog] || wtype == netatom[NetWMWindowTypeSplash])
+		c->isfloating = True;
 	updatesizehints(c);
 	XSelectInput(dpy, w, EnterWindowMask | FocusChangeMask | PropertyChangeMask | StructureNotifyMask);
 	grabbuttons(c, False);
@@ -1582,6 +1604,9 @@ setup(void) {
 	wmatom[WMState] = XInternAtom(dpy, "WM_STATE", False);
 	netatom[NetSupported] = XInternAtom(dpy, "_NET_SUPPORTED", False);
 	netatom[NetWMName] = XInternAtom(dpy, "_NET_WM_NAME", False);
+	netatom[NetWMWindowType] = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE", False);
+	netatom[NetWMWindowTypeDialog] = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_DIALOG", False);
+	netatom[NetWMWindowTypeSplash] = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_SPLASH", False);
 	XChangeProperty(dpy, root, netatom[NetSupported], XA_ATOM, 32,
 			PropModeReplace, (unsigned char *) netatom, NetLast);
 	dwmatom[dwmScreen] = XInternAtom(dpy, "DWM_MITCH_SCREEN", False);
