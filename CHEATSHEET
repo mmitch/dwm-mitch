@@ -6,6 +6,7 @@ S is Shift.
 M+p		spawn dmenu
 M+S+Return	spawn a terminal
 M+Space		toggle layout
+M+C+s		toggle sticky (client visible on every workspace)
 M+b		toggle status bar visibility
 M+j		focus next client
 M+k		focus previous client
