@@ -216,6 +216,7 @@ void view(const char *arg);
 void viewrel(const char *arg);
 void warpmouse(const char *arg);
 void warpmouserel(const char *arg);
+void warpmouse_(unsigned int source, unsigned int target);
 void wscount(const char *arg);
 void wscount_(int i, unsigned int s);
 unsigned int whichscreen(void);
@@ -1761,48 +1762,6 @@ viewrel(const char *arg) {
         arrange();
 }
 
-void
-warpmouserel(const char *arg) {
-        int i, target, x, y, d;
-	Window w;
-	unsigned int mask, source;
-	
-	/* code duplication with warpmouse() because
-	 * calling one from the other would involve
-	 * converting target to a char* again or adding
-	 * a third function warpmouse_intern(int).
-	 */
-
-	if (screenmax == 1)
-	        return;
-	
-	i = arg ? atoi(arg) : 0;
-	if (i == 0)
-                return;
-
-	target = source = whichscreen();
-	target += i;
-	while (target < 0)
-		target += screenmax;
-	while (target >= screenmax)
-		target -= screenmax;
-
-	XQueryPointer(dpy, root, &w, &w, &x, &y, &d, &d, &mask);
-
-	x -= sx[source];
-	y -= sy[source];
-	x = (double)x / (double)sw[source] * sw[target];
-	y = (double)y / (double)sh[source] * sh[target];
-
-        if (x >= sw[target])
-                x = sw[target]-1;
-        if (y >= sh[target])
-                y = sh[target]-1;
-
-        XWarpPointer(dpy, None, root, 0, 0, 0, 0, x + sx[target], y + sy[target]);
-	focus(NULL);
-}
-
 unsigned int
 textnw(const char *text, unsigned int len) {
 	XRectangle r;
@@ -1980,14 +1939,44 @@ view(const char *arg) {
 
 void
 warpmouse(const char *arg) {
-	int target, x, y, d;
-	Window w;
-	unsigned int mask, source;
+	int target;
+	unsigned int source;
 	
 	target = arg ? atoi(arg) : 0;
 	source = whichscreen();
 	if ((target < 0) || (target >= screenmax) || (target == source))
 		return;
+
+	warpmouse_(source, target);
+}
+
+void
+warpmouserel(const char *arg) {
+        int i, target;
+	unsigned int source;
+
+	if (screenmax == 1)
+	        return;
+
+	i = arg ? atoi(arg) : 0;
+	if (i == 0)
+                return;
+
+	target = source = whichscreen();
+	target += i;
+	while (target < 0)
+		target += screenmax;
+	while (target >= screenmax)
+		target -= screenmax;
+
+	warpmouse_(source, target);
+}
+
+void
+warpmouse_(unsigned int source, unsigned int target) {
+	int x, y, d;
+	Window w;
+	unsigned int mask;
 
 	XQueryPointer(dpy, root, &w, &w, &x, &y, &d, &d, &mask);
 
