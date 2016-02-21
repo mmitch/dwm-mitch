@@ -7,7 +7,7 @@ wow(unsigned int s) {
 	dozoom[s] = False;
 	wempty = (0.5 - (mwfact[s][selws[s]-1] / 2)) * waw[s];
         for(c = clients; c; c = c->next)
-		if (c->screen == s)
+		if (c->screen == s) {
 			if (isvisible(c)) {
 				unban(c);
 				if(! c->isfloating)
@@ -15,6 +15,7 @@ wow(unsigned int s) {
 			} else {
 				ban(c);
 			}
+		}
 	
         focus(NULL);
         restack();
