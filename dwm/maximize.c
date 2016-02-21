@@ -4,7 +4,7 @@ maximize(unsigned int s) {
 	
 	domwfact[s] = dozoom[s] = False;        
         for(c = clients; c; c = c->next)
-		if (c->screen == s)
+		if (c->screen == s) {
 			if (isvisible(c)) {
 				unban(c);
 				if(! c->isfloating)
@@ -12,6 +12,7 @@ maximize(unsigned int s) {
 			} else {
 				ban(c);
 			}
+		}
 	
         focus(NULL);
         restack();

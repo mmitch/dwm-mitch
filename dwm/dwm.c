@@ -35,6 +35,7 @@
 #include <X11/cursorfont.h>
 #include <X11/keysym.h>
 #include <X11/Xatom.h>
+#include <X11/XKBlib.h>
 #include <X11/Xlib.h>
 #include <X11/Xproto.h>
 #include <X11/Xutil.h>
@@ -727,7 +728,7 @@ exportstatus(void) {
 		if (c->workspace > 0) {
 			chardata = layout[c->screen][c->workspace-1]->symbol;
 			XChangeProperty(dpy, c->win, dwmatom[dwmLayout], XA_STRING, 8, PropModeReplace,
-					chardata, strlen(chardata));
+					(unsigned char *) chardata, strlen(chardata));
 		}
 	}
 }
@@ -1005,6 +1006,8 @@ void
 initfont(const char *fontstr) {
 	char *def, **missing;
 	int i, n;
+	XFontStruct **xfonts;
+	char **font_names;
 
 	missing = NULL;
 	if(dc.font.set)
@@ -1016,11 +1019,7 @@ initfont(const char *fontstr) {
 		XFreeStringList(missing);
 	}
 	if(dc.font.set) {
-		XFontSetExtents *font_extents;
-		XFontStruct **xfonts;
-		char **font_names;
 		dc.font.ascent = dc.font.descent = 0;
-		font_extents = XExtentsOfFontSet(dc.font.set);
 		n = XFontsOfFontSet(dc.font.set, &xfonts, &font_names);
 		for(i = 0, dc.font.ascent = 0, dc.font.descent = 0; i < n; i++) {
 			if(dc.font.ascent < (*xfonts)->ascent)
@@ -1429,7 +1428,6 @@ restack(void) {
 	Client *c;
 	XEvent ev;
 	XWindowChanges wc;
-	unsigned int s;
 
 	drawbar();
 	if(!sel)
@@ -2084,12 +2082,12 @@ wscount_(int i, unsigned int s) {
 			i = 1;
 		while (i < workspaces[s]) {
 			for(c = clients; c; c = c->next)
-				if (c->screen == s)
+				if (c->screen == s) {
 					if (c->workspace > selws[s])
 						c->workspace--;
-					else if (c->workspace == selws[s]) {
+					else if (c->workspace == selws[s])
 						c->workspace = 0;
-					}
+				}
 			for(j = selws[s]; j < workspaces[s]; j++) {
 				layout[s][j-1] = layout[s][j];
 				mwfact[s][j-1] = mwfact[s][j];   
@@ -2125,7 +2123,7 @@ swapscreen(const char *arg) {
 #ifdef SWAPSCREEN_LAYOUT
 	sl = 0;
 	l = layout[sl][selws[sl]-1];
-	while (sn = (sl + i) % screenmax) {
+	while ((sn = (sl + i) % screenmax)) {
 		layout[sl][selws[sl]-1] = layout[sn][selws[sn]-1];
 		sl = sn;
 	}
@@ -2321,8 +2319,8 @@ zoom(const char *arg) {
 
 	if(!sel || !dozoom[s] || sel->isfloating)
 		return;
-	if((c = sel) == nexttiled(clients, c->screen))
-		if(!(c = nexttiled(c->next, c->screen)))
+	if((c = sel) == nexttiled(clients, s))
+		if(!(c = nexttiled(c->next, s)))
 			return;
 	detach(c);
 	attach(c);
