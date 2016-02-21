@@ -1001,6 +1001,7 @@ importstatus(void) {
 
 		c->workspace = getatomint(c->win, dwmatom[dwmWorkspace], c->workspace);
 		if (c->workspace > workspaces[c->screen]) {
+			selws[c->screen] = workspaces[c->screen];
 			wscount_(c->workspace - workspaces[c->screen], c->screen);
 			c->workspace = workspaces[c->screen];
 		}
