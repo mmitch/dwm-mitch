@@ -5,7 +5,7 @@ maximize(unsigned int s) {
 	domwfact[s] = dozoom[s] = False;        
         for(c = clients; c; c = c->next)
 		if (c->screen == s) {
-			if (isvisible(c)) {
+			if (ISVISIBLE(c)) {
 				unban(c);
 				if(! c->isfloating)
 					resize(c, wax[s], way[s], waw[s] - 2 * BORDERPX, wah[s] - 2 * BORDERPX, True);

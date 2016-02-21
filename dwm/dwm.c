@@ -48,6 +48,7 @@
 #define CLEANMASK(mask)		(mask & ~(numlockmask | LockMask))
 #define INTERSECT(C,X,Y,W,H)    (MAX(0, MIN((X)+(W),(C)->x+(C)->w) - MAX((X),(C)->x)) \
                                * MAX(0, MIN((Y)+(H),(C)->y+(C)->h) - MAX((Y),(C)->y)))
+#define ISVISIBLE(C)		((C)->workspace == selws[(C)->screen] || ((C)->workspace && (C)->issticky))
 #define LENGTH(x)		(sizeof x / sizeof x[0])
 #define MOUSEMASK		(BUTTONMASK | PointerMotionMask)
 
@@ -173,7 +174,6 @@ void grabkeys(void);
 void importstatus(void);
 void initfont(const char *fontstr);
 Bool isprotodel(Client *c);
-Bool isvisible(Client *c);
 void keypress(XEvent *e);
 void killclient(const char *arg);
 void leavenotify(XEvent *e);
@@ -322,7 +322,7 @@ arrange(void) {
 	unsigned int s;
 
 	for(c = clients; c; c = c->next)
-		if(isvisible(c))
+		if(ISVISIBLE(c))
 			unban(c);
 		else
 			ban(c);
@@ -551,7 +551,7 @@ configurerequest(XEvent *e) {
 			if((ev->value_mask & (CWX | CWY))
 			&& !(ev->value_mask & (CWWidth | CWHeight)))
 				configure(c);
-			if(isvisible(c))
+			if(ISVISIBLE(c))
 				XMoveResizeWindow(dpy, c->win, c->x, c->y, c->w, c->h);
 		}
 		else
@@ -763,7 +763,7 @@ floating(unsigned int s) { /* default floating layout */
 
 	domwfact[s] = dozoom[s] = False;
 	for(c = clients; c; c = c->next)
-		if(c->screen == s && isvisible(c))
+		if(c->screen == s && ISVISIBLE(c))
 			resize(c, c->x, c->y, c->w, c->h, True);
 }
 
@@ -771,12 +771,12 @@ void
 focus(Client *c) {
 	unsigned int s = whichscreen();
 
-	if((!c && selscreen) || (c && (!isvisible(c) || (c->screen != s && !c->isfloating && layout[c->screen][c->workspace-1]->arrange != floating)))) {
+	if((!c && selscreen) || (c && (!ISVISIBLE(c) || (c->screen != s && !c->isfloating && layout[c->screen][c->workspace-1]->arrange != floating)))) {
 		/* make two runs, ignore sticky and floating windows in the first one */
 		/* TODO: check out if "when sticky, floating and mouseover, then _do_ focus" comes more naturally */
-		for(c = stack; c && ((c->issticky && c->isfloating) || !isvisible(c) || c->screen != s); c = c->snext);
+		for(c = stack; c && ((c->issticky && c->isfloating) || !ISVISIBLE(c) || c->screen != s); c = c->snext);
 		if (!c)
-			for(c = stack; c && (!isvisible(c) || c->screen != s); c = c->snext);
+			for(c = stack; c && (!ISVISIBLE(c) || c->screen != s); c = c->snext);
 	}
 	if(sel && sel != c) {
 		grabbuttons(sel, False);
@@ -813,9 +813,9 @@ focusnext(const char *arg) {
 
 	if(!sel)
 		return;
-	for(c = sel->next; c && (!isvisible(c) || c->screen != sel->screen); c = c->next);
+	for(c = sel->next; c && (!ISVISIBLE(c) || c->screen != sel->screen); c = c->next);
 	if(!c)
-		for(c = clients; c && (!isvisible(c) || c->screen != sel->screen); c = c->next);
+		for(c = clients; c && (!ISVISIBLE(c) || c->screen != sel->screen); c = c->next);
 	if(c) {
 		focus(c);
 		restack();
@@ -828,10 +828,10 @@ focusprev(const char *arg) {
 
 	if(!sel)
 		return;
-	for(c = sel->prev; c && (!isvisible(c) || c->screen != sel->screen); c = c->prev);
+	for(c = sel->prev; c && (!ISVISIBLE(c) || c->screen != sel->screen); c = c->prev);
 	if(!c) {
 		for(c = sel; c && c->next; c = c->next);
-		for(; c && (!isvisible(c) || c->screen != sel->screen); c = c->prev);
+		for(; c && (!ISVISIBLE(c) || c->screen != sel->screen); c = c->prev);
 	}
 	if(c) {
 		focus(c);
@@ -1081,11 +1081,6 @@ isprotodel(Client *c) {
 	return ret;
 }
 
-Bool
-isvisible(Client *c) {
-	return (c->workspace == selws[c->screen] || (c->workspace && c->issticky));
-}
-
 void
 keypress(XEvent *e) {
 	unsigned int i;
@@ -1297,7 +1292,7 @@ whichscreen(void)
 
 Client *
 nexttiled(Client *c, unsigned int screen) {
-	for(; c && (c->isfloating || !isvisible(c) || c->screen != screen); c = c->next);
+	for(; c && (c->isfloating || !ISVISIBLE(c) || c->screen != screen); c = c->next);
 	return c;
 }
 
