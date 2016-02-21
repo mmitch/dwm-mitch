@@ -628,9 +628,8 @@ drawbar(void) {
 		if((dc.w = dc.x - x) > bh) {
 			dc.x = x;
 			if(sel && sel->screen == s) {
-				snprintf(buf, sizeof buf, "%c%c  %s",
-					 (sel && sel->isfloating) ? 'f' : ' ',
-					 (sel && sel->issticky) ? 's' : ' ',
+				snprintf(buf, sizeof buf, "%c %s",
+					 clientstat[ sel->isfloating | sel->issticky << 1 ],
 					 sel->name
 					);
 				drawtext(buf, dc.sel);
