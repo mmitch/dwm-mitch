@@ -42,8 +42,12 @@
 #include <X11/extensions/Xinerama.h>
 
 /* macros */
+#define MAX(A, B)               ((A) > (B) ? (A) : (B))
+#define MIN(A, B)               ((A) < (B) ? (A) : (B))
 #define BUTTONMASK		(ButtonPressMask | ButtonReleaseMask)
 #define CLEANMASK(mask)		(mask & ~(numlockmask | LockMask))
+#define INTERSECT(C,X,Y,W,H)    (MAX(0, MIN((X)+(W),(C)->x+(C)->w) - MAX((X),(C)->x)) \
+                               * MAX(0, MIN((Y)+(H),(C)->y+(C)->h) - MAX((Y),(C)->y)))
 #define LENGTH(x)		(sizeof x / sizeof x[0])
 #define MOUSEMASK		(BUTTONMASK | PointerMotionMask)
 
@@ -133,6 +137,7 @@ void attach(Client *c);
 void attachstack(Client *c);
 void ban(Client *c);
 void buttonpress(XEvent *e);
+void checkscreen(Client *c);
 void checkotherwm(void);
 void cleanup(void);
 void clientmessage(XEvent *e);
@@ -383,6 +388,26 @@ buttonpress(XEvent *e) {
 	/* FIXME: CLEANMASK() is computed over and over again… */
 }
 
+/* Checks whether a (floating) client is on the screen he has the most area on.
+   If not, move him there. */
+void
+checkscreen(Client *c) {
+	unsigned int s, news = selscreen;
+	int a, area = 0;
+
+	for(s = 0; s < screenmax; s++)
+		if ((a = INTERSECT(c, sx[s], sy[s], sw[s], sh[s])) > area) {
+			area = a;
+			news = s;
+		}
+	if (c->screen != news) {
+		c->screen = news;
+		c->workspace = selws[news];
+		focus(NULL);
+		arrange();
+	}
+}
+
 void
 checkotherwm(void) {
 	otherwm = False;
@@ -606,9 +631,8 @@ drawbar(void) {
 		if((dc.w = dc.x - x) > bh) {
 			dc.x = x;
 			if(sel && sel->screen == s) {
-				snprintf(buf, sizeof buf, "%c%c  %s",
-					 (sel && sel->isfloating) ? 'f' : ' ',
-					 (sel && sel->issticky) ? 's' : ' ',
+				snprintf(buf, sizeof buf, "%c %s",
+					 clientstat[ sel->isfloating | sel->issticky << 1 ],
 					 sel->name
 					);
 				drawtext(buf, dc.sel);
@@ -1217,6 +1241,7 @@ movemouse(const char *arg) {
 		switch (ev.type) {
 		case ButtonRelease:
 			XUngrabPointer(dpy, CurrentTime);
+			checkscreen(c);
 			return;
 		case ConfigureRequest:
 		case Expose:
@@ -1406,6 +1431,7 @@ resizemouse(const char *arg) {
 					c->w + c->border - 1, c->h + c->border - 1);
 			XUngrabPointer(dpy, CurrentTime);
 			while(XCheckMaskEvent(dpy, EnterWindowMask, &ev));
+			checkscreen(c);
 			return;
 		case ConfigureRequest:
 		case Expose:
@@ -2038,7 +2064,7 @@ popstack(const char *arg) {
 	for(c = stack; c && c->workspace; c = c->snext);
 	if (c) {
 		c->screen = s;
-		c->workspace = selws[c->screen];
+		c->workspace = selws[s];
 	}
 	focus(c);
 	arrange();

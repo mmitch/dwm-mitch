@@ -1,5 +1,8 @@
 /* See LICENSE file for copyright and license details. */
 
+/* status bar flags for normal/float/sticky/sticky+float */
+char clientstat[] = {' ', '<', '>', 'x'};
+
 /* appearance */
 #define BARPOS			BarBot // BarTop /* BarBot, BarOff */
 #define BORDERPX		0
