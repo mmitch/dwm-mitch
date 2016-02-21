@@ -2062,7 +2062,7 @@ popstack(const char *arg) {
 	for(c = stack; c && c->workspace; c = c->snext);
 	if (c) {
 		c->screen = s;
-		c->workspace = selws[c->screen];
+		c->workspace = selws[s];
 	}
 	focus(c);
 	arrange();
