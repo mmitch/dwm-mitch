@@ -46,8 +46,8 @@
 #define MIN(A, B)               ((A) < (B) ? (A) : (B))
 #define BUTTONMASK		(ButtonPressMask | ButtonReleaseMask)
 #define CLEANMASK(mask)		(mask & ~(numlockmask | LockMask))
-#define INTERSECT(C,X,Y,W,H)    (MAX(0, MIN((X)+(W),(C)->x+(C)->w) - MAX((X),(C)->x)) \
-                               * MAX(0, MIN((Y)+(H),(C)->y+(C)->h) - MAX((Y),(C)->y)))
+#define INTERSECT(C,X,Y,W,H)	( MAX(0, MIN((X)+(W),(C)->x+(C)->w) - MAX((X),(C)->x)) \
+				* MAX(0, MIN((Y)+(H),(C)->y+(C)->h) - MAX((Y),(C)->y)) )
 #define ISVISIBLE(C)		((C)->workspace == selws[(C)->screen] || ((C)->workspace && (C)->issticky))
 #define LENGTH(x)		(sizeof x / sizeof x[0])
 #define MOUSEMASK		(BUTTONMASK | PointerMotionMask)
