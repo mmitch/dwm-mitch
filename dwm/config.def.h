@@ -25,11 +25,12 @@ Rule rules[] = {
 	{ "MPlayer",			True,		0 },
 	{ "Acroread",			True,		0 },
 };
+
 #define INITIALWORKSPACES	 1
 #define MAXWORKSPACES		99
 #define MAXWSTEXTWIDTH		 6	/* must be 2*(strlen(MAXWORKSPACES)+1)  */
 #define MAXXINERAMASCREENS	 2
-
+#define REFRESH_HZ              60      /* refresh frequency for movemouse() and resizemouse() */
 
 /* rotate layouts on swapscreen() - undefine SWAPSCREEN_LAYOUT to deactivate */
 #define SWAPSCREEN_LAYOUT
