@@ -1214,6 +1214,7 @@ movemouse(const char *arg) {
 #ifdef SNAPLOCALBORDERS
 	unsigned int s;
 #endif
+	Time lasttime = 0;
 	
 	if (!(c = sel))
 		return;
@@ -1238,6 +1239,9 @@ movemouse(const char *arg) {
 			handler[ev.type](&ev);
  			break;
 		case MotionNotify:
+			if ((ev.xmotion.time - lasttime) <= (1000 / REFRESH_HZ))
+				continue;
+			lasttime = ev.xmotion.time;
 			XSync(dpy, False);
 			nx = ocx + (ev.xmotion.x - x1);
 			ny = ocy + (ev.xmotion.y - y1);
@@ -1401,6 +1405,7 @@ resizemouse(const char *arg) {
 	int nw, nh;
 	XEvent ev;
 	Client *c;
+	Time lasttime = 0;
 
 	if (!(c = sel))
 		return;
@@ -1428,6 +1433,9 @@ resizemouse(const char *arg) {
 			handler[ev.type](&ev);
 			break;
 		case MotionNotify:
+			if ((ev.xmotion.time - lasttime) <= (1000 / REFRESH_HZ))
+				continue;
+			lasttime = ev.xmotion.time;
 			XSync(dpy, False);
 			if (!c->isfloating)
 				togglefloating(NULL);
