@@ -387,6 +387,22 @@ buttonpress(XEvent *e) {
 	/* FIXME: CLEANMASK() is computed over and over again… */
 }
 
+void
+checkotherwm(void) {
+	otherwm = False;
+	XSetErrorHandler(xerrorstart);
+
+	/* this causes an error if some other window manager is running */
+	XSelectInput(dpy, root, SubstructureRedirectMask);
+	XSync(dpy, False);
+	if(otherwm)
+		eprint("dwm: another window manager is already running\n");
+	XSync(dpy, False);
+	XSetErrorHandler(NULL);
+	xerrorxlib = XSetErrorHandler(xerror);
+	XSync(dpy, False);
+}
+
 /* Checks whether a (floating) client is on the screen he has the most area on.
    If not, move him there. */
 void
@@ -405,22 +421,6 @@ checkscreen(Client *c) {
 		focus(NULL);
 		arrange();
 	}
-}
-
-void
-checkotherwm(void) {
-	otherwm = False;
-	XSetErrorHandler(xerrorstart);
-
-	/* this causes an error if some other window manager is running */
-	XSelectInput(dpy, root, SubstructureRedirectMask);
-	XSync(dpy, False);
-	if(otherwm)
-		eprint("dwm: another window manager is already running\n");
-	XSync(dpy, False);
-	XSetErrorHandler(NULL);
-	xerrorxlib = XSetErrorHandler(xerror);
-	XSync(dpy, False);
 }
 
 void
@@ -447,12 +447,16 @@ cleanup(void) {
 }
 
 void
-destroybarwins(void) {
-	unsigned int s;
-
-	for(s = 0; s < screenmax; s++) {
-		XDestroyWindow(dpy, barwin[s]);
-	}
+clientmessage(XEvent *e)
+{
+	XClientMessageEvent *cme = &e->xclient;
+	Client *c = getclient(cme->window);
+	if (!c)
+		return;
+	if (cme->message_type == netatom[NetWMState])
+		if (cme->data.l[1] == netatom[NetWMFullscreen] || cme->data.l[2] == netatom[NetWMFullscreen])
+			setfullscreen(c, (cme->data.l[0] == 1 /* _NET_WM_STATE_ADD    */
+				      || (cme->data.l[0] == 2 /* _NET_WM_STATE_TOGGLE */ && !c->ismax)));
 }
 
 void
@@ -472,19 +476,6 @@ compileregs(void) {
 				regs[i].propregex = reg;
 		}
 	}
-}
-
-void
-clientmessage(XEvent *e)
-{
-	XClientMessageEvent *cme = &e->xclient;
-	Client *c = getclient(cme->window);
-	if (!c)
-		return;
-	if (cme->message_type == netatom[NetWMState])
-		if (cme->data.l[1] == netatom[NetWMFullscreen] || cme->data.l[2] == netatom[NetWMFullscreen])
-			setfullscreen(c, (cme->data.l[0] == 1 /* _NET_WM_STATE_ADD    */
-				      || (cme->data.l[0] == 2 /* _NET_WM_STATE_TOGGLE */ && !c->ismax)));
 }
 
 void
@@ -561,6 +552,37 @@ configurerequest(XEvent *e) {
 		XConfigureWindow(dpy, ev->window, ev->value_mask, &wc);
 	}
 	XSync(dpy, False);
+}
+
+void
+createbarwins(void) {
+	unsigned int s;
+	XSetWindowAttributes wa;
+
+	wa.cursor = cursor[CurNormal];
+	wa.override_redirect = 1;
+	wa.background_pixmap = ParentRelative;
+	wa.event_mask = ButtonPressMask | ExposureMask;
+
+	for(s = 0; s < screenmax; s++) {
+		barwin[s] = XCreateWindow(dpy, root, sx[s], sy[s], sw[s], bh, 0,
+			DefaultDepth(dpy, screen), CopyFromParent, DefaultVisual(dpy, screen),
+			CWOverrideRedirect | CWBackPixmap | CWEventMask, &wa);
+		XDefineCursor(dpy, barwin[s], cursor[CurNormal]);
+	}
+	updatebarpos();
+	for(s = 0; s < screenmax; s++)
+		XMapRaised(dpy, barwin[s]);
+	XSync(dpy, False);
+}
+
+void
+destroybarwins(void) {
+	unsigned int s;
+
+	for(s = 0; s < screenmax; s++) {
+		XDestroyWindow(dpy, barwin[s]);
+	}
 }
 
 void
@@ -710,19 +732,6 @@ eprint(const char *errstr, ...) {
 }
 
 void
-expose(XEvent *e) {
-	unsigned int s;
-	XExposeEvent *ev = &e->xexpose;
-
-	if(ev->count == 0) {
-		for(s = 0; s < screenmax; s++) {
-			if(ev->window == barwin[s])
-				drawbar();
-		}
-	}
-}
-
-void
 exportstatus(void) {
 	Client *c;
 	unsigned int intdata;
@@ -746,6 +755,19 @@ exportstatus(void) {
 			chardata = layout[c->screen][c->workspace-1]->symbol;
 			XChangeProperty(dpy, c->win, dwmatom[dwmLayout], XA_STRING, 8, PropModeReplace,
 					(unsigned char *) chardata, strlen(chardata));
+		}
+	}
+}
+
+void
+expose(XEvent *e) {
+	unsigned int s;
+	XExposeEvent *ev = &e->xexpose;
+
+	if(ev->count == 0) {
+		for(s = 0; s < screenmax; s++) {
+			if(ev->window == barwin[s])
+				drawbar();
 		}
 	}
 }
@@ -832,24 +854,6 @@ focusprev(const char *arg) {
 	}
 }
 
-Client *
-getclient(Window w) {
-	Client *c;
-
-	for(c = clients; c && c->win != w; c = c->next);
-	return c;
-}
-
-unsigned long
-getcolor(const char *colstr) {
-	Colormap cmap = DefaultColormap(dpy, screen);
-	XColor color;
-
-	if(!XAllocNamedColor(dpy, cmap, colstr, &color, &color))
-		eprint("error, cannot allocate color '%s'\n", colstr);
-	return color.pixel;
-}
-
 Atom
 getatom(Window w, Atom prop)
 {
@@ -882,6 +886,24 @@ getatomint(Window w, Atom prop, unsigned int initial) {
 		result = *p;
 	XFree(p);
 	return result;
+}
+
+Client *
+getclient(Window w) {
+	Client *c;
+
+	for(c = clients; c && c->win != w; c = c->next);
+	return c;
+}
+
+unsigned long
+getcolor(const char *colstr) {
+	Colormap cmap = DefaultColormap(dpy, screen);
+	XColor color;
+
+	if(!XAllocNamedColor(dpy, cmap, colstr, &color, &color))
+		eprint("error, cannot allocate color '%s'\n", colstr);
+	return color.pixel;
 }
 
 long
@@ -1272,26 +1294,38 @@ movemouse(const char *arg) {
 	}
 }
 
-unsigned int
-whichscreen(void)
-{
-	int x, y, di, s;
-	unsigned int dui;
-	Window dummy;
+void
+moveto(const char *arg) {
+	unsigned int i;
+	unsigned int s = whichscreen();
 
-	if(!XQueryPointer(dpy, root, &dummy, &dummy, &x, &y, &di, &di, &dui))
-		return 0;
-
-	for(s = 0; s < screenmax; s++)
-		if(sx[s] <= x && x < sx[s]+sw[s] && sy[s] <= y && y < sy[s] + sh[s])
-			return s;
-	return 0;
+	if (!sel)
+		return;
+	i = arg ? atoi(arg) : 0;
+	if ((i < 1) || (i > workspaces[s]))
+		return;
+	sel->workspace = i;
+        arrange();
 }
 
 Client *
 nexttiled(Client *c, unsigned int screen) {
 	for(; c && (c->isfloating || !ISVISIBLE(c) || c->screen != screen); c = c->next);
 	return c;
+}
+
+void
+popstack(const char *arg) {
+	Client *c;
+	unsigned int s = whichscreen();
+
+	for(c = stack; c && c->workspace; c = c->snext);
+	if (c) {
+		c->screen = s;
+		c->workspace = selws[s];
+	}
+	focus(c);
+	arrange();
 }
 
 void
@@ -1322,6 +1356,16 @@ propertynotify(XEvent *e) {
 				drawbar();
 		}
 	}
+}
+
+void
+pushstack(const char *arg) {
+	if (!sel)
+		return;
+	sel->workspace = 0;
+	sel = NULL;
+	focus(NULL);
+	arrange();
 }
 
 void
@@ -1725,28 +1769,6 @@ setup(void) {
 }
 
 void
-createbarwins(void) {
-	unsigned int s;
-	XSetWindowAttributes wa;
-
-	wa.cursor = cursor[CurNormal];
-	wa.override_redirect = 1;
-	wa.background_pixmap = ParentRelative;
-	wa.event_mask = ButtonPressMask | ExposureMask;
-
-	for(s = 0; s < screenmax; s++) {
-		barwin[s] = XCreateWindow(dpy, root, sx[s], sy[s], sw[s], bh, 0,
-			DefaultDepth(dpy, screen), CopyFromParent, DefaultVisual(dpy, screen),
-			CWOverrideRedirect | CWBackPixmap | CWEventMask, &wa);
-		XDefineCursor(dpy, barwin[s], cursor[CurNormal]);
-	}
-	updatebarpos();
-	for(s = 0; s < screenmax; s++)
-		XMapRaised(dpy, barwin[s]);
-	XSync(dpy, False);
-}
-
-void
 sigchld(int unused) {
 	if(signal(SIGCHLD, sigchld) == SIG_ERR) {
 		perror("Can't install SIGCHLD handler");
@@ -1782,30 +1804,35 @@ spawn(const char *arg) {
 }
 
 void
-updatewstext(int screen) {
-	snprintf(wstext[screen], MAXWSTEXTWIDTH, "%d/%d", selws[screen], workspaces[screen]);
-	wstextwidth[screen] = textw(wstext[screen]);
-}
-
-void
-viewrel(const char *arg) {
-	int i;
-	unsigned int s = whichscreen();
+swapscreen(const char *arg) {
+	Client *c;
+	int i, sl, sn;
+	Layout *l;
 	
-	if (workspaces[s] == 1)
-		return;
 	i = arg ? atoi(arg) : 0;
+	i %= screenmax;
 	if (i == 0)
-                return;
-	selws[s] += i;
-	if (selws[s] > workspaces[s])
-		selws[s] = 1;
-	if (selws[s] < 1)
-		selws[s] = workspaces[s];
-	updatewstext(s);
-	sel = NULL;
-	focus(NULL);
-        arrange();
+		return;
+
+	for(c = clients; c; c = c->next)
+		if (c->workspace == selws[c->screen]) {
+			c->screen += i;
+			if (c->screen >= screenmax)
+				c->screen -= screenmax;
+			c->workspace = selws[c->screen];
+		}
+
+#ifdef SWAPSCREEN_LAYOUT
+	sl = 0;
+	l = layout[sl][selws[sl]-1];
+	while ((sn = (sl + i) % screenmax)) {
+		layout[sl][selws[sl]-1] = layout[sn][selws[sn]-1];
+		sl = sn;
+	}
+	layout[sl][selws[sl]-1] = l;
+#endif
+
+	arrange();
 }
 
 unsigned int
@@ -1969,194 +1996,6 @@ togglesticky(const char *arg) {
 }
 
 void
-view(const char *arg) {
-	int i;
-	unsigned int s = whichscreen();
-	
-	i = arg ? atoi(arg) : 0;
-	if ((i < 1) || (i > workspaces[s]) || (i == selws[s]))
-		return;
-	selws[s] = i;
-	updatewstext(s);
-	sel = NULL;
-	focus(NULL);
-	arrange();  
-}
-
-void
-warpmouse(const char *arg) {
-	int target;
-	unsigned int source;
-	
-	target = arg ? atoi(arg) : 0;
-	source = whichscreen();
-	if ((target < 0) || (target >= screenmax) || (target == source))
-		return;
-
-	warpmouse_(source, target);
-}
-
-void
-warpmouserel(const char *arg) {
-        int i, target;
-	unsigned int source;
-
-	if (screenmax == 1)
-	        return;
-
-	i = arg ? atoi(arg) : 0;
-	if (i == 0)
-                return;
-
-	target = source = whichscreen();
-	target += i;
-	while (target < 0)
-		target += screenmax;
-	while (target >= screenmax)
-		target -= screenmax;
-
-	warpmouse_(source, target);
-}
-
-void
-warpmouse_(unsigned int source, unsigned int target) {
-	int x, y, d;
-	Window w;
-	unsigned int mask;
-
-	XQueryPointer(dpy, root, &w, &w, &x, &y, &d, &d, &mask);
-
-	x -= sx[source];
-	y -= sy[source];
-	x = (double)x / (double)sw[source] * sw[target];
-	y = (double)y / (double)sh[source] * sh[target];
-
-        if (x >= sw[target])
-                x = sw[target]-1;
-        if (y >= sh[target])
-                y = sh[target]-1;
-
-        XWarpPointer(dpy, None, root, 0, 0, 0, 0, x + sx[target], y + sy[target]);
-	focus(NULL);
-}
-
-void
-pushstack(const char *arg) {
-	if (!sel)
-		return;
-	sel->workspace = 0;
-	sel = NULL;
-	focus(NULL);
-	arrange();
-}
-
-void
-popstack(const char *arg) {
-	Client *c;
-	unsigned int s = whichscreen();
-
-	for(c = stack; c && c->workspace; c = c->snext);
-	if (c) {
-		c->screen = s;
-		c->workspace = selws[s];
-	}
-	focus(c);
-	arrange();
-}
-
-void
-wscount(const char *arg) {
-	int i;
-
-	i = arg ? atoi(arg) : 0;
-	wscount_(i, whichscreen());
-}
-
-void
-wscount_(int i, unsigned int s) {
-	Client *c;
-	unsigned int j;
-	
-	if (i == 0)
-		return;   
-	if (i > 0) {
-		if (workspaces[s] + i > MAXWORKSPACES) {
-			i = MAXWORKSPACES - workspaces[s];
-			if (i == 0)
-				return;
-		}
-		for(c = clients; c; c = c->next)
-			if (c->screen == s && c->workspace > selws[s])
-				c->workspace += i;
-		workspaces[s] += i;
-		for(j = workspaces[s] - 1; j >= selws[s] + i; j--) {
-			layout[s][j] = layout[s][j-i];
-			mwfact[s][j] = mwfact[s][j-i];
-		}
-		for(j = 0; j < i; j++) {
-			layout[s][selws[s] + j] = layout[s][selws[s] - 1];
-			mwfact[s][selws[s] + j] = mwfact[s][selws[s] - 1];
-		}
-		selws[s]++; 
-	}
-	else {
-		i = workspaces[s] + i;
-		if (i < 1)
-			i = 1;
-		while (i < workspaces[s]) {
-			for(c = clients; c; c = c->next)
-				if (c->screen == s) {
-					if (c->workspace > selws[s])
-						c->workspace--;
-					else if (c->workspace == selws[s])
-						c->workspace = 0;
-				}
-			for(j = selws[s]; j < workspaces[s]; j++) {
-				layout[s][j-1] = layout[s][j];
-				mwfact[s][j-1] = mwfact[s][j];   
-			}
-			if (selws[s] == workspaces[s])
-				selws[s]--;
-			workspaces[s]--;
-		}
-	}
-	updatewstext(s);
-	arrange();
-}
-
-void
-swapscreen(const char *arg) {
-	Client *c;
-	int i, sl, sn;
-	Layout *l;
-	
-	i = arg ? atoi(arg) : 0;
-	i %= screenmax;
-	if (i == 0)
-		return;
-
-	for(c = clients; c; c = c->next)
-		if (c->workspace == selws[c->screen]) {
-			c->screen += i;
-			if (c->screen >= screenmax)
-				c->screen -= screenmax;
-			c->workspace = selws[c->screen];
-		}
-
-#ifdef SWAPSCREEN_LAYOUT
-	sl = 0;
-	l = layout[sl][selws[sl]-1];
-	while ((sn = (sl + i) % screenmax)) {
-		layout[sl][selws[sl]-1] = layout[sn][selws[sn]-1];
-		sl = sn;
-	}
-	layout[sl][selws[sl]-1] = l;
-#endif
-
-	arrange();
-}
-
-void
 unban(Client *c) {
 	if(!c->isbanned)
 		return;
@@ -2289,66 +2128,10 @@ updatetitle(Client *c) {
 		gettextprop(c->win, wmatom[WMName], c->name, sizeof c->name);
 }
 
-/* There's no way to check accesses to destroyed windows, thus those cases are
- * ignored (especially on UnmapNotify's).  Other types of errors call Xlibs
- * default error handler, which may call exit.  */
-int
-xerror(Display *dpy, XErrorEvent *ee) {
-	if(ee->error_code == BadWindow
-	|| (ee->request_code == X_SetInputFocus && ee->error_code == BadMatch)
-	|| (ee->request_code == X_PolyText8 && ee->error_code == BadDrawable)
-	|| (ee->request_code == X_PolyFillRectangle && ee->error_code == BadDrawable)
-	|| (ee->request_code == X_PolySegment && ee->error_code == BadDrawable)
-	|| (ee->request_code == X_ConfigureWindow && ee->error_code == BadMatch)
-	|| (ee->request_code == X_GrabKey && ee->error_code == BadAccess)
-	|| (ee->request_code == X_CopyArea && ee->error_code == BadDrawable))
-		return 0;
-	fprintf(stderr, "dwm: fatal error: request code=%d, error code=%d\n",
-		ee->request_code, ee->error_code);
-	return xerrorxlib(dpy, ee); /* may call exit */
-}
-
-int
-xerrordummy(Display *dsply, XErrorEvent *ee) {
-	return 0;
-}
-
-/* Startup Error handler to check if another window manager
- * is already running. */
-int
-xerrorstart(Display *dsply, XErrorEvent *ee) {
-	otherwm = True;
-	return -1;
-}
-
 void
-moveto(const char *arg) {
-	unsigned int i;
-	unsigned int s = whichscreen();
-	
-	if (!sel)
-		return;
-	i = arg ? atoi(arg) : 0;   
-	if ((i < 1) || (i > workspaces[s]))
-		return;
-	sel->workspace = i;
-        arrange();
-}
-
-void
-zoom(const char *arg) {
-	Client *c;
-	unsigned int s = whichscreen();
-
-	if(!sel || !dozoom[s] || sel->isfloating)
-		return;
-	if((c = sel) == nexttiled(clients, s))
-		if(!(c = nexttiled(c->next, s)))
-			return;
-	detach(c);
-	attach(c);
-	focus(c);
-	arrange();
+updatewstext(int screen) {
+	snprintf(wstext[screen], MAXWSTEXTWIDTH, "%d/%d", selws[screen], workspaces[screen]);
+	wstextwidth[screen] = textw(wstext[screen]);
 }
 
 void
@@ -2397,6 +2180,223 @@ updatexinerama(void) {
 			c->workspace = 0;
 	XFree(xinescreens);
 	dc.drawable = XCreatePixmap(dpy, root, totalw, bh, DefaultDepth(dpy, screen)); 
+}
+
+void
+view(const char *arg) {
+	int i;
+	unsigned int s = whichscreen();
+
+	i = arg ? atoi(arg) : 0;
+	if ((i < 1) || (i > workspaces[s]) || (i == selws[s]))
+		return;
+	selws[s] = i;
+	updatewstext(s);
+	sel = NULL;
+	focus(NULL);
+	arrange();
+}
+
+void
+viewrel(const char *arg) {
+	int i;
+	unsigned int s = whichscreen();
+
+	if (workspaces[s] == 1)
+		return;
+	i = arg ? atoi(arg) : 0;
+	if (i == 0)
+                return;
+	selws[s] += i;
+	if (selws[s] > workspaces[s])
+		selws[s] = 1;
+	if (selws[s] < 1)
+		selws[s] = workspaces[s];
+	updatewstext(s);
+	sel = NULL;
+	focus(NULL);
+        arrange();
+}
+
+void
+warpmouse(const char *arg) {
+	int target;
+	unsigned int source;
+
+	target = arg ? atoi(arg) : 0;
+	source = whichscreen();
+	if ((target < 0) || (target >= screenmax) || (target == source))
+		return;
+
+	warpmouse_(source, target);
+}
+
+void
+warpmouse_(unsigned int source, unsigned int target) {
+	int x, y, d;
+	Window w;
+	unsigned int mask;
+
+	XQueryPointer(dpy, root, &w, &w, &x, &y, &d, &d, &mask);
+
+	x -= sx[source];
+	y -= sy[source];
+	x = (double)x / (double)sw[source] * sw[target];
+	y = (double)y / (double)sh[source] * sh[target];
+
+        if (x >= sw[target])
+                x = sw[target]-1;
+        if (y >= sh[target])
+                y = sh[target]-1;
+
+        XWarpPointer(dpy, None, root, 0, 0, 0, 0, x + sx[target], y + sy[target]);
+	focus(NULL);
+}
+
+void
+warpmouserel(const char *arg) {
+        int i, target;
+	unsigned int source;
+
+	if (screenmax == 1)
+	        return;
+
+	i = arg ? atoi(arg) : 0;
+	if (i == 0)
+                return;
+
+	target = source = whichscreen();
+	target += i;
+	while (target < 0)
+		target += screenmax;
+	while (target >= screenmax)
+		target -= screenmax;
+
+	warpmouse_(source, target);
+}
+
+unsigned int
+whichscreen(void)
+{
+	int x, y, di, s;
+	unsigned int dui;
+	Window dummy;
+
+	if(!XQueryPointer(dpy, root, &dummy, &dummy, &x, &y, &di, &di, &dui))
+		return 0;
+
+	for(s = 0; s < screenmax; s++)
+		if(sx[s] <= x && x < sx[s]+sw[s] && sy[s] <= y && y < sy[s] + sh[s])
+			return s;
+	return 0;
+}
+
+void
+wscount(const char *arg) {
+	int i;
+
+	i = arg ? atoi(arg) : 0;
+	wscount_(i, whichscreen());
+}
+
+void
+wscount_(int i, unsigned int s) {
+	Client *c;
+	unsigned int j;
+
+	if (i == 0)
+		return;
+	if (i > 0) {
+		if (workspaces[s] + i > MAXWORKSPACES) {
+			i = MAXWORKSPACES - workspaces[s];
+			if (i == 0)
+				return;
+		}
+		for(c = clients; c; c = c->next)
+			if (c->screen == s && c->workspace > selws[s])
+				c->workspace += i;
+		workspaces[s] += i;
+		for(j = workspaces[s] - 1; j >= selws[s] + i; j--) {
+			layout[s][j] = layout[s][j-i];
+			mwfact[s][j] = mwfact[s][j-i];
+		}
+		for(j = 0; j < i; j++) {
+			layout[s][selws[s] + j] = layout[s][selws[s] - 1];
+			mwfact[s][selws[s] + j] = mwfact[s][selws[s] - 1];
+		}
+		selws[s]++;
+	}
+	else {
+		i = workspaces[s] + i;
+		if (i < 1)
+			i = 1;
+		while (i < workspaces[s]) {
+			for(c = clients; c; c = c->next)
+				if (c->screen == s) {
+					if (c->workspace > selws[s])
+						c->workspace--;
+					else if (c->workspace == selws[s])
+						c->workspace = 0;
+				}
+			for(j = selws[s]; j < workspaces[s]; j++) {
+				layout[s][j-1] = layout[s][j];
+				mwfact[s][j-1] = mwfact[s][j];
+			}
+			if (selws[s] == workspaces[s])
+				selws[s]--;
+			workspaces[s]--;
+		}
+	}
+	updatewstext(s);
+	arrange();
+}
+
+/* There's no way to check accesses to destroyed windows, thus those cases are
+ * ignored (especially on UnmapNotify's).  Other types of errors call Xlibs
+ * default error handler, which may call exit.  */
+int
+xerror(Display *dpy, XErrorEvent *ee) {
+	if(ee->error_code == BadWindow
+	|| (ee->request_code == X_SetInputFocus && ee->error_code == BadMatch)
+	|| (ee->request_code == X_PolyText8 && ee->error_code == BadDrawable)
+	|| (ee->request_code == X_PolyFillRectangle && ee->error_code == BadDrawable)
+	|| (ee->request_code == X_PolySegment && ee->error_code == BadDrawable)
+	|| (ee->request_code == X_ConfigureWindow && ee->error_code == BadMatch)
+	|| (ee->request_code == X_GrabKey && ee->error_code == BadAccess)
+	|| (ee->request_code == X_CopyArea && ee->error_code == BadDrawable))
+		return 0;
+	fprintf(stderr, "dwm: fatal error: request code=%d, error code=%d\n",
+		ee->request_code, ee->error_code);
+	return xerrorxlib(dpy, ee); /* may call exit */
+}
+
+int
+xerrordummy(Display *dsply, XErrorEvent *ee) {
+	return 0;
+}
+
+/* Startup Error handler to check if another window manager
+ * is already running. */
+int
+xerrorstart(Display *dsply, XErrorEvent *ee) {
+	otherwm = True;
+	return -1;
+}
+
+void
+zoom(const char *arg) {
+	Client *c;
+	unsigned int s = whichscreen();
+
+	if(!sel || !dozoom[s] || sel->isfloating)
+		return;
+	if((c = sel) == nexttiled(clients, s))
+		if(!(c = nexttiled(c->next, s)))
+			return;
+	detach(c);
+	attach(c);
+	focus(c);
+	arrange();
 }
 
 int
