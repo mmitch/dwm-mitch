@@ -75,7 +75,7 @@ Layout layouts[] = {
 #define MODKEY			Mod1Mask
 Key keys[] = {
 	/* modifier			key		function	argument */
-	{ MODKEY|ShiftMask,		XK_a,		spawn,		"exec x-terminal-emulator" },
+	{ MODKEY|ShiftMask,		XK_a,		spawn,		"exec xterm" },
 	{ MODKEY|ShiftMask|ControlMask,	XK_r,		spawn,		"exec killall -SIGUSR1 dwm" },
 	{ MODKEY|ShiftMask,		XK_s,		spawn,		"exec dwm-choose" },
 	{ MODKEY|ControlMask,		XK_s,		togglesticky,	NULL },
