@@ -1,5 +1,51 @@
 dwm-mitch history
 
+### v4.0    2016-03-15
+
+ - changes/improvements:
+   - dwm features:
+     - sticky mode for clients (visible on every workspace)
+       - command: togglesticky (no parameters)
+       - default keybinding: M+C+s
+     - shows sticky/floating status of clients in statusbar
+       - configure via clientstat[] in dwm/config.def.h
+     - save and restore client positions and workspace layouts during
+       dwm restart
+     - make dialog and splash windows float by default (by checking
+       for _NET_WM_WINDOW_TYPE_DIALOG and _NET_WM_WINDOW_TYPE_SPLASH
+       atoms)
+     - limit window refresh on mousemove() and resizemouse() to 60 Hz,
+       enabling smoother movement of running videos and the like
+       - configure via REFRESH_HZ in dwm/config.def.h
+     - multi-screen features:
+       - snap clients to all screen borders on mousemove() instead of
+         just the overall desktop borders
+       - automatically attach client to the screen it has most window
+         area on after mousemove()
+   - dwm configuration:
+     - button clicks can be configured via dwm/config.def.h
+     - dwm/config.h intermediate file removed, use dwm/config.def.h
+       for your personal configuration
+   - dwm Makefile updates:
+     - all installation directories are configurable
+     - install session icon for lightdm-gtk-greeter in Debian 8
+     - uninstall everything that has been installed and try to remove
+       all directories created on installation (only when empty of
+       course)
+     - compile with -flto, resulting in even smaller binaries
+
+ - bugfixes:
+   - use dwm-choose as program starter in dwm standard configuration
+     instead of calling dmenu manually (dwm-choose was added some
+     years ago for exactly this purpose but it was never used...)
+   - add fake support for _NET_WM_STATE and _NET_WM_STATE_FULLSCREEN
+     - This fixes a long-standing bug where Firefox would freeze in
+       fullscreen mode.  While Firefox is the real culprit, a
+       workaround in dwm-mitch seemed reasonable because it's a very
+       annoying situation.  Firefox 46+ should fix this once and for
+       all, see https://bugzilla.mozilla.org/show_bug.cgi?id=1189622
+       but I think I'll just keep this fix anyway.
+
 ### v3.9    2015-05-24
 
  - changes/improvements:
