@@ -6,7 +6,8 @@ Get the most current version from https://github.com/mmitch/dwm-mitch
 Older versions were hosted at http://www.cgarbs.de/dwm-mitch.en.html
 
 dwm-mitch is based von dwm 4.7 from December 2007, so patches from
-current dwm versions will propably not apply cleanly.
+current dwm versions will not apply cleanly, although it is possible
+to cherry-pick a thing or two without too much hassle.
 
 installation
 ------------
