@@ -179,5 +179,5 @@ Button buttons[] = {
 	{ ClkClientWin,		MODKEY,		Button2,	zoom,		NULL },
 	{ ClkClientWin,		MODKEY,		Button2,	togglemax,	NULL },
 	{ ClkClientWin,		MODKEY,		Button3,	resizemouse,	NULL },
-	{ ClkRootWin,		0,		Button1,	spawn,		"exec x-terminal-emulator" },
+	{ ClkRootWin,		0,		Button1,	spawn,		"exec x-term" },
 };
