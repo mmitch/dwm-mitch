@@ -3,6 +3,9 @@
 /* status bar flags for normal/float/sticky/sticky+float */
 char clientstat[] = {' ', '<', '>', 'x'};
 
+/* status bar flag for locked mode */
+const char* const lockedstat = "L";
+
 /* appearance */
 #define BARPOS			BarBot // BarTop /* BarBot, BarOff */
 #define BORDERPX		0
@@ -105,6 +108,7 @@ Key keys[] = {
 	{ MODKEY|ControlMask,		XK_2,		warpmouserel,	"1" },
 	{ MODKEY|ControlMask,		XK_1,		warpmouserel,	"-1" },
 	{ MODKEY|ControlMask,		XK_x,		swapscreen,	"1" },
+	{ 0,				XK_Scroll_Lock,	togglelocked,	NULL },
 
 	/* "macros" using multiple commands on the same keybinding */
 	{ MODKEY|ControlMask,		XK_w,		pushstack,	NULL },
@@ -150,6 +154,12 @@ Key keys[] = {
 	{ 0,				0x1008ff11,	spawn,	"amixer set Master 5%-" },
 	{ 0,				0x1008ff12,	spawn,	"pa-togglemute" },
 	{ 0,				0x1008ff13,	spawn,	"amixer set Master 5%+" },
+};
+
+/* key definitions for locked mode */
+Key locked_keys[] = {
+	/* modifier			key		function	argument */
+	{ 0,				XK_Scroll_Lock,	togglelocked,	NULL },
 };
 
 /* button definitions */

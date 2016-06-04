@@ -38,6 +38,7 @@ M+S+1		move window to workspace 1
 M+S+2		move window to workspace 2
 [...]
 M+S+0		move window to workspace 10
+ScrollLock	toggle locked mode (deactivate all keybindings)
 
 
 These are the default mouse button bindings.

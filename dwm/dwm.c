@@ -170,6 +170,7 @@ unsigned long getcolor(const char *colstr);
 long getstate(Window w);
 Bool gettextprop(Window w, Atom prop, char *text, unsigned int size);
 void grabbuttons(Client *c, Bool focused);
+KeyCode grabkey(Key key);
 void grabkeys(void);
 void importstatus(void);
 void initfont(const char *fontstr);
@@ -210,6 +211,7 @@ void tile(unsigned int s);
 void tileleft(unsigned int s);
 void togglebar(const char *arg);
 void togglefloating(const char *arg);
+void togglelocked(const char *arg);
 void togglemax(const char *arg);
 void togglesticky(const char *arg);
 void unban(Client *c);
@@ -273,6 +275,7 @@ DC dc = {0};
 Window root;
 Regs *regs = NULL;
 char **cargv;
+Bool locked = False;
 
 /* predefine variables depending on config.def.h */
 extern int wax[], way[], waw[], wah[];
@@ -636,6 +639,13 @@ drawbar(void) {
 		dc.w = blw;
 		drawtext(layout[s][selws[s]-1]->symbol, dc.norm);
 		x = dc.x + dc.w;
+		if(locked) {
+			dc.x = x;
+			/* FIXME: textw() is computed all over again and again… */
+			dc.w = textw(lockedstat);
+			drawtext(lockedstat, dc.norm);
+			x += dc.w;
+		}
 		dc.w = textw(stext);
 		dc.x = sw[s] - dc.w;
 		if(dc.x < x) {
@@ -990,27 +1000,38 @@ grabbuttons(Client *c, Bool focused) {
 				GrabModeAsync, GrabModeSync, None, None);
 }
 
+KeyCode
+grabkey(Key key)  {
+	KeyCode code;
+
+	code = XKeysymToKeycode(dpy, key.keysym);
+	if(code) {
+		XGrabKey(dpy, code, key.mod, root, True,
+			 GrabModeAsync, GrabModeAsync);
+		XGrabKey(dpy, code, key.mod | LockMask, root, True,
+			 GrabModeAsync, GrabModeAsync);
+		XGrabKey(dpy, code, key.mod | numlockmask, root, True,
+			 GrabModeAsync, GrabModeAsync);
+		XGrabKey(dpy, code, key.mod | numlockmask | LockMask, root, True,
+			 GrabModeAsync, GrabModeAsync);
+	}
+	return code;
+}
+
 void
 grabkeys(void)  {
 	unsigned int i;
-	KeyCode code;
 
 	XUngrabKey(dpy, AnyKey, AnyModifier, root);
-	for(i = 0; i < LENGTH(keys); i++) {
-		code = XKeysymToKeycode(dpy, keys[i].keysym);
-		if (code) {
-			XGrabKey(dpy, code, keys[i].mod, root, True,
-					GrabModeAsync, GrabModeAsync);
-			XGrabKey(dpy, code, keys[i].mod | LockMask, root, True,
-					GrabModeAsync, GrabModeAsync);
-			XGrabKey(dpy, code, keys[i].mod | numlockmask, root, True,
-					GrabModeAsync, GrabModeAsync);
-			XGrabKey(dpy, code, keys[i].mod | numlockmask | LockMask, root, True,
-					GrabModeAsync, GrabModeAsync);
-		} else {
-			fprintf(stderr, "key definition #%d resulted in NoSymbol, skipping\n", i);
-		}
+	if(locked) {
+		for(i = 0; i < LENGTH(locked_keys); i++)
+			if (!grabkey(locked_keys[i]))
+				fprintf(stderr, "locked key definition #%d resulted in NoSymbol, skipping\n", i);
 	}
+	else
+		for(i = 0; i < LENGTH(keys); i++)
+			if (!grabkey(keys[i]))
+				fprintf(stderr, "key definition #%d resulted in NoSymbol, skipping\n", i);
 }
 
 void
@@ -1105,15 +1126,26 @@ keypress(XEvent *e) {
 	unsigned int i;
 	KeySym keysym;
 	XKeyEvent *ev;
+	int keycount;
+	Key *keylist;
 
 	ev = &e->xkey;
 	keysym = XkbKeycodeToKeysym(dpy, (KeyCode)ev->keycode, 0, 0);
-	for(i = 0; i < LENGTH(keys); i++)
-		if(keysym == keys[i].keysym
-		&& CLEANMASK(keys[i].mod) == CLEANMASK(ev->state))
+
+	if(locked) {
+		keycount = LENGTH(locked_keys);
+		keylist = locked_keys;
+	} else {
+		keycount = LENGTH(keys);
+		keylist = keys;
+	}
+
+	for(i = 0; i < keycount; i++)
+		if(keysym == keylist[i].keysym
+		&& CLEANMASK(keylist[i].mod) == CLEANMASK(ev->state))
 		{
-			if(keys[i].func)
-				keys[i].func(keys[i].arg);
+			if(keylist[i].func)
+				keylist[i].func(keylist[i].arg);
 		}
 	/* FIXME: CLEANMASK() is computed over and over again… */
 }
@@ -1963,6 +1995,13 @@ togglefloating(const char *arg) {
 	if(sel->isfloating)
 		resize(sel, sel->x, sel->y, sel->w, sel->h, True);
 	arrange();
+}
+
+void
+togglelocked(const char *arg) {
+	locked = !locked;
+	grabkeys();
+	drawbar();
 }
 
 void
