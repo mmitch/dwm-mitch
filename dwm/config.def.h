@@ -84,6 +84,7 @@ Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_space,	togglefloating,	NULL },
 	{ MODKEY|ControlMask,		XK_s,		togglesticky,	NULL },
 	{ MODKEY|ShiftMask,		XK_c,		killclient,	NULL },
+	{ 0,				XK_Scroll_Lock,	togglelocked,	NULL },
 
 	{ MODKEY|ShiftMask,		XK_s,		swapscreen,	"1" },
 	/* uncomment next line if the mouse pointer should be swapped too */

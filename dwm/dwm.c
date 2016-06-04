@@ -210,6 +210,7 @@ void tile(unsigned int s);
 void tileleft(unsigned int s);
 void togglebar(const char *arg);
 void togglefloating(const char *arg);
+void togglelocked(const char *arg);
 void togglemax(const char *arg);
 void togglesticky(const char *arg);
 void unban(Client *c);
@@ -273,6 +274,7 @@ DC dc = {0};
 Window root;
 Regs *regs = NULL;
 char **cargv;
+Bool locked = False;
 
 /* predefine variables depending on config.def.h */
 extern int wax[], way[], waw[], wah[];
@@ -1960,6 +1962,11 @@ togglefloating(const char *arg) {
 	if(sel->isfloating)
 		resize(sel, sel->x, sel->y, sel->w, sel->h, True);
 	arrange();
+}
+
+void
+togglelocked(const char *arg) {
+	locked = !locked;
 }
 
 void
