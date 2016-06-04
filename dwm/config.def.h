@@ -126,6 +126,12 @@ Key keys[] = {
 	{ MODKEY|ControlMask,		XK_h,		warpmouserel,	"-1" },
 };
 
+/* key definitions for locked mode */
+Key locked_keys[] = {
+	/* modifier			key		function	argument */
+	{ 0,				XK_Scroll_Lock,	togglelocked,	NULL },
+};
+
 /* button definitions */
 /* click can be ClkWsNumber, ClkLtSymbol, ClkWinTitle, ClkStatusText, ClkClientWin or ClkRootWin */
 Button buttons[] = {
