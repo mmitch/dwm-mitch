@@ -162,6 +162,7 @@ Key locked_keys[] = {
 	{ 0,				XK_Scroll_Lock,	togglelocked,	NULL },
 	{ MODKEY,			XK_Next,	spawn,	"amixer set Master 5%-" },
 	{ MODKEY,			XK_Prior,	spawn,	"amixer set Master 5%+" },
+	{ MODKEY|ControlMask,		XK_c,		togglebar,	NULL },
 };
 
 /* button definitions */
