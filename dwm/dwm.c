@@ -635,6 +635,13 @@ drawbar(void) {
 		dc.w = blw;
 		drawtext(layout[s][selws[s]-1]->symbol, dc.norm);
 		x = dc.x + dc.w;
+		if(locked) {
+			dc.x = x;
+			/* FIXME: textw() is computed all over again and again… */
+			dc.w = textw(lockedstat);
+			drawtext(lockedstat, dc.norm);
+			x += dc.w;
+		}
 		dc.w = textw(stext);
 		dc.x = sw[s] - dc.w;
 		if(dc.x < x) {
@@ -1967,6 +1974,7 @@ togglefloating(const char *arg) {
 void
 togglelocked(const char *arg) {
 	locked = !locked;
+	drawbar();
 }
 
 void

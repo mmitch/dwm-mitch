@@ -3,6 +3,9 @@
 /* status bar flags for normal/float/sticky/sticky+float */
 char clientstat[] = {' ', '<', '>', 'x'};
 
+/* status bar flag for locked mode */
+const char* const lockedstat = "L";
+
 /* appearance */
 #define BARPOS			BarTop /* BarBot, BarOff */
 #define BORDERPX		1
