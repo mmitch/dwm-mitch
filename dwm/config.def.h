@@ -160,6 +160,8 @@ Key keys[] = {
 Key locked_keys[] = {
 	/* modifier			key		function	argument */
 	{ 0,				XK_Scroll_Lock,	togglelocked,	NULL },
+	{ MODKEY,			XK_Next,	spawn,	"amixer set Master 5%-" },
+	{ MODKEY,			XK_Prior,	spawn,	"amixer set Master 5%+" },
 };
 
 /* button definitions */
