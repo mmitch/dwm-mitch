@@ -143,8 +143,8 @@ Key keys[] = {
 	{ ControlMask,			0x1008ff26,	popstack,	NULL },
 
 	/* ordinary volume control */
-	{ MODKEY,			XK_Next,	spawn,		"exec amixer set Master 5%-" },
-	{ MODKEY,			XK_Prior,	spawn,		"exec amixer set Master 5%+" },
+	{ MODKEY,			XK_Next,	spawn,		"exec volume-down" },
+	{ MODKEY,			XK_Prior,	spawn,		"exec volume-up" },
 	
 	/* special keys on Fujitsu Green IT keyboard
 	   XF86HomePage            0x1008ff18
@@ -153,17 +153,17 @@ Key keys[] = {
 	   XF86AudioMute           0x1008ff12
 	   XF86AudioRaiseVolume    0x1008ff13
 	   XF86Sleep               0x1008ff2f */
-	{ 0,				0x1008ff11,	spawn,		"exec amixer set Master 5%-" },
+	{ 0,				0x1008ff11,	spawn,		"exec volume-down" },
 	{ 0,				0x1008ff12,	spawn,		"exec pa-togglemute" },
-	{ 0,				0x1008ff13,	spawn,		"exec amixer set Master 5%+" },
+	{ 0,				0x1008ff13,	spawn,		"exec volume-up" },
 };
 
 /* key definitions for locked mode */
 Key locked_keys[] = {
 	/* modifier			key		function	argument */
 	{ 0,				XK_Scroll_Lock,	togglelocked,	NULL },
-	{ MODKEY,			XK_Next,	spawn,		"exec amixer set Master 5%-" },
-	{ MODKEY,			XK_Prior,	spawn,		"exec amixer set Master 5%+" },
+	{ MODKEY,			XK_Next,	spawn,		"exec volume-down" },
+	{ MODKEY,			XK_Prior,	spawn,		"exec volume-up" },
 	{ MODKEY|ControlMask,		XK_Prior,	spawn,		"exec xcalib -i -a" },
 	{ MODKEY|ControlMask,		XK_Next,	spawn,		"exec xautolock -locknow" },
 	{ MODKEY|ControlMask,		XK_c,		togglebar,	NULL },
@@ -188,10 +188,10 @@ Button buttons[] = {
 	{ ClkWinTitle,		0,		Button3,	focusprev,	NULL },
 	{ ClkWinTitle,		0,		Button5,	focusprev,	NULL },
 	{ ClkWinTitle,		0,		Button2,	zoom,		NULL },
-	{ ClkStatusText,	0,		Button1,	spawn,		"exec amixer set Master 5%+" },
-	{ ClkStatusText,	0,		Button4,	spawn,		"exec amixer set Master 5%+" },
-	{ ClkStatusText,	0,		Button3,	spawn,		"exec amixer set Master 5%-" },
-	{ ClkStatusText,	0,		Button5,	spawn,		"exec amixer set Master 5%-" },
+	{ ClkStatusText,	0,		Button1,	spawn,		"exec volume-up" },
+	{ ClkStatusText,	0,		Button4,	spawn,		"exec volume-up" },
+	{ ClkStatusText,	0,		Button3,	spawn,		"exec volume-down" },
+	{ ClkStatusText,	0,		Button5,	spawn,		"exec volume-down" },
 	{ ClkClientWin,		MODKEY,		Button1,	movemouse,	NULL },
 	{ ClkClientWin,		MODKEY,		Button2,	zoom,		NULL },
 	{ ClkClientWin,		MODKEY,		Button2,	togglemax,	NULL },
