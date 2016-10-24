@@ -166,6 +166,8 @@ Key locked_keys[] = {
 	{ MODKEY,			XK_Prior,	spawn,		"exec volume-up" },
 	{ MODKEY|ControlMask,		XK_Prior,	spawn,		"exec xcalib -i -a" },
 	{ MODKEY|ControlMask,		XK_Next,	spawn,		"exec xautolock -locknow" },
+	{ MODKEY,			XK_Tab,		focusnext,	NULL },
+	{ MODKEY|ShiftMask,		XK_Tab,		focusprev,	NULL },
 	{ MODKEY|ControlMask,		XK_c,		togglebar,	NULL },
 };
 
