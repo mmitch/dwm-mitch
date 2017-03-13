@@ -17,6 +17,9 @@ const char* const lockedstat = "L";
 #define SELBORDERCOLOR		"#000"
 #define SELBGCOLOR		"#555"
 #define SELFGCOLOR		"#fff"
+#define ERRBORDERCOLOR		"#c22" /* error colors are relevant for status bar timeouts */
+#define ERRBGCOLOR		"#f55"
+#define ERRFGCOLOR		"#fff"
 
 /* workspaces */
 /* Query class:instance:title for regex matching info with following command:
@@ -49,6 +52,11 @@ Rule rules[] = {
 /* snap clients to local screen borders on mousemove() - undefine to snap to global borders */
 /* only relevant with multiple screens */
 #define SNAPLOCALBORDERS
+
+/* status bar timeout in seconds
+ * if no update is received for this duration, the status bar is colored in the ERR* colors defined above
+ * set to 0 to deactivate */
+#define STATUSBARTIMEOUT	60
 
 /* ugly: depending on constants above but needed by layouts below */
 double mwfact[MAXXINERAMASCREENS][MAXWORKSPACES];

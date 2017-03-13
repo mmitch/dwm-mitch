@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
 #include <signal.h>
 #include <sys/select.h>
@@ -89,6 +90,7 @@ typedef struct {
 	int x, y, w, h;
 	unsigned long norm[ColLast];
 	unsigned long sel[ColLast];
+	unsigned long err[ColLast];
 	Drawable drawable;
 	GC gc;
 	struct {
@@ -276,6 +278,7 @@ Window root;
 Regs *regs = NULL;
 char **cargv;
 Bool locked = False;
+time_t stextupdated;
 
 /* predefine variables depending on config.def.h */
 extern int wax[], way[], waw[], wah[];
@@ -630,6 +633,12 @@ drawbar(void) {
 	int x;
 	unsigned int s;
 	char buf[256];
+	unsigned long *stextcol;
+
+	if (STATUSBARTIMEOUT > 0 && time(NULL) - stextupdated > STATUSBARTIMEOUT)
+		stextcol = dc.err;
+	else
+		stextcol = dc.norm;
 
 	for(s = 0; s < screenmax; s++) {
 		dc.x = dc.y = 0;
@@ -652,7 +661,7 @@ drawbar(void) {
 			dc.x = x;
 			dc.w = sw[s] - x;
 		}
-		drawtext(stext, dc.norm);
+		drawtext(stext, stextcol);
 		if((dc.w = dc.x - x) > bh) {
 			dc.x = x;
 			if(sel && sel->screen == s) {
@@ -1764,6 +1773,9 @@ setup(void) {
 	dc.sel[ColBorder] = getcolor(SELBORDERCOLOR);
 	dc.sel[ColBG] = getcolor(SELBGCOLOR);
 	dc.sel[ColFG] = getcolor(SELFGCOLOR);
+	dc.err[ColBorder] = getcolor(ERRBORDERCOLOR);
+	dc.err[ColBG] = getcolor(ERRBGCOLOR);
+	dc.err[ColFG] = getcolor(ERRFGCOLOR);
 	initfont(FONT);
 	dc.h = bh = dc.font.height + 2;
 
@@ -1787,6 +1799,7 @@ setup(void) {
 	bpos = BARPOS;
 	createbarwins();
 	strcpy(stext, "dwm-"VERSION);
+	stextupdated = time(NULL);
 	dc.gc = XCreateGC(dpy, root, 0, 0);
 	XSetLineAttributes(dpy, dc.gc, 1, LineSolid, CapButt, JoinMiter);
 	if(!dc.font.set)
@@ -2161,6 +2174,7 @@ void
 updatestatus(void) {
 	if(!gettextprop(root, XA_WM_NAME, stext, sizeof(stext)))
 		strcpy(stext, "dwm-"VERSION);
+	stextupdated = time(NULL);
 	drawbar();
 }
 
