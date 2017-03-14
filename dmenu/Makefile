@@ -65,4 +65,11 @@ uninstall:
 	@rm -f ${DESTDIR}${MANPREFIX}/man1/lsx.1
 	@-rmdir -p ${DESTDIR}${MANPREFIX}/man1
 
-.PHONY: all options clean dist install uninstall
+.PHONY: all options clean dist install uninstall chown
+
+chown:
+	chown ${OWNER} ${DESTDIR}${PREFIX}/bin/dmenu
+	chown ${OWNER} ${DESTDIR}${PREFIX}/bin/dmenu_run
+	chown ${OWNER} ${DESTDIR}${PREFIX}/bin/lsx
+	chown ${OWNER} ${DESTDIR}${MANPREFIX}/man1/dmenu.1
+	chown ${OWNER} ${DESTDIR}${MANPREFIX}/man1/lsx.1

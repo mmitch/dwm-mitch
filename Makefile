@@ -15,7 +15,7 @@ export PATCHVERSION = mitch-${VERSION}
 
 all:	build install
 
-.PHONY:	all build install uninstall dist clean
+.PHONY:	all build install uninstall dist clean chown
 
 build:	stamp-built
 
@@ -85,3 +85,16 @@ dist:	clean
 	-cp -R dwm/ dmenu/ dwm-mitch-$(VERSION)/
 	tar -czvf dwm-mitch-$(VERSION).tar.gz dwm-mitch-$(VERSION)/
 	rm -rf dwm-mitch-$(VERSION)/
+
+OWNER = mitch:mitch
+export OWNER
+
+chown:
+	$(MAKE) -C $(DWM) chown
+	$(MAKE) -C $(DMENU) chown
+	chown $(OWNER) ${DESTDIR}${PREFIX}/bin/dwm-mitch
+	chown $(OWNER) ${DESTDIR}${PREFIX}/bin/dwm-choose
+	chown $(OWNER) ${DESTDIR}${PREFIXSHARE}/xsessions/dwm-mitch.desktop
+	chown $(OWNER) ${DESTDIR}${PREFIXSHARE}/pixmaps/dwm-mitch.png
+	chown $(OWNER) ${DESTDIR}${PREFIXSHARE}/icons/hicolor/16x16/apps/dwm-mitch_badge-symbolic.png
+	chown $(OWNER) ${DESTDIR}${PREFIXSHARE}/unity-greeter/custom_dwm-mitch_badge.png

@@ -55,4 +55,8 @@ uninstall:
 	@rm -f ${DESTDIR}${MANPREFIX}/man1/dwm.1
 	@-rmdir -p ${DESTDIR}${MANPREFIX}/man1/
 
-.PHONY: all options clean dist install uninstall
+.PHONY: all options clean dist install uninstall chown
+
+chown:
+	chown ${OWNER} ${DESTDIR}${PREFIX}/bin/dwm
+	chown ${OWNER} ${DESTDIR}${MANPREFIX}/man1/dwm.1
