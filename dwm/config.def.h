@@ -20,6 +20,7 @@ const char* const lockedstat = "L";
 #define ERRBORDERCOLOR		"#cc6666" /* error colors are relevant for status bar timeouts */
 #define ERRBGCOLOR		"#ff6666"
 #define ERRFGCOLOR		"#ffffff"
+#define EDGECOLOR		"#000000" /* rounded corner pixels in screen edges */
 
 /* workspaces */
 /* Query class:instance:title for regex matching info with following command:
