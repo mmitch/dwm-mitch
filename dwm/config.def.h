@@ -7,7 +7,6 @@ char clientstat[] = {' ', '<', '>', 'x'};
 const char* const lockedstat = "L";
 
 /* appearance */
-<<<<<<< HEAD
 #define BARPOS			BarBot // BarTop /* BarBot, BarOff */
 #define BORDERPX		0
 #define FLOATBORDERPX		2
