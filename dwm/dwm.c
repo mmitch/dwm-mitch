@@ -59,7 +59,7 @@ const char NULL2[] = "";  /* ugly, dirty hack for out of band communication */
 /* enums */
 enum { BarTop, BarBot, BarOff };			/* bar position */
 enum { CurNormal, CurResize, CurMove, CurLast };	/* cursor */
-enum { ColBorder, ColFG, ColBG, ColLast };		/* color */
+enum { ColBorder, ColFG, ColBG, ColEdge, ColLast };	/* color */
 enum { NetSupported, NetWMName, NetWMState,
        NetWMFullscreen, NetWMWindowType,
        NetWMWindowTypeDialog, NetWMWindowTypeSplash,
@@ -154,6 +154,7 @@ void detach(Client *c);
 void detachstack(Client *c);
 void doreload(void);
 void drawbar(void);
+void drawcornerpoints(int x1, int y1, int x2, int y2, unsigned long colorleft, unsigned long colorright);
 void drawtext(const char *text, unsigned long col[ColLast]);
 void *emallocz(unsigned int size);
 void enternotify(XEvent *e);
@@ -670,13 +671,27 @@ drawbar(void) {
 					 sel->name
 					);
 				drawtext(buf, dc.sel);
+				drawcornerpoints(x, 0, x + dc.w - 1, bh - 1, dc.norm[ColBG], stextcol[ColBG]);
 			}
 			else
 				drawtext(NULL, dc.norm);
 		}
+		drawcornerpoints(0, 0, sw[s] - 1, bh - 1, stextcol[ColEdge], stextcol[ColEdge]);
 		XCopyArea(dpy, dc.drawable, barwin[s], dc.gc, 0, 0, sw[s], bh, 0, 0);
 	}
 	XSync(dpy, False);
+}
+
+void
+drawcornerpoints(int x1, int y1, int x2, int y2, unsigned long colorleft, unsigned long colorright) {
+	XSetForeground(dpy, dc.gc, colorleft);
+	XDrawPoint(dpy, dc.drawable, dc.gc, x1, y1);
+	XDrawPoint(dpy, dc.drawable, dc.gc, x1, y2);
+
+	if (colorleft != colorright)
+		XSetForeground(dpy, dc.gc, colorright);
+	XDrawPoint(dpy, dc.drawable, dc.gc, x2, y1);
+	XDrawPoint(dpy, dc.drawable, dc.gc, x2, y2);
 }
 
 void
@@ -1770,12 +1785,15 @@ setup(void) {
 	dc.norm[ColBorder] = getcolor(NORMBORDERCOLOR);
 	dc.norm[ColBG] = getcolor(NORMBGCOLOR);
 	dc.norm[ColFG] = getcolor(NORMFGCOLOR);
+	dc.norm[ColEdge] = getcolor(EDGECOLOR);
 	dc.sel[ColBorder] = getcolor(SELBORDERCOLOR);
 	dc.sel[ColBG] = getcolor(SELBGCOLOR);
 	dc.sel[ColFG] = getcolor(SELFGCOLOR);
+	dc.sel[ColEdge] = getcolor(EDGECOLOR);
 	dc.err[ColBorder] = getcolor(ERRBORDERCOLOR);
 	dc.err[ColBG] = getcolor(ERRBGCOLOR);
 	dc.err[ColFG] = getcolor(ERRFGCOLOR);
+	dc.err[ColEdge] = getcolor(EDGECOLOR);
 	initfont(FONT);
 	dc.h = bh = dc.font.height + 2;
 

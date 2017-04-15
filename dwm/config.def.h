@@ -7,6 +7,7 @@ char clientstat[] = {' ', '<', '>', 'x'};
 const char* const lockedstat = "L";
 
 /* appearance */
+<<<<<<< HEAD
 #define BARPOS			BarBot // BarTop /* BarBot, BarOff */
 #define BORDERPX		0
 #define FLOATBORDERPX		2
@@ -20,6 +21,7 @@ const char* const lockedstat = "L";
 #define ERRBORDERCOLOR		"#c22" /* error colors are relevant for status bar timeouts */
 #define ERRBGCOLOR		"#f55"
 #define ERRFGCOLOR		"#fff"
+#define EDGECOLOR		"#000" /* rounded corner pixels in screen edges */
 
 /* workspaces */
 /* Query class:instance:title for regex matching info with following command:
