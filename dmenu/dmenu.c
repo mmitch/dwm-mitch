@@ -45,10 +45,12 @@ static int lines = 0;
 static size_t cursor = 0;
 static const char *font = NULL;
 static const char *prompt = NULL;
-static const char *normbgcolor = "#cccccc";
-static const char *normfgcolor = "#000000";
-static const char *selbgcolor  = "#0066ff";
-static const char *selfgcolor  = "#ffffff";
+static const char *normbgcolor   = "#cccccc";
+static const char *normfgcolor   = "#000000";
+static const char *normedgecolor = "#000000";
+static const char *selbgcolor    = "#0066ff";
+static const char *selfgcolor    = "#ffffff";
+static const char *seledgecolor  = "#cccccc";
 static unsigned long normcol[ColLast];
 static unsigned long selcol[ColLast];
 static Atom utf8;
@@ -94,10 +96,14 @@ main(int argc, char *argv[]) {
 			normbgcolor = argv[++i];
 		else if(!strcmp(argv[i], "-nf"))
 			normfgcolor = argv[++i];
+		else if(!strcmp(argv[i], "-ne"))
+			normedgecolor = argv[++i];
 		else if(!strcmp(argv[i], "-sb"))
 			selbgcolor = argv[++i];
 		else if(!strcmp(argv[i], "-sf"))
 			selfgcolor = argv[++i];
+		else if(!strcmp(argv[i], "-se"))
+			seledgecolor = argv[++i];
 		else
 			usage();
 
@@ -165,15 +171,17 @@ drawmenu(void) {
 	dc->x = 0;
 	dc->y = 0;
 	dc->h = bh;
-	drawrect(dc, 0, 0, mw, mh, BG(dc, normcol));
+	drawrectrounded(dc, 0, 0, mw, mh, BG(dc, normcol), normcol[ColEdge]);
 
+	dc->x++;
+	
 	if(prompt) {
 		dc->w = promptw;
-		drawtext(dc, prompt, selcol);
-		dc->x = dc->w;
+		drawtext(dc, prompt, selcol, False);
+		dc->x += dc->w;
 	}
 	dc->w = (lines > 0 || !matches) ? mw - dc->x : inputw;
-	drawtext(dc, text, normcol);
+	drawtext(dc, text, normcol, False);
 	if((curpos = textnw(dc, text, cursor) + dc->h/2 - 2) < dc->w)
 		drawrect(dc, curpos, 2, 1, dc->h - 4, FG(dc, normcol));
 
@@ -181,23 +189,29 @@ drawmenu(void) {
 		dc->w = mw - dc->x;
 		for(item = curr; item != next; item = item->right) {
 			dc->y += dc->h;
-			drawtext(dc, item->text, (item == sel) ? selcol : normcol);
+			if (item == sel)
+				drawtext(dc, item->text, selcol, True);
+			else
+				drawtext(dc, item->text, normcol, False);
 		}
 	}
 	else if(matches) {
 		dc->x += inputw;
 		dc->w = textw(dc, "<");
 		if(curr->left)
-			drawtext(dc, "<", normcol);
+			drawtext(dc, "<", normcol, False);
 		for(item = curr; item != next; item = item->right) {
 			dc->x += dc->w;
 			dc->w = MIN(textw(dc, item->text), mw - dc->x - textw(dc, ">"));
-			drawtext(dc, item->text, (item == sel) ? selcol : normcol);
+			if (item == sel)
+				drawtext(dc, item->text, selcol, True);
+			else
+				drawtext(dc, item->text, normcol, False);
 		}
 		dc->w = textw(dc, ">");
 		dc->x = mw - dc->w;
 		if(next)
-			drawtext(dc, ">", normcol);
+			drawtext(dc, ">", normcol, False);
 	}
 	mapdc(dc, win, mw, mh);
 }
@@ -479,10 +493,12 @@ setup(void) {
 	XineramaScreenInfo *info;
 #endif
 
-	normcol[ColBG] = getcolor(dc, normbgcolor);
-	normcol[ColFG] = getcolor(dc, normfgcolor);
-	selcol[ColBG]  = getcolor(dc, selbgcolor);
-	selcol[ColFG]  = getcolor(dc, selfgcolor);
+	normcol[ColBG]   = getcolor(dc, normbgcolor);
+	normcol[ColFG]   = getcolor(dc, normfgcolor);
+	normcol[ColEdge] = getcolor(dc, normedgecolor);
+	selcol[ColBG]    = getcolor(dc, selbgcolor);
+	selcol[ColFG]    = getcolor(dc, selfgcolor);
+	selcol[ColEdge]  = getcolor(dc, seledgecolor);
 
 	utf8 = XInternAtom(dc->dpy, "UTF8_STRING", False);
 
