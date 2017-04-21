@@ -202,14 +202,14 @@ drawmenu(void) {
 			drawtext(dc, "<", normcol, False);
 		for(item = curr; item != next; item = item->right) {
 			dc->x += dc->w;
-			dc->w = MIN(textw(dc, item->text), mw - dc->x - textw(dc, ">"));
+			dc->w = MIN(textw(dc, item->text), mw - dc->x - textw(dc, ">") - 1);
 			if (item == sel)
 				drawtext(dc, item->text, selcol, True);
 			else
 				drawtext(dc, item->text, normcol, False);
 		}
 		dc->w = textw(dc, ">");
-		dc->x = mw - dc->w;
+		dc->x = mw - dc->w - 1;
 		if(next)
 			drawtext(dc, ">", normcol, False);
 	}
