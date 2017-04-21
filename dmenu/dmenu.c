@@ -165,7 +165,7 @@ drawmenu(void) {
 	dc->x = 0;
 	dc->y = 0;
 	dc->h = bh;
-	drawrect(dc, 0, 0, mw, mh, True, BG(dc, normcol));
+	drawrect(dc, 0, 0, mw, mh, BG(dc, normcol));
 
 	if(prompt) {
 		dc->w = promptw;
@@ -175,7 +175,7 @@ drawmenu(void) {
 	dc->w = (lines > 0 || !matches) ? mw - dc->x : inputw;
 	drawtext(dc, text, normcol);
 	if((curpos = textnw(dc, text, cursor) + dc->h/2 - 2) < dc->w)
-		drawrect(dc, curpos, 2, 1, dc->h - 4, True, FG(dc, normcol));
+		drawrect(dc, curpos, 2, 1, dc->h - 4, FG(dc, normcol));
 
 	if(lines > 0) {
 		dc->w = mw - dc->x;

@@ -14,12 +14,9 @@
 static Bool loadfont(DC *dc, const char *fontstr);
 
 void
-drawrect(DC *dc, int x, int y, unsigned int w, unsigned int h, Bool fill, unsigned long color) {
+drawrect(DC *dc, int x, int y, unsigned int w, unsigned int h, unsigned long color) {
 	XSetForeground(dc->dpy, dc->gc, color);
-	if(fill)
-		XFillRectangle(dc->dpy, dc->canvas, dc->gc, dc->x + x, dc->y + y, w, h);
-	else
-		XDrawRectangle(dc->dpy, dc->canvas, dc->gc, dc->x + x, dc->y + y, w-1, h-1);
+	XFillRectangle(dc->dpy, dc->canvas, dc->gc, dc->x + x, dc->y + y, w, h);
 }
 
 void
@@ -35,7 +32,7 @@ drawtext(DC *dc, const char *text, unsigned long col[ColLast]) {
 	if(mn < n)
 		for(n = MAX(mn-3, 0); n < mn; buf[n++] = '.');
 
-	drawrect(dc, 0, 0, dc->w, dc->h, True, BG(dc, col));
+	drawrect(dc, 0, 0, dc->w, dc->h, BG(dc, col));
 	drawtextn(dc, buf, mn, col);
 }
 
