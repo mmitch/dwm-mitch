@@ -3,7 +3,7 @@
 #define FG(dc, col)  ((col)[(dc)->invert ? ColBG : ColFG])
 #define BG(dc, col)  ((col)[(dc)->invert ? ColFG : ColBG])
 
-enum { ColBG, ColFG, ColBorder, ColLast };
+enum { ColBG, ColFG, ColLast };
 
 typedef struct {
 	int x, y, w, h;
