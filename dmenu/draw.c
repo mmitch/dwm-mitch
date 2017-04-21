@@ -14,16 +14,34 @@
 static Bool loadfont(DC *dc, const char *fontstr);
 
 void
-drawrect(DC *dc, int x, int y, unsigned int w, unsigned int h, Bool fill, unsigned long color) {
+drawrect(DC *dc, int x, int y, unsigned int w, unsigned int h, unsigned long color) {
 	XSetForeground(dc->dpy, dc->gc, color);
-	if(fill)
-		XFillRectangle(dc->dpy, dc->canvas, dc->gc, dc->x + x, dc->y + y, w, h);
-	else
-		XDrawRectangle(dc->dpy, dc->canvas, dc->gc, dc->x + x, dc->y + y, w-1, h-1);
+	XFillRectangle(dc->dpy, dc->canvas, dc->gc, dc->x + x, dc->y + y, w, h);
 }
 
 void
-drawtext(DC *dc, const char *text, unsigned long col[ColLast]) {
+drawrectrounded(DC *dc, int x, int y, unsigned int w, unsigned int h, unsigned long color, unsigned long edgecolor) {
+	int x1, y1, x2, y2;
+	drawrect(dc, x, y, w, h, color);
+	if(edgecolor != color) {
+		x1 = dc->x + x;
+		y1 = dc->y + y;
+		x2 = x1 + w-1;
+		y2 = y2 + h-1;
+		XSetForeground(dc->dpy, dc->gc, edgecolor);
+		XDrawPoint(dc->dpy, dc->canvas, dc->gc, x1, y1);
+		XDrawPoint(dc->dpy, dc->canvas, dc->gc, x1, y2);
+		XDrawPoint(dc->dpy, dc->canvas, dc->gc, x2, y1);
+		XDrawPoint(dc->dpy, dc->canvas, dc->gc, x2, y2);
+	}
+}
+
+void
+drawcornerpoints(DC *dc, int x1, int y1, int x2, int y2, unsigned long color) {
+}
+
+void
+drawtext(DC *dc, const char *text, unsigned long col[ColLast], Bool rounded) {
 	char buf[BUFSIZ];
 	size_t mn, n = strlen(text);
 
@@ -35,7 +53,10 @@ drawtext(DC *dc, const char *text, unsigned long col[ColLast]) {
 	if(mn < n)
 		for(n = MAX(mn-3, 0); n < mn; buf[n++] = '.');
 
-	drawrect(dc, 0, 0, dc->w, dc->h, True, BG(dc, col));
+	if(rounded)
+		drawrectrounded(dc, 0, 0, dc->w, dc->h, BG(dc, col), col[ColEdge]);
+	else
+		drawrect(dc, 0, 0, dc->w, dc->h, BG(dc, col));
 	drawtextn(dc, buf, mn, col);
 }
 

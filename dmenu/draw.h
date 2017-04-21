@@ -3,7 +3,7 @@
 #define FG(dc, col)  ((col)[(dc)->invert ? ColBG : ColFG])
 #define BG(dc, col)  ((col)[(dc)->invert ? ColFG : ColBG])
 
-enum { ColBG, ColFG, ColBorder, ColLast };
+enum { ColBG, ColFG, ColEdge, ColLast };
 
 typedef struct {
 	int x, y, w, h;
@@ -21,8 +21,9 @@ typedef struct {
 	} font;
 } DC;  /* draw context */
 
-void drawrect(DC *dc, int x, int y, unsigned int w, unsigned int h, Bool fill, unsigned long color);
-void drawtext(DC *dc, const char *text, unsigned long col[ColLast]);
+void drawrect(DC *dc, int x, int y, unsigned int w, unsigned int h, unsigned long color);
+void drawrectrounded(DC *dc, int x, int y, unsigned int w, unsigned int h, unsigned long color, unsigned long edgecolor);
+void drawtext(DC *dc, const char *text, unsigned long col[ColLast], Bool rounded);
 void drawtextn(DC *dc, const char *text, size_t n, unsigned long col[ColLast]);
 void eprintf(const char *fmt, ...);
 void freedc(DC *dc);

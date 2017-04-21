@@ -16,9 +16,13 @@ dmenu \- dynamic menu
 .IR color ]
 .RB [ \-nf
 .IR color ]
+.RB [ \-ne
+.IR color ]
 .RB [ \-sb
 .IR color ]
 .RB [ \-sf
+.IR color ]
+.RB [ \-se
 .IR color ]
 .RB [ \-v ]
 .P
@@ -66,11 +70,17 @@ and X color names are supported.
 .BI \-nf " color"
 defines the normal foreground color.
 .TP
+.BI \-ne " color"
+defines the normal edge color (rounded corner pixels).
+.TP
 .BI \-sb " color"
 defines the selected background color.
 .TP
 .BI \-sf " color"
 defines the selected foreground color.
+.TP
+.BI \-se " color"
+defines the selected edge color (rounded corner pixels).
 .TP
 .B \-v
 prints version information to stdout, then exits.
