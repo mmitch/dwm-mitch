@@ -796,12 +796,12 @@ expose(XEvent *e) {
 	unsigned int s;
 	XExposeEvent *ev = &e->xexpose;
 
-	if(ev->count == 0) {
-		for(s = 0; s < screenmax; s++) {
-			if(ev->window == barwin[s])
+	if(ev->count == 0)
+		for(s = 0; s < screenmax; s++)
+			if(ev->window == barwin[s]) {
 				drawbar();
-		}
-	}
+				return;
+			}
 }
 
 void
