@@ -171,10 +171,8 @@ drawmenu(void) {
 	dc->x = 0;
 	dc->y = 0;
 	dc->h = bh;
-	drawrectrounded(dc, 0, 0, mw, mh, BG(dc, normcol), normcol[ColEdge]);
+	drawrect(dc, 0, 0, mw, mh, BG(dc, normcol));
 
-	dc->x++;
-	
 	if(prompt) {
 		dc->w = promptw;
 		drawtext(dc, prompt, selcol, False);
@@ -209,7 +207,7 @@ drawmenu(void) {
 				drawtext(dc, item->text, normcol, False);
 		}
 		dc->w = textw(dc, ">");
-		dc->x = mw - dc->w - 1;
+		dc->x = mw - dc->w;
 		if(next)
 			drawtext(dc, ">", normcol, False);
 	}
