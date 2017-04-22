@@ -571,12 +571,10 @@ createbarwins(void) {
 	wa.background_pixmap = ParentRelative;
 	wa.event_mask = ButtonPressMask | ExposureMask;
 
-	for(s = 0; s < screenmax; s++) {
+	for(s = 0; s < screenmax; s++)
 		barwin[s] = XCreateWindow(dpy, root, sx[s], sy[s], sw[s], bh, 0,
 			DefaultDepth(dpy, screen), CopyFromParent, DefaultVisual(dpy, screen),
-			CWOverrideRedirect | CWBackPixmap | CWEventMask, &wa);
-		XDefineCursor(dpy, barwin[s], cursor[CurNormal]);
-	}
+			CWOverrideRedirect | CWBackPixmap | CWEventMask | CWCursor, &wa);
 	updatebarpos();
 	for(s = 0; s < screenmax; s++)
 		XMapRaised(dpy, barwin[s]);
