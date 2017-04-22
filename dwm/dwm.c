@@ -723,7 +723,6 @@ drawbar(void) {
 			else
 				drawtext(NULL, dc.norm);
 		}
-		drawcornerpoints(0, 0, sw[s] - 1, bh - 1, stextcol[ColEdge], stextcol[ColEdge]);
 		XCopyArea(dpy, dc.drawable, barwin[s], dc.gc, 0, 0, sw[s], bh, 0, 0);
 	}
 	XSync(dpy, False);
