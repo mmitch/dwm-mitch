@@ -299,7 +299,7 @@ int sx[MAXXINERAMASCREENS], sy[MAXXINERAMASCREENS], sw[MAXXINERAMASCREENS], sh[M
 int wax[MAXXINERAMASCREENS], way[MAXXINERAMASCREENS], waw[MAXXINERAMASCREENS], wah[MAXXINERAMASCREENS];
 int wstextwidth[MAXXINERAMASCREENS];
 Window barwin[MAXXINERAMASCREENS];
-Window cornerwin[MAXXINERAMASCREENS][4];
+Window cornerwin[MAXXINERAMASCREENS][ROUNDCORNERS];
 
 
 /* function implementations */
@@ -591,29 +591,37 @@ createbarwins(void) {
 
 void
 createcornerwins(void) {
-	unsigned int s, sc;
+	unsigned int s, sc, x, y;
 	XSetWindowAttributes wa;
 
 	wa.override_redirect = 1;
 	wa.event_mask = ExposureMask;
 
-	for(s = 0; s < screenmax; s++) {
-		cornerwin[s][0] = XCreateWindow(dpy, root, sx[s], sy[s], 1, 1, 0,
-			DefaultDepth(dpy, screen), CopyFromParent, DefaultVisual(dpy, screen),
-			CWOverrideRedirect | CWEventMask, &wa);
-		cornerwin[s][1] = XCreateWindow(dpy, root, sx[s] + sw[s] - 1, sy[s], 1, 1, 0,
-			DefaultDepth(dpy, screen), CopyFromParent, DefaultVisual(dpy, screen),
-			CWOverrideRedirect | CWEventMask, &wa);
-		cornerwin[s][2] = XCreateWindow(dpy, root, sx[s], sy[s] + sh[s] - 1, 1, 1, 0,
-			DefaultDepth(dpy, screen), CopyFromParent, DefaultVisual(dpy, screen),
-			CWOverrideRedirect | CWEventMask, &wa);
-		cornerwin[s][3] = XCreateWindow(dpy, root, sx[s] + sw[s] - 1, sy[s] + sh[s] - 1, 1, 1, 0,
-			DefaultDepth(dpy, screen), CopyFromParent, DefaultVisual(dpy, screen),
-			CWOverrideRedirect | CWEventMask, &wa);
-	}
 	for(s = 0; s < screenmax; s++)
-		for(sc = 0; sc < 4; sc++)
+		for(sc = 0; sc < ROUNDCORNERS; sc++) {
+			switch (sc) {
+			case 0:
+				x = sx[s];
+				y = sy[s];
+				break;
+			case 1:
+				x = sx[s] + sw[s]-1;
+				y = sy[s];
+				break;
+			case 2:
+				x = sx[s];
+				y = sy[s] + sh[s]-1;
+				break;
+			case 3:
+				x = sx[s] + sw[s]-1;
+				y = sy[s] + sh[s]-1;
+				break;
+			}
+			cornerwin[s][sc] = XCreateWindow(dpy, root, x, y, 1, 1, 0,
+							 DefaultDepth(dpy, screen), CopyFromParent, DefaultVisual(dpy, screen),
+							 CWOverrideRedirect | CWEventMask, &wa);
 			XMapRaised(dpy, cornerwin[s][sc]);
+		}
 	XSync(dpy, False);
 }
 
@@ -630,7 +638,7 @@ destroycornerwins(void) {
 	unsigned int s, sc;
 
 	for(s = 0; s < screenmax; s++)
-		for(sc = 0; sc < 4; sc++)
+		for(sc = 0; sc < ROUNDCORNERS; sc++)
 			XDestroyWindow(dpy, cornerwin[s][sc]);
 }
 
@@ -852,7 +860,7 @@ expose(XEvent *e) {
 				drawbar();
 				return;
 			}
-			for (sc = 0; sc < 4; sc++)
+			for (sc = 0; sc < ROUNDCORNERS; sc++)
 				if(ev->window == cornerwin[s][sc]) {
 					drawcornerwin(s, sc);
 					return;
