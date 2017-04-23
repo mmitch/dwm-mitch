@@ -1612,12 +1612,16 @@ restack(void) {
 	Client *c;
 	XEvent ev;
 	XWindowChanges wc;
+	unsigned int s, sc;
 
 	drawbar();
 	if(!sel)
 		return;
 	if(sel->isfloating || (layout[sel->screen][selws[sel->screen]-1]->arrange == floating))
 		XRaiseWindow(dpy, sel->win);
+	for(s = 0; s < screenmax; s++)
+		for(sc = 0; sc < ROUNDCORNERS; sc++)
+			XRaiseWindow(dpy, cornerwin[s][sc]);
 	if(layout[sel->screen][selws[sel->screen]-1]->arrange != floating) {
 		wc.stack_mode = Below;
 		wc.sibling = barwin[sel->screen];
