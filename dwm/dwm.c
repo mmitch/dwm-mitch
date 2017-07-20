@@ -683,6 +683,15 @@ drawbar(void) {
 	char buf[256];
 	unsigned long *stextcol;
 
+#ifdef SHOWSTACKSIZE
+	Client *c;
+	unsigned int stacksize = 0;
+
+	for(c = clients; c; c = c->next)
+		if(!c->workspace)
+			stacksize++;
+#endif
+
 	if (STATUSBARTIMEOUT > 0 && time(NULL) - stextupdated > STATUSBARTIMEOUT)
 		stextcol = dc.err;
 	else
@@ -703,6 +712,15 @@ drawbar(void) {
 			drawtext(lockedstat, dc.norm);
 			x += dc.w;
 		}
+#ifdef SHOWSTACKSIZE
+		if(stacksize) {
+			snprintf(buf, sizeof buf, "_%u", stacksize);
+			dc.x = x;
+			dc.w = textw(buf);
+			drawtext(buf, dc.norm);
+			x += dc.w;
+		}
+#endif
 		dc.w = textw(stext);
 		dc.x = sw[s] - dc.w;
 		if(dc.x < x) {

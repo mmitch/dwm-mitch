@@ -40,7 +40,10 @@ Rule rules[] = {
 #define REFRESH_HZ		60      /* refresh frequency for movemouse() and resizemouse() */
 #define ROUNDCORNERS		 4	/* 0 to deactivate, 4 to activate */
 
-/* rotate layouts on swapscreen() - undefine SWAPSCREEN_LAYOUT to deactivate */
+/* show stack size in status bar - undefine SHOWSTACKSIZE to disable */
+#define SHOWSTACKSIZE
+
+/* rotate layouts on swapscreen() - undefine SWAPSCREEN_LAYOUT to disable */
 #define SWAPSCREEN_LAYOUT
 
 /* snap clients to local screen borders on mousemove() - undefine to snap to global borders */
