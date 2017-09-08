@@ -91,7 +91,7 @@ Layout layouts[] = {
 #define MODKEY			Mod1Mask
 Key keys[] = {
 	/* modifier			key		function	argument */
-	{ MODKEY|ShiftMask,		XK_a,		spawn,		"exec xterm" },
+	{ MODKEY|ShiftMask,		XK_a,		spawn,		"exec dwm-term" },
 	{ MODKEY|ShiftMask|ControlMask,	XK_r,		spawn,		"exec killall -SIGUSR1 dwm" },
 	{ MODKEY|ShiftMask,		XK_s,		spawn,		"exec dwm-choose" },
 	{ MODKEY|ControlMask,		XK_Prior,	spawn,		"exec xcalib -i -a" },
@@ -211,5 +211,5 @@ Button buttons[] = {
 	{ ClkClientWin,		MODKEY,		Button2,	zoom,		NULL },
 	{ ClkClientWin,		MODKEY,		Button2,	togglemax,	NULL },
 	{ ClkClientWin,		MODKEY,		Button3,	resizemouse,	NULL },
-	{ ClkRootWin,		0,		Button1,	spawn,		"exec xterm" },
+	{ ClkRootWin,		0,		Button1,	spawn,		"exec dwm-term" },
 };

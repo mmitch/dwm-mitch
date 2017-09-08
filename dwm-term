@@ -1,0 +1,8 @@
+#!/bin/sh
+#
+# spawns a terminal session for dwm-mitch
+#
+# simply try in order
+which vater && exec vater
+which xterm && exec xterm
+exec x-terminal-emulator

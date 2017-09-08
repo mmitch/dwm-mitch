@@ -8,7 +8,7 @@ VERSION = $(shell if [ -d .git ]; then git describe; else echo $(DISTVERSION); f
 
 DWM = dwm
 DMENU = dmenu
-BINARIES = dwm-mitch dwm-choose
+BINARIES = dwm-mitch dwm-choose dwm-term
 
 SUBDIRS = $(DWM) $(DMENU)
 
