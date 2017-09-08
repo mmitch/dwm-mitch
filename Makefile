@@ -8,6 +8,7 @@ VERSION = $(shell if [ -d .git ]; then git describe; else echo $(DISTVERSION); f
 
 DWM = dwm
 DMENU = dmenu
+BINARIES = dwm-mitch dwm-choose
 
 SUBDIRS = $(DWM) $(DMENU)
 
@@ -28,10 +29,10 @@ install:	stamp-built
 	$(MAKE) -C $(DWM) install
 	$(MAKE) -C $(DMENU) install
 	mkdir -p ${DESTDIR}${PREFIX}/bin
-	cp -f dwm-mitch ${DESTDIR}${PREFIX}/bin
-	cp -f dwm-choose ${DESTDIR}${PREFIX}/bin
-	chmod 755 ${DESTDIR}${PREFIX}/bin/dwm-mitch
-	chmod 755 ${DESTDIR}${PREFIX}/bin/dwm-choose
+	for BINARY in $(BINARIES); do \
+		cp -f $$BINARY ${DESTDIR}${PREFIX}/bin ; \
+		chmod 755 ${DESTDIR}${PREFIX}/bin/$$BINARY ; \
+	done
 # xsession
 	mkdir -p ${DESTDIR}${PREFIXSHARE}/xsessions
 	cp -f dwm-mitch.desktop ${DESTDIR}${PREFIXSHARE}/xsessions/
@@ -53,8 +54,9 @@ install:	stamp-built
 uninstall:
 	$(MAKE) -C $(DWM) uninstall
 	$(MAKE) -C $(DMENU) uninstall
-	rm -f ${DESTDIR}${PREFIX}/bin/dwm-mitch
-	rm -f ${DESTDIR}${PREFIX}/bin/dwm-choose
+	for BINARY in $(BINARIES); do \
+		rm -f ${DESTDIR}${PREFIX}/bin/$$BINARY ; \
+	done
 	-rmdir -p ${DESTDIR}${PREFIX}/bin
 # xsession
 	rm -f ${DESTDIR}${PREFIXSHARE}/xsessions/dwm-mitch.desktop
