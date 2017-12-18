@@ -94,7 +94,6 @@ Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_a,		spawn,		"exec dwm-term" },
 	{ MODKEY|ShiftMask|ControlMask,	XK_r,		spawn,		"exec killall -SIGUSR1 dwm" },
 	{ MODKEY|ShiftMask,		XK_s,		spawn,		"exec dwm-choose" },
-	{ MODKEY|ControlMask,		XK_Prior,	spawn,		"exec xcalib -i -a" },
 	{ MODKEY|ControlMask,		XK_Next,	spawn,		"exec locknow" },
 	{ MODKEY|ControlMask,		XK_s,		togglesticky,	NULL },
 	{ MODKEY,			XK_Tab,		focusnext,	NULL },
