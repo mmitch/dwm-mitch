@@ -18,8 +18,8 @@ INCS = -I. -I/usr/include -I${X11INC}
 LIBS = -L/usr/lib -lc -L${X11LIB} -lX11 -lXinerama
 
 # flags
-CFLAGS = -fpie -flto -Os ${INCS} -DVERSION=\"${VERSION}\"
-LDFLAGS = -pie -flto -Os -s ${LIBS}
+CFLAGS = -flto -Os ${INCS} -DVERSION=\"${VERSION}\"
+LDFLAGS = -flto -Os -s ${LIBS}
 #CFLAGS = -g -std=c99 -pedantic -Wall -O2 ${INCS} -DVERSION=\"${VERSION}\"
 #LDFLAGS = -g ${LIBS}
 
