@@ -17,9 +17,16 @@ X11LIB = /usr/X11R6/lib
 INCS = -I. -I/usr/include -I${X11INC}
 LIBS = -L/usr/lib -lc -L${X11LIB} -lX11 -lXinerama
 
+# no -flto with clang
+ifeq (${CC},clang)
+	FLTO =
+else
+	FLTO = -flto
+endif
+
 # flags
-CFLAGS = -flto -Os ${INCS} -DVERSION=\"${VERSION}\"
-LDFLAGS = -flto -Os -s ${LIBS}
+CFLAGS = $(FLTO) -Os ${INCS} -DVERSION=\"${VERSION}\"
+LDFLAGS = $(FLTO) -Os -s ${LIBS}
 #CFLAGS = -g -std=c99 -pedantic -Wall -O2 ${INCS} -DVERSION=\"${VERSION}\"
 #LDFLAGS = -g ${LIBS}
 
