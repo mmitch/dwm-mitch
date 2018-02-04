@@ -27,17 +27,13 @@ drawrectrounded(DC *dc, int x, int y, unsigned int w, unsigned int h, unsigned l
 		x1 = dc->x + x;
 		y1 = dc->y + y;
 		x2 = x1 + w-1;
-		y2 = y2 + h-1;
+		y2 = y1 + h-1;
 		XSetForeground(dc->dpy, dc->gc, edgecolor);
 		XDrawPoint(dc->dpy, dc->canvas, dc->gc, x1, y1);
 		XDrawPoint(dc->dpy, dc->canvas, dc->gc, x1, y2);
 		XDrawPoint(dc->dpy, dc->canvas, dc->gc, x2, y1);
 		XDrawPoint(dc->dpy, dc->canvas, dc->gc, x2, y2);
 	}
-}
-
-void
-drawcornerpoints(DC *dc, int x1, int y1, int x2, int y2, unsigned long color) {
 }
 
 void
