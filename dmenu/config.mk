@@ -19,10 +19,17 @@ XINERAMAFLAGS = -DXINERAMA
 INCS = -I${X11INC}
 LIBS = -L${X11LIB} -lX11 ${XINERAMALIBS}
 
+# no -flto with clang
+ifeq (${CC},clang)
+	FLTO =
+else
+	FLTO = -flto
+endif
+
 # flags
 CPPFLAGS = -D_BSD_SOURCE -DVERSION=\"${VERSION}\" ${XINERAMAFLAGS}
-CFLAGS   = -fPIE -flto -ansi -pedantic -Wall -Os ${INCS} ${CPPFLAGS}
-LDFLAGS  = -pie -flto -Os -s ${LIBS}
+CFLAGS   = $(FLTO) -ansi -pedantic -Wall -Os ${INCS} ${CPPFLAGS}
+LDFLAGS  = $(FLTO) -Os -s ${LIBS}
 
 # compiler and linker
-CC = cc
+CC ?= cc
