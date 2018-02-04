@@ -37,10 +37,6 @@ drawrectrounded(DC *dc, int x, int y, unsigned int w, unsigned int h, unsigned l
 }
 
 void
-drawcornerpoints(DC *dc, int x1, int y1, int x2, int y2, unsigned long color) {
-}
-
-void
 drawtext(DC *dc, const char *text, unsigned long col[ColLast], Bool rounded) {
 	char buf[BUFSIZ];
 	size_t mn, n = strlen(text);
