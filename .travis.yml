@@ -5,8 +5,14 @@ addons:
       - libx11-dev
       - libxinerama-dev
 script:
+  - test ! -d /tmp/usr/local
+  - test ! -d /tmp/usr/share
   - make PREFIX=/tmp/usr/local PREFIXSHARE=/tmp/usr/share
+  - test -d /tmp/usr/local
+  - test -d /tmp/usr/share
   - make uninstall PREFIX=/tmp/usr/local PREFIXSHARE=/tmp/usr/share
+  - test ! -d /tmp/usr/local
+  - test ! -d /tmp/usr/share
   - make clean
   - make dist
 compiler:
