@@ -1406,21 +1406,21 @@ movemouse(const char *arg) {
 			for(s = 0; s < screenmax; s++) {
 				if(abs(sx[s] - nx) < SNAP)
 					nx = sx[s];
-				else if(abs((sx[s] + sw[s]) - (nx + c->w + 2 * c->border)) < SNAP)
+				else if(abs((sx[s] + sw[s]) - (nx + c->w + 2 * (int)c->border)) < SNAP)
 					nx = sx[s] + sw[s] - c->w - 2 * c->border;
 				if(abs((sy[s] + bartop) - ny) < SNAP)
 					ny = sy[s] + bartop;
-				else if(abs((sy[s] + sh[s] - barbot) - (ny + c->h + 2 * c->border)) < SNAP)
+				else if(abs((sy[s] + sh[s] - barbot) - (ny + c->h + 2 * (int)c->border)) < SNAP)
 					ny = sy[s] + sh[s] - barbot - c->h - 2 * c->border;
 			}
 #else
 			if(abs(totalx - nx) < SNAP)
 				nx = totalx;
-			else if(abs((totalx + totalw) - (nx + c->w + 2 * c->border)) < SNAP)
+			else if(abs((totalx + totalw) - (nx + c->w + 2 * (int)c->border)) < SNAP)
 				nx = totalx + totalw - c->w - 2 * c->border;
 			if(abs((totaly + bartop) - ny) < SNAP)
 				ny = totaly + bartop;
-			else if(abs((totaly + totalh - barbot) - (ny + c->h + 2 * c->border)) < SNAP)
+			else if(abs((totaly + totalh - barbot) - (ny + c->h + 2 * (int)c->border)) < SNAP)
 				ny = totaly + totalh - barbot - c->h - 2 * c->border;
 #endif
 			resize(c, nx, ny, c->w, c->h, False);
