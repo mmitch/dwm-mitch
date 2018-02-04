@@ -25,4 +25,4 @@ CFLAGS   = -fPIE -flto -ansi -pedantic -Wall -Os ${INCS} ${CPPFLAGS}
 LDFLAGS  = -pie -flto -Os -s ${LIBS}
 
 # compiler and linker
-CC = cc
+CC ?= cc

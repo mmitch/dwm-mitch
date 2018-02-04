@@ -29,4 +29,4 @@ LDFLAGS = -pie -flto -Os -s ${LIBS}
 #CFLAGS += -xtarget=ultra
 
 # compiler and linker
-CC = cc
+CC ?= cc
