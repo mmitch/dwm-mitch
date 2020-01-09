@@ -176,7 +176,6 @@ Key locked_keys[] = {
 	{ 0,				XK_Scroll_Lock,	togglelocked,	NULL },
 	{ MODKEY,			XK_Next,	spawn,		"exec volume-down" },
 	{ MODKEY,			XK_Prior,	spawn,		"exec volume-up" },
-	{ MODKEY|ControlMask,		XK_Prior,	spawn,		"exec xcalib -i -a" },
 	{ MODKEY|ControlMask,		XK_Next,	spawn,		"exec locknow" },
 	{ MODKEY,			XK_Tab,		focusnext,	NULL },
 	{ MODKEY|ShiftMask,		XK_Tab,		focusprev,	NULL },
