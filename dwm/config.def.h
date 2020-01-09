@@ -39,6 +39,7 @@ Rule rules[] = {
 	{ "Wine:Diablo III.exe",		True,	0 },
 	{ "de-cgarbs-knittr-Knittr:",		True,	0 },
 	{ "Hugin:hugin:Panorama Tools",		True,	0 },
+	{ ":qjackctl:",				True,	0 },
 };
 
 #define INITIALWORKSPACES	 2
