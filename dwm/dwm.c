@@ -1325,6 +1325,19 @@ manage(Window w, XWindowAttributes *wa) {
 	applyrules(c);
 	if(!c->isfloating)
 		c->isfloating = (rettrans == Success) || c->isfixed;
+
+	/* maximize fix: 
+	 * When a floating window appears, it pushes the old selected client back to the stack
+	 * and the client that is on the top of the stack will be displayed maximized instead of the previously selected client.
+	 * This is very irritating, because after closing the floating client (a dialog window in most cases) you have to hunt
+	 * through the stack to get your previously selected client back.
+	 * To prevent this, put the old selected client to the top of the stack. */
+	if (c->isfloating && sel && layout[s][selws[s]-1]->arrange == maximize) {
+	   detach(sel);
+	   attach(sel);
+	   focus(sel);
+	}
+	
 	setborderbyfloat(c, True);
 	attach(c);
 	attachstack(c);
@@ -1636,6 +1649,11 @@ restack(void) {
 	drawbar();
 	if(!sel)
 		return;
+
+	/* maximize fix: hack, see above */
+	if(sel->isfloating && layout[sel->screen][selws[sel->screen]-1]->arrange == maximize && (c = nexttiled(clients, sel->screen)))
+		XRaiseWindow(dpy, c->win);
+	
 	if(sel->isfloating || (layout[sel->screen][selws[sel->screen]-1]->arrange == floating))
 		XRaiseWindow(dpy, sel->win);
 	for(s = 0; s < screenmax; s++)
