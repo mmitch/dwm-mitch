@@ -275,6 +275,7 @@ Bool selscreen = True;
 Client *clients = NULL;
 Client *sel = NULL;
 Client *stack = NULL;
+Client *maximized = NULL; /* current maximized client in maximized layout */
 Cursor cursor[CurLast];
 Display *dpy;
 DC dc = {0};
@@ -926,6 +927,10 @@ focus(Client *c) {
 	}
 	else
 		XSetInputFocus(dpy, root, RevertToPointerRoot, CurrentTime);
+	if(c && layout[c->screen][c->workspace-1]->arrange == maximize)
+		maximized = c;
+	else
+		maximized = NULL;
 }
 
 void
@@ -1326,18 +1331,6 @@ manage(Window w, XWindowAttributes *wa) {
 	if(!c->isfloating)
 		c->isfloating = (rettrans == Success) || c->isfixed;
 
-	/* maximize fix: 
-	 * When a floating window appears, it pushes the old selected client back to the stack
-	 * and the client that is on the top of the stack will be displayed maximized instead of the previously selected client.
-	 * This is very irritating, because after closing the floating client (a dialog window in most cases) you have to hunt
-	 * through the stack to get your previously selected client back.
-	 * To prevent this, put the old selected client to the top of the stack. */
-	if (c->isfloating && sel && layout[s][selws[s]-1]->arrange == maximize) {
-	   detach(sel);
-	   attach(sel);
-	   focus(sel);
-	}
-	
 	setborderbyfloat(c, True);
 	attach(c);
 	attachstack(c);
@@ -1650,9 +1643,9 @@ restack(void) {
 	if(!sel)
 		return;
 
-	/* maximize fix: hack, see above */
-	if(sel->isfloating && layout[sel->screen][selws[sel->screen]-1]->arrange == maximize && (c = nexttiled(clients, sel->screen)))
-		XRaiseWindow(dpy, c->win);
+	/* re-raise current maximized client to show up under floating client */
+	if(sel->isfloating && layout[sel->screen][selws[sel->screen]-1]->arrange == maximize && maximized)
+		XRaiseWindow(dpy, maximized->win);
 	
 	if(sel->isfloating || (layout[sel->screen][selws[sel->screen]-1]->arrange == floating))
 		XRaiseWindow(dpy, sel->win);
@@ -2191,6 +2184,8 @@ unmanage(Client *c) {
 	detachstack(c);
 	if(sel == c)
 		focus(NULL);
+	if(maximized == c)
+		maximized = NULL;
 	XUngrabButton(dpy, AnyButton, AnyModifier, c->win);
 	setclientstate(c, WithdrawnState);
 	free(c);
