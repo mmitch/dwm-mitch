@@ -2313,11 +2313,29 @@ updatexinerama(void) {
 	for(i = 0; i < xinescreencount && screenmax < MAXXINERAMASCREENS; i++) {
 		/* if adjacent screens overlap in their starting position, take the bigger one (clone output detection) */
 		if(i == 0 || sx[screenmax-1] != xinescreens[i].x_org || sy[screenmax-1] != xinescreens[i].y_org) {
-			sx[screenmax] = xinescreens[i].x_org;
-			sy[screenmax] = xinescreens[i].y_org;
-			sw[screenmax] = xinescreens[i].width;
-			sh[screenmax] = xinescreens[i].height;
-			screenmax++;
+			/* split big screen into two */
+			if (xinescreens[i].width > 1280) {
+				sx[screenmax] = xinescreens[i].x_org;
+				sy[screenmax] = xinescreens[i].y_org;
+				sw[screenmax] = xinescreens[i].width / 2;
+				sh[screenmax] = xinescreens[i].height;
+				screenmax++;
+
+				if (sx[screenmax-1] + sw[screenmax-1] > totalw)
+					totalw = sx[screenmax-1] + sw[screenmax-1];
+
+				sx[screenmax] = xinescreens[i].x_org + sw[screenmax-1];
+				sy[screenmax] = xinescreens[i].y_org;
+				sw[screenmax] = xinescreens[i].width - sw[screenmax-1];
+				sh[screenmax] = xinescreens[i].height;
+				screenmax++;
+			} else {
+				sx[screenmax] = xinescreens[i].x_org;
+				sy[screenmax] = xinescreens[i].y_org;
+				sw[screenmax] = xinescreens[i].width;
+				sh[screenmax] = xinescreens[i].height;
+				screenmax++;
+			}
 		} else {
 			if (sw[screenmax-1] < xinescreens[i].width)
 				sw[screenmax-1] = xinescreens[i].width;

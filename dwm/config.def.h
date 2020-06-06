@@ -36,7 +36,7 @@ Rule rules[] = {
 #define INITIALWORKSPACES	 1
 #define MAXWORKSPACES		99
 #define MAXWSTEXTWIDTH		 6	/* must be 2*(strlen(MAXWORKSPACES)+1)  */
-#define MAXXINERAMASCREENS	 2
+#define MAXXINERAMASCREENS	 4
 #define REFRESH_HZ		60      /* refresh frequency for movemouse() and resizemouse() */
 #define ROUNDCORNERS		 4	/* 0 to deactivate, 4 to activate */
 
