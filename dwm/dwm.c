@@ -2295,6 +2295,8 @@ void
 updatexinerama(void) {
 	XineramaScreenInfo *xinescreens;
 	int xinescreencount, i;
+	int x, y, w, h;
+	Bool getxine;
 	Client *c;
 
 	if( ! XineramaIsActive(dpy) ) {
@@ -2310,37 +2312,40 @@ updatexinerama(void) {
         xinescreens = XineramaQueryScreens(dpy, &xinescreencount);
 	screenmax = 0;
 	totalw = totalh = 0;
-	for(i = 0; i < xinescreencount && screenmax < MAXXINERAMASCREENS; i++) {
+	getxine = True;
+	for(i = 0; screenmax < MAXXINERAMASCREENS;) {
+		if (getxine) {
+			if (i >= xinescreencount)
+				break;
+			x = xinescreens[i].x_org;
+			y = xinescreens[i].y_org;
+			w = xinescreens[i].width;
+			h = xinescreens[i].height;
+			i++;
+		}
+		
 		/* if adjacent screens overlap in their starting position, take the bigger one (clone output detection) */
-		if(i == 0 || sx[screenmax-1] != xinescreens[i].x_org || sy[screenmax-1] != xinescreens[i].y_org) {
-			/* split big screen into two */
-			if (xinescreens[i].width > 1280) {
-				sx[screenmax] = xinescreens[i].x_org;
-				sy[screenmax] = xinescreens[i].y_org;
-				sw[screenmax] = xinescreens[i].width / 2;
-				sh[screenmax] = xinescreens[i].height;
-				screenmax++;
-
-				if (sx[screenmax-1] + sw[screenmax-1] > totalw)
-					totalw = sx[screenmax-1] + sw[screenmax-1];
-
-				sx[screenmax] = xinescreens[i].x_org + sw[screenmax-1];
-				sy[screenmax] = xinescreens[i].y_org;
-				sw[screenmax] = xinescreens[i].width - sw[screenmax-1];
-				sh[screenmax] = xinescreens[i].height;
-				screenmax++;
+		if(i == 0 || sx[screenmax-1] != x || sy[screenmax-1] != y) {
+			sx[screenmax] = x;
+			sy[screenmax] = y;
+			if (w > 1280) {
+				/* split big screen horizontally */
+				sw[screenmax] = w / 2;
+				x += sw[screenmax-1];
+				w -= sw[screenmax-1];
+				getxine = False;
 			} else {
-				sx[screenmax] = xinescreens[i].x_org;
-				sy[screenmax] = xinescreens[i].y_org;
-				sw[screenmax] = xinescreens[i].width;
-				sh[screenmax] = xinescreens[i].height;
-				screenmax++;
+				sw[screenmax] = w;
+				getxine = True;
 			}
+			sh[screenmax] = h;
+			screenmax++;
 		} else {
-			if (sw[screenmax-1] < xinescreens[i].width)
-				sw[screenmax-1] = xinescreens[i].width;
-			if (sh[screenmax-1] < xinescreens[i].height)
-				sh[screenmax-1] = xinescreens[i].height;
+			if (sw[screenmax-1] < w)
+				sw[screenmax-1] = w;
+			if (sh[screenmax-1] < h)
+				sh[screenmax-1] = h;
+			getxine = True;
 		}
 		if (sx[screenmax-1] + sw[screenmax-1] > totalw)
 			totalw = sx[screenmax-1] + sw[screenmax-1];
