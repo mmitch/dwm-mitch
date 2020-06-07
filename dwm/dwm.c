@@ -2294,8 +2294,7 @@ updatewstext(int screen) {
 void
 updatexinerama(void) {
 	XineramaScreenInfo *xinescreens;
-	int xinescreencount;
-	unsigned int i;
+	int xinescreencount, i;
 	Client *c;
 
 	if( ! XineramaIsActive(dpy) ) {
