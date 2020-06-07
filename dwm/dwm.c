@@ -2313,8 +2313,7 @@ updatewstext(int screen) {
 void
 updatexinerama(void) {
 	XineramaScreenInfo *xinescreens;
-	int xinescreencount;
-	unsigned int i;
+	int xinescreencount, i;
 	Client *c;
 
 	if( ! XineramaIsActive(dpy) ) {
@@ -2330,7 +2329,7 @@ updatexinerama(void) {
         xinescreens = XineramaQueryScreens(dpy, &xinescreencount);
 	screenmax = 0;
 	totalw = totalh = 0;
-	for(i = 0; i < xinescreencount; i++) {
+	for(i = 0; i < xinescreencount && screenmax < MAXXINERAMASCREENS; i++) {
 		/* if adjacent screens overlap in their starting position, take the bigger one (clone output detection) */
 		if(i == 0 || sx[screenmax-1] != xinescreens[i].x_org || sy[screenmax-1] != xinescreens[i].y_org) {
 			sx[screenmax] = xinescreens[i].x_org;
