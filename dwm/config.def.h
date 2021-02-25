@@ -37,9 +37,11 @@ Rule rules[] = {
 	{ ":VICE:",				True,	0 },
 	{ "Xnest",				True,	0 },
 	{ "Wine:Diablo III.exe",		True,	0 },
+	{ "WineDesktop",			True,	0 },
 	{ "de-cgarbs-knittr-Knittr:",		True,	0 },
 	{ "Hugin:hugin:Panorama Tools",		True,	0 },
 	{ ":qjackctl:",				True,	0 },
+	{ "HuniePop",				True,	0 },
 };
 
 #define INITIALWORKSPACES	 2
