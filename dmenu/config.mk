@@ -27,7 +27,7 @@ else
 endif
 
 # flags
-CPPFLAGS = -D_BSD_SOURCE -DVERSION=\"${VERSION}\" ${XINERAMAFLAGS}
+CPPFLAGS = -D_DEFAULT_SOURCE -DVERSION=\"${VERSION}\" ${XINERAMAFLAGS}
 CFLAGS   = $(FLTO) -ansi -pedantic -Wall -Os ${INCS} ${CPPFLAGS}
 LDFLAGS  = $(FLTO) -Os -s ${LIBS}
 
