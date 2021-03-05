@@ -25,8 +25,18 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install libx11-dev libxinerama-dev
-    - name: Build
+    - name: Normal Build
       env:
         CC: ${{ matrix.compiler }}
       run: |
+        make build
+    - name: Pedantic Build
+      env:
+        CC: ${{ matrix.compiler }}
+      run: |
+        make clean
+        echo 'CFLAGS := -std=c99 -pedantic -Wall -Werror -O2 $(INCS) -DVERSION=\"$(VERSION)\"' >> dwm/config.mk
+        echo 'LDFLAGS := $(LIBS)' >> dwm/config.mk
+        echo 'CFLAGS := -ansi -pedantic -Wall -Werror -O2 $(INCS) $(CPPFLAGS)' >> dmenu/config.mk
+        echo 'LDFLAGS := $(LIBS)' >> dmenu/config.mk
         make build
