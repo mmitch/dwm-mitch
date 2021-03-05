@@ -50,7 +50,6 @@ Rule rules[] = {
 #define MAXXINERAMASCREENS	   3
 #define HORIZONTALAUTOSPLIT	1700	/* split screen into multiple workspaces when wider than this */
 #define REFRESH_HZ		  60	/* refresh frequency for movemouse() and resizemouse() */
-#define ROUNDCORNERS		   0	/* 0 to deactivate, 4 to activate */
 
 /* show stack size in status bar - undefine SHOWSTACKSIZE to disable */
 #define SHOWSTACKSIZE
