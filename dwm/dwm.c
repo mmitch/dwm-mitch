@@ -148,16 +148,13 @@ void configure(Client *c);
 void configurenotify(XEvent *e);
 void configurerequest(XEvent *e);
 void createbarwins(void);
-void createcornerwins(void);
 void destroynotify(XEvent *e);
 void destroybarwins(void);
-void destroycornerwins(void);
 void detach(Client *c);
 void detachstack(Client *c);
 void doreload(void);
 void drawbar(void);
 void drawcornerpoints(int x1, int y1, int x2, int y2, unsigned long colorleft, unsigned long colorright);
-void drawcornerwin(unsigned int s, unsigned int c);
 void drawtext(const char *text, unsigned long col[ColLast]);
 void *emallocz(unsigned int size);
 void enternotify(XEvent *e);
@@ -299,7 +296,6 @@ int sx[MAXXINERAMASCREENS], sy[MAXXINERAMASCREENS], sw[MAXXINERAMASCREENS], sh[M
 int wax[MAXXINERAMASCREENS], way[MAXXINERAMASCREENS], waw[MAXXINERAMASCREENS], wah[MAXXINERAMASCREENS];
 int wstextwidth[MAXXINERAMASCREENS];
 Window barwin[MAXXINERAMASCREENS];
-Window cornerwin[MAXXINERAMASCREENS][ROUNDCORNERS];
 
 
 /* function implementations */
@@ -450,7 +446,6 @@ cleanup(void) {
 	XFreePixmap(dpy, dc.drawable);
 	XFreeGC(dpy, dc.gc);
 	destroybarwins();
-	destroycornerwins();
 	XFreeCursor(dpy, cursor[CurNormal]);
 	XFreeCursor(dpy, cursor[CurResize]);
 	XFreeCursor(dpy, cursor[CurMove]);
@@ -514,10 +509,8 @@ configurenotify(XEvent *e) {
 
 	if(ev->window == root) {
 		destroybarwins();
-		destroycornerwins();
 		updatexinerama();
 		createbarwins();
-		createcornerwins();
 		arrange();
 	}
 }
@@ -590,56 +583,11 @@ createbarwins(void) {
 }
 
 void
-createcornerwins(void) {
-	unsigned int s, sc, x, y;
-	XSetWindowAttributes wa;
-
-	wa.override_redirect = 1;
-	wa.event_mask = ExposureMask;
-
-	for(s = 0; s < screenmax; s++)
-		for(sc = 0; sc < ROUNDCORNERS; sc++) {
-			switch (sc) {
-			case 0:
-				x = sx[s];
-				y = sy[s];
-				break;
-			case 1:
-				x = sx[s] + sw[s]-1;
-				y = sy[s];
-				break;
-			case 2:
-				x = sx[s];
-				y = sy[s] + sh[s]-1;
-				break;
-			case 3:
-				x = sx[s] + sw[s]-1;
-				y = sy[s] + sh[s]-1;
-				break;
-			}
-			cornerwin[s][sc] = XCreateWindow(dpy, root, x, y, 1, 1, 0,
-							 DefaultDepth(dpy, screen), CopyFromParent, DefaultVisual(dpy, screen),
-							 CWOverrideRedirect | CWEventMask, &wa);
-			XMapRaised(dpy, cornerwin[s][sc]);
-		}
-	XSync(dpy, False);
-}
-
-void
 destroybarwins(void) {
 	unsigned int s;
 
 	for(s = 0; s < screenmax; s++)
 		XDestroyWindow(dpy, barwin[s]);
-}
-
-void
-destroycornerwins(void) {
-	unsigned int s, sc;
-
-	for(s = 0; s < screenmax; s++)
-		for(sc = 0; sc < ROUNDCORNERS; sc++)
-			XDestroyWindow(dpy, cornerwin[s][sc]);
 }
 
 void
@@ -759,12 +707,6 @@ drawcornerpoints(int x1, int y1, int x2, int y2, unsigned long colorleft, unsign
 }
 
 void
-drawcornerwin(unsigned int s, unsigned int c) {
-	XSetForeground(dpy, dc.gc, 0);
-	XDrawPoint(dpy, cornerwin[s][c], dc.gc, 0, 0);
-}
-
-void
 drawtext(const char *text, unsigned long col[ColLast]) {
 	int x, y, w, h;
 	static char buf[256];
@@ -868,21 +810,15 @@ exportstatus(void) {
 
 void
 expose(XEvent *e) {
-	unsigned int s, sc;
+	unsigned int s;
 	XExposeEvent *ev = &e->xexpose;
 
 	if(ev->count == 0)
-		for(s = 0; s < screenmax; s++) {
+		for(s = 0; s < screenmax; s++)
 			if(ev->window == barwin[s]) {
 				drawbar();
 				return;
 			}
-			for (sc = 0; sc < ROUNDCORNERS; sc++)
-				if(ev->window == cornerwin[s][sc]) {
-					drawcornerwin(s, sc);
-					return;
-				}
-		}
 }
 
 void
@@ -1630,16 +1566,12 @@ restack(void) {
 	Client *c;
 	XEvent ev;
 	XWindowChanges wc;
-	unsigned int s, sc;
 
 	drawbar();
 	if(!sel)
 		return;
 	if(sel->isfloating || (layout[sel->screen][selws[sel->screen]-1]->arrange == floating))
 		XRaiseWindow(dpy, sel->win);
-	for(s = 0; s < screenmax; s++)
-		for(sc = 0; sc < ROUNDCORNERS; sc++)
-			XRaiseWindow(dpy, cornerwin[s][sc]);
 	if(layout[sel->screen][selws[sel->screen]-1]->arrange != floating) {
 		wc.stack_mode = Below;
 		wc.sibling = barwin[sel->screen];
@@ -1904,9 +1836,6 @@ setup(void) {
 		XSetFont(dpy, dc.gc, dc.font.xfont->fid);
 	for(s = 0; s < MAXXINERAMASCREENS; s++)
 		updatewstext(s);
-
-	/* init corner pixels */
-	createcornerwins();
 
 	/* multihead support */
 	selscreen = XQueryPointer(dpy, root, &w, &w, &d, &d, &d, &d, &mask);
