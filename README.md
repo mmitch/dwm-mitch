@@ -1,11 +1,14 @@
 dwm-mitch
 =========
 
-This is my version for the dynamic window manager (http://dwm.suckless.org).
+[![Build status](https://github.com/mmitch/dwm-mitch/workflows/Linux%20Build/badge.svg?branch=master)](https://github.com/mmitch/dwm-mitch/actions?query=workflow%3A%22Linux+Build%22)
+[![CodeQL status](https://github.com/mmitch/dwm-mitch/workflows/CodeQL/badge.svg?branch=master)](https://github.com/mmitch/dwm-mitch/actions?query=workflow%3ACodeQL)
+
+This is my version of the dynamic window manager (http://dwm.suckless.org).
 Get the most current version from https://github.com/mmitch/dwm-mitch
 Older versions were hosted at http://www.cgarbs.de/dwm-mitch.en.html
 
-dwm-mitch is based von dwm 4.7 from December 2007, so patches from
+dwm-mitch is based on dwm 4.7 from December 2007, so patches from
 current dwm versions will not apply cleanly, although it is possible
 to cherry-pick a thing or two without too much hassle.
 

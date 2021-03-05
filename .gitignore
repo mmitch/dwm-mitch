@@ -1,0 +1,8 @@
+*~
+
+*.o
+stamp-built
+
+dwm/dwm
+dmenu/dmenu
+dmenu/lsx
