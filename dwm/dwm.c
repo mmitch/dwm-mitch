@@ -680,7 +680,7 @@ void
 drawbar(void) {
 	int x;
 	unsigned int s;
-	char buf[256];
+	char buf[258];
 	unsigned long *stextcol;
 
 #ifdef SHOWSTACKSIZE
