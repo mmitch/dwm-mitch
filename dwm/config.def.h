@@ -49,7 +49,7 @@ Rule rules[] = {
 #define MAXWSTEXTWIDTH		 6	/* must be 2*(strlen(MAXWORKSPACES)+1)  */
 #define MAXXINERAMASCREENS	 2
 #define REFRESH_HZ		60      /* refresh frequency for movemouse() and resizemouse() */
-#define ROUNDCORNERS		 4	/* 0 to deactivate, 4 to activate */
+#define ROUNDCORNERS		 0	/* 0 to deactivate, 4 to activate */
 
 /* show stack size in status bar - undefine SHOWSTACKSIZE to disable */
 #define SHOWSTACKSIZE
