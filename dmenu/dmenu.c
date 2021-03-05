@@ -444,11 +444,11 @@ readstdin(void) {
 	for(i = 0; fgets(buf, sizeof buf, stdin); i++) {
 		if(i+1 >= size / sizeof *items)
 			if(!(items = realloc(items, (size += BUFSIZ))))
-				eprintf("cannot realloc %ul bytes:", size);
+				eprintf("cannot realloc %lu bytes:", size);
 		if((p = strchr(buf, '\n')))
 			*p = '\0';
 		if(!(items[i].text = strdup(buf)))
-			eprintf("cannot strdup %ul bytes:", strlen(buf)+1);
+			eprintf("cannot strdup %lu bytes:", strlen(buf)+1);
 		if(strlen(items[i].text) > max)
 			max = strlen(maxstr = items[i].text);
 	}
