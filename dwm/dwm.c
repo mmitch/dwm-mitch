@@ -2325,7 +2325,7 @@ updatexinerama(void) {
 		}
 		
 		/* if adjacent screens overlap in their starting position, take the bigger one (clone output detection) */
-		if(i == 0 || sx[screenmax-1] != x || sy[screenmax-1] != y) {
+		if(screenmax == 0 || sx[screenmax-1] != x || sy[screenmax-1] != y) {
 			sx[screenmax] = x;
 			sy[screenmax] = y;
 			if (w > HORIZONTALAUTOSPLIT) {
