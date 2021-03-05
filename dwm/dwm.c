@@ -2328,7 +2328,7 @@ updatexinerama(void) {
 		if(i == 0 || sx[screenmax-1] != x || sy[screenmax-1] != y) {
 			sx[screenmax] = x;
 			sy[screenmax] = y;
-			if (w > 1280) {
+			if (w > HORIZONTALAUTOSPLIT) {
 				/* split big screen horizontally */
 				sw[screenmax] = w / 2;
 				x += sw[screenmax-1];

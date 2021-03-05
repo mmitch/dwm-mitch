@@ -37,6 +37,7 @@ Rule rules[] = {
 #define MAXWORKSPACES		99
 #define MAXWSTEXTWIDTH		 6	/* must be 2*(strlen(MAXWORKSPACES)+1)  */
 #define MAXXINERAMASCREENS	 4
+#define HORIZONTALAUTOSPLIT   1700      /* split screen into multiple workspaces when wider than this */
 #define REFRESH_HZ		60      /* refresh frequency for movemouse() and resizemouse() */
 #define ROUNDCORNERS		 4	/* 0 to deactivate, 4 to activate */
 
