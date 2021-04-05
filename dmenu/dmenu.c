@@ -365,7 +365,7 @@ keypress(XKeyEvent *ev) {
 	case XK_Tab:
 		if(!sel)
 			return;
-		strncpy(text, sel->text, sizeof text);
+		strncpy(text, sel->text, sizeof text - 1);
 		cursor = strlen(text);
 		match(True);
 		break;
