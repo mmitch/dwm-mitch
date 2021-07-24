@@ -122,8 +122,9 @@ Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_5,		setlayout,	"-| " },
 	{ MODKEY|ShiftMask,		XK_6,		setlayout,	"= =" },
 	{ MODKEY|ShiftMask,		XK_7,		setlayout,	"WoW" },
-	{ MODKEY|ControlMask,		XK_2,		warpmouserel,	"1" },
-	{ MODKEY|ControlMask,		XK_1,		warpmouserel,	"-1" },
+	{ MODKEY|ControlMask,		XK_1,		warpmouse,	"0" },
+	{ MODKEY|ControlMask,		XK_2,		warpmouse,	"1" },
+	{ MODKEY|ControlMask,		XK_3,		warpmouse,	"2" },
 	{ MODKEY|ControlMask,		XK_x,		swapscreen,	"1" },
 	{ 0,				XK_Scroll_Lock,	togglelocked,	NULL },
 
