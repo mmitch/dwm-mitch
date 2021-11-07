@@ -38,6 +38,7 @@ Rule rules[] = {
 	{ ":VICE:",				True,	0 },
 	{ "Xnest",				True,	0 },
 	{ "Wine:Diablo III.exe",		True,	0 },
+	{ "Default - Wine desktop",		True,	0 },
 	{ "WineDesktop",			True,	0 },
 	{ "de-cgarbs-knittr-Knittr:",		True,	0 },
 	{ "Hugin:hugin:Panorama Tools",		True,	0 },
