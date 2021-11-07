@@ -2274,16 +2274,16 @@ updatexinerama(void) {
 			// fprintf(stderr, "  xine[%d]: %dx%d@%d,%d\n", i, w, h, x, y);
 			i++;
 		}
-		
-		/* if adjacent screens overlap in their starting position, take the bigger one (clone output detection) */
+
+		/* if not cloned */
 		if(screenmax == 0 || sx[screenmax-1] != x || sy[screenmax-1] != y) {
 			sx[screenmax] = x;
 			sy[screenmax] = y;
 			if (w > HORIZONTALAUTOSPLIT) {
 				/* split big screen horizontally */
 				sw[screenmax] = w / 2;
-				x += sw[screenmax-1];
-				w -= sw[screenmax-1];
+				x += sw[screenmax];
+				w -= sw[screenmax];
 				getxine = False;
 			} else {
 				sw[screenmax] = w;
@@ -2292,6 +2292,7 @@ updatexinerama(void) {
 			sh[screenmax] = h;
 			screenmax++;
 		} else {
+			/* if adjacent screens overlap in their starting position, take the bigger one (clone output detection) */
 			if (sw[screenmax-1] < w)
 				sw[screenmax-1] = w;
 			if (sh[screenmax-1] < h)
