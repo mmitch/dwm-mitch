@@ -2260,8 +2260,8 @@ updatexinerama(void) {
 			if (w > HORIZONTALAUTOSPLIT) {
 				/* split big screen horizontally */
 				sw[screenmax] = w / 2;
-				x += sw[screenmax-1];
-				w -= sw[screenmax-1];
+				x += sw[screenmax];
+				w -= sw[screenmax];
 				getxine = False;
 			} else {
 				sw[screenmax] = w;
