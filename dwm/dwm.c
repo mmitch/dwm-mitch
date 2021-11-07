@@ -2261,6 +2261,8 @@ updatexinerama(void) {
 	screenmax = 0;
 	totalw = totalh = 0;
 	getxine = True;
+
+	// fprintf(stderr, "reconfigure Xinerama screens:\n");
 	for(i = 0; screenmax < MAXXINERAMASCREENS;) {
 		if (getxine) {
 			if (i >= xinescreencount)
@@ -2269,6 +2271,7 @@ updatexinerama(void) {
 			y = xinescreens[i].y_org;
 			w = xinescreens[i].width;
 			h = xinescreens[i].height;
+			// fprintf(stderr, "  xine[%d]: %dx%d@%d,%d\n", i, w, h, x, y);
 			i++;
 		}
 		
@@ -2299,6 +2302,7 @@ updatexinerama(void) {
 			totalw = sx[screenmax-1] + sw[screenmax-1];
 		if (sy[screenmax-1] + sh[screenmax-1] > totalh)
 			totalh = sy[screenmax-1] + sh[screenmax-1];
+		// fprintf(stderr, "  `-> screen[%d]: %dx%d@%d,%d  (total: %dx%d)\n", screenmax-1, sw[screenmax-1], sh[screenmax-1], sx[screenmax-1], sy[screenmax-1], totalw, totalh);
 	}
 	/* if screens have been removed, move clients to stack */
 	for(c = clients; c; c = c->next)
