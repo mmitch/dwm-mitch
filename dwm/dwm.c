@@ -2252,8 +2252,8 @@ updatexinerama(void) {
 			h = xinescreens[i].height;
 			i++;
 		}
-		
-		/* if adjacent screens overlap in their starting position, take the bigger one (clone output detection) */
+
+		/* if not cloned */
 		if(screenmax == 0 || sx[screenmax-1] != x || sy[screenmax-1] != y) {
 			sx[screenmax] = x;
 			sy[screenmax] = y;
@@ -2270,6 +2270,7 @@ updatexinerama(void) {
 			sh[screenmax] = h;
 			screenmax++;
 		} else {
+			/* if adjacent screens overlap in their starting position, take the bigger one (clone output detection) */
 			if (sw[screenmax-1] < w)
 				sw[screenmax-1] = w;
 			if (sh[screenmax-1] < h)
