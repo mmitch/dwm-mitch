@@ -293,6 +293,7 @@ extern unsigned int selws[];
 Layout *layout[MAXXINERAMASCREENS][MAXWORKSPACES];
 char wstext[MAXXINERAMASCREENS][MAXWSTEXTWIDTH];
 unsigned int workspaces[MAXXINERAMASCREENS], selws[MAXXINERAMASCREENS];
+unsigned int xine_x[MAXXINERAMASCREENS], xine_w[MAXXINERAMASCREENS]; /* xinerama screen size per workbench; differs only on HORIZONTALAUTOSPLIT */
 int sx[MAXXINERAMASCREENS], sy[MAXXINERAMASCREENS], sw[MAXXINERAMASCREENS], sh[MAXXINERAMASCREENS];
 int wax[MAXXINERAMASCREENS], way[MAXXINERAMASCREENS], waw[MAXXINERAMASCREENS], wah[MAXXINERAMASCREENS];
 int wstextwidth[MAXXINERAMASCREENS];
@@ -1651,17 +1652,21 @@ void
 setborderbyfloat(Client *c, Bool configurewindow) {
 	XWindowChanges wc;
 	unsigned int newborder;
-	
+
 	newborder = ((c->isfloating && !c->ismax) || (layout[c->screen][selws[c->screen]-1]->arrange == floating)) ? FLOATBORDERPX : BORDERPX;
 	if (c->border == newborder)
 		return;
-	
+
+	c->w += (c->border - newborder) * 2;
+	c->h += (c->border - newborder) * 2;
 	c->border = newborder;
 	
 	if (!configurewindow)
 		return;
 	wc.border_width = c->border;
-	XConfigureWindow(dpy, c->win, CWBorderWidth, &wc);
+	wc.width = c->w;
+	wc.height = c->h;
+	XConfigureWindow(dpy, c->win, CWWidth | CWHeight | CWBorderWidth, &wc);
 	configure(c);
 }
 
@@ -2075,12 +2080,17 @@ togglemax(const char *arg) {
 	if((layout[sel->screen][selws[sel->screen]-1]->arrange != floating) && ! sel->isfloating)
 		return;
 	if((sel->ismax = !sel->ismax)) {
-		setborderbyfloat(sel, False);
 		sel->rx = sel->x;
 		sel->ry = sel->y;
 		sel->rw = sel->w;
 		sel->rh = sel->h;
-		resize(sel, wax[sel->screen] + sel->border, way[sel->screen] + sel->border, waw[sel->screen] - 2 * sel->border, wah[sel->screen] - 2 * sel->border, True);
+		setborderbyfloat(sel, False);
+		if (arg == NULL)
+			/* resize to workspace screen (normal) */
+			resize(sel, wax[sel->screen], way[sel->screen], waw[sel->screen] - 2 * sel->border, wah[sel->screen] - 2 * sel->border, True);
+		else
+			/* resize to xinerama screen (combine over HORIZONTALAUTOSPLIT screens) */
+			resize(sel, xine_x[sel->screen], way[sel->screen], xine_w[sel->screen] - 2 * sel->border, wah[sel->screen] - 2 * sel->border, True);
 	}
 	else {
 		resize(sel, sel->rx, sel->ry, sel->rw, sel->rh, True);
@@ -2244,6 +2254,7 @@ updatexinerama(void) {
 	XineramaScreenInfo *xinescreens;
 	int xinescreencount, i;
 	int x, y, w, h;
+	unsigned int xx, xw;
 	Bool getxine;
 	Client *c;
 
@@ -2271,6 +2282,8 @@ updatexinerama(void) {
 			y = xinescreens[i].y_org;
 			w = xinescreens[i].width;
 			h = xinescreens[i].height;
+			xx = x;
+			xw = w;
 			// fprintf(stderr, "  xine[%d]: %dx%d@%d,%d\n", i, w, h, x, y);
 			i++;
 		}
@@ -2290,6 +2303,8 @@ updatexinerama(void) {
 				getxine = True;
 			}
 			sh[screenmax] = h;
+			xine_x[screenmax] = xx;
+			xine_w[screenmax] = xw;
 			screenmax++;
 		} else {
 			/* if adjacent screens overlap in their starting position, take the bigger one (clone output detection) */
