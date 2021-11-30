@@ -1632,17 +1632,21 @@ void
 setborderbyfloat(Client *c, Bool configurewindow) {
 	XWindowChanges wc;
 	unsigned int newborder;
-	
+
 	newborder = ((c->isfloating && !c->ismax) || (layout[c->screen][selws[c->screen]-1]->arrange == floating)) ? FLOATBORDERPX : BORDERPX;
 	if (c->border == newborder)
 		return;
-	
+
+	c->w += (c->border - newborder) * 2;
+	c->h += (c->border - newborder) * 2;
 	c->border = newborder;
 	
 	if (!configurewindow)
 		return;
 	wc.border_width = c->border;
-	XConfigureWindow(dpy, c->win, CWBorderWidth, &wc);
+	wc.width = c->w;
+	wc.height = c->h;
+	XConfigureWindow(dpy, c->win, CWWidth | CWHeight | CWBorderWidth, &wc);
 	configure(c);
 }
 
@@ -2056,12 +2060,12 @@ togglemax(const char *arg) {
 	if((layout[sel->screen][selws[sel->screen]-1]->arrange != floating) && ! sel->isfloating)
 		return;
 	if((sel->ismax = !sel->ismax)) {
-		setborderbyfloat(sel, False);
 		sel->rx = sel->x;
 		sel->ry = sel->y;
 		sel->rw = sel->w;
 		sel->rh = sel->h;
-		resize(sel, wax[sel->screen] + sel->border, way[sel->screen] + sel->border, waw[sel->screen] - 2 * sel->border, wah[sel->screen] - 2 * sel->border, True);
+		setborderbyfloat(sel, False);
+		resize(sel, wax[sel->screen], way[sel->screen], waw[sel->screen] - 2 * sel->border, wah[sel->screen] - 2 * sel->border, True);
 	}
 	else {
 		resize(sel, sel->rx, sel->ry, sel->rw, sel->rh, True);
