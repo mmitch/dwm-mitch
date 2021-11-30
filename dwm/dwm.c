@@ -292,6 +292,7 @@ extern unsigned int selws[];
 Layout *layout[MAXXINERAMASCREENS][MAXWORKSPACES];
 char wstext[MAXXINERAMASCREENS][MAXWSTEXTWIDTH];
 unsigned int workspaces[MAXXINERAMASCREENS], selws[MAXXINERAMASCREENS];
+unsigned int xine_x[MAXXINERAMASCREENS], xine_w[MAXXINERAMASCREENS]; /* xinerama screen size per workbench; differs only on HORIZONTALAUTOSPLIT */
 int sx[MAXXINERAMASCREENS], sy[MAXXINERAMASCREENS], sw[MAXXINERAMASCREENS], sh[MAXXINERAMASCREENS];
 int wax[MAXXINERAMASCREENS], way[MAXXINERAMASCREENS], waw[MAXXINERAMASCREENS], wah[MAXXINERAMASCREENS];
 int wstextwidth[MAXXINERAMASCREENS];
@@ -2065,7 +2066,12 @@ togglemax(const char *arg) {
 		sel->rw = sel->w;
 		sel->rh = sel->h;
 		setborderbyfloat(sel, False);
-		resize(sel, wax[sel->screen], way[sel->screen], waw[sel->screen] - 2 * sel->border, wah[sel->screen] - 2 * sel->border, True);
+		if (arg == NULL)
+			/* resize to workspace screen (normal) */
+			resize(sel, wax[sel->screen], way[sel->screen], waw[sel->screen] - 2 * sel->border, wah[sel->screen] - 2 * sel->border, True);
+		else
+			/* resize to xinerama screen (combine over HORIZONTALAUTOSPLIT screens) */
+			resize(sel, xine_x[sel->screen], way[sel->screen], xine_w[sel->screen] - 2 * sel->border, wah[sel->screen] - 2 * sel->border, True);
 	}
 	else {
 		resize(sel, sel->rx, sel->ry, sel->rw, sel->rh, True);
@@ -2229,6 +2235,7 @@ updatexinerama(void) {
 	XineramaScreenInfo *xinescreens;
 	int xinescreencount, i;
 	int x, y, w, h;
+	unsigned int xx, xw;
 	Bool getxine;
 	Client *c;
 
@@ -2254,6 +2261,8 @@ updatexinerama(void) {
 			y = xinescreens[i].y_org;
 			w = xinescreens[i].width;
 			h = xinescreens[i].height;
+			xx = x;
+			xw = w;
 			i++;
 		}
 
@@ -2272,6 +2281,8 @@ updatexinerama(void) {
 				getxine = True;
 			}
 			sh[screenmax] = h;
+			xine_x[screenmax] = xx;
+			xine_w[screenmax] = xw;
 			screenmax++;
 		} else {
 			/* if adjacent screens overlap in their starting position, take the bigger one (clone output detection) */
