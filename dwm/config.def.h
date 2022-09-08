@@ -10,8 +10,7 @@ const char* const lockedstat = "L";
 #define BARPOS			BarBot // BarTop /* BarBot, BarOff */
 #define BORDERPX		0
 #define FLOATBORDERPX		2
-// #define FONT			"-misc-fixed-medium-r-normal-*-13-*-*-*-*-*-*-*"
-#define FONT			"-*-terminus-medium-r-normal-*-*-140-*-*-c-*-iso10646-1"
+#define FONT			"-*-terminus-medium-r-*-*-14-*-*-*-*-*-*-*,-*-*-*-*-*-*-14-*-*-*-*-*-jisx0208.1983-*"
 #define NORMBORDERCOLOR		"#000"
 #define NORMBGCOLOR		"#222"
 #define NORMFGCOLOR		"#ccc"
