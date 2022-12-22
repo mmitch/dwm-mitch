@@ -43,6 +43,7 @@ Rule rules[] = {
 	{ "Hugin:hugin:Panorama Tools",		True,	0 },
 	{ ":qjackctl:",				True,	0 },
 	{ "HuniePop",				True,	0 },
+	{ "BattleTech:BattleTech:",		True,	0 },
 };
 
 #define INITIALWORKSPACES	   2
