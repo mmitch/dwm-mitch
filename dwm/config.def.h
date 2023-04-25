@@ -44,6 +44,7 @@ Rule rules[] = {
 	{ ":qjackctl:",				True,	0 },
 	{ "HuniePop",				True,	0 },
 	{ "BattleTech:BattleTech:",		True,	0 },
+	{ "Desktop Dungeons",			True,	0 },
 };
 
 #define INITIALWORKSPACES	   2
