@@ -301,6 +301,7 @@ int sx[MAXXINERAMASCREENS], sy[MAXXINERAMASCREENS], sw[MAXXINERAMASCREENS], sh[M
 int wax[MAXXINERAMASCREENS], way[MAXXINERAMASCREENS], waw[MAXXINERAMASCREENS], wah[MAXXINERAMASCREENS];
 int wstextwidth[MAXXINERAMASCREENS];
 Window barwin[MAXXINERAMASCREENS];
+Bool split[MAXXINERAMASCREENS];
 
 
 /* function implementations */
@@ -708,13 +709,16 @@ drawbar(void) {
 			x += dc.w;
 		}
 #endif
-		dc.w = textw(stext);
-		dc.x = sw[s] - dc.w;
-		if(dc.x < x) {
-			dc.x = x;
-			dc.w = sw[s] - x;
+		dc.x = sw[s];
+		if (! (split[s] && sel && sel->screen == s)) { /* hide status bar on current screen if horizontally split */
+			dc.w = textw(stext);
+			dc.x -= dc.w;
+			if(dc.x < x) {
+				dc.x = x;
+				dc.w = sw[s] - x;
+			}
+			drawtext(stext, stextcol);
 		}
-		drawtext(stext, stextcol);
 		if((dc.w = dc.x - x) > bh) {
 			dc.x = x;
 			if(sel && sel->screen == s) {
@@ -2337,6 +2341,7 @@ updatexinerama(void) {
 				x += sw[screenmax];
 				w -= sw[screenmax];
 				getxine = False;
+				split[screenmax] = split[screenmax+1] = True;
 			} else {
 				sw[screenmax] = w;
 				getxine = True;
