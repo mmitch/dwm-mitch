@@ -1,0 +1,84 @@
+---
+# This workflow will run the build on Linux.
+
+name: Linux Install
+
+on:
+  push:
+  pull_request:
+    types: [opened]
+  schedule:
+    - cron: '21 4 5 * *'
+
+jobs:
+  install-linux:
+    name: Install/Deinstall on Linux
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install libx11-dev libxinerama-dev
+      - name: Ensure future install paths don't exist yet
+        run: |
+          for DIRS in /tmp/usr/{local,share}; do
+              if test -d "$DIRS"; then
+                  echo "FAIL: directory $DIRS should not exist"
+                  exit 1
+              fi
+          done
+      - name: Build and install to user-writeable location
+        run: |
+          make PREFIX=/tmp/usr/local PREFIXSHARE=/tmp/usr/share
+      - name: Ensure install paths were generated
+        run: |
+          for DIRS in /tmp/usr/{local,share}; do
+              if ! test -d "$DIRS"; then
+                  echo "FAIL: directory $DIRS is missing"
+                  exit 1
+              fi
+          done
+      - name: Ensure binaries were installed
+        run: |
+          for BIN in /tmp/usr/local/bin/{dmenu,dmenu_run,dwm,dwm-choose,dwm-mitch,lsx}; do
+              if ! test -x "$BIN"; then
+                  echo "FAIL: binary $BIN is missing"
+                  exit 1
+              fi
+          done
+      - name: Ensure additional files were installed
+        run: |
+          for FILE in \
+              /tmp/usr/local/share/man/man1/{dmenu,dwm,lsx}.1 \
+              /tmp/usr/share/icons/hicolor/16x16/apps/dwm-mitch_badge-symbolic.png \
+              /tmp/usr/share/pixmaps/dwm-mitch.png \
+              /tmp/usr/share/unity-greeter/custom_dwm-mitch_badge.png \
+              /tmp/usr/share/xsessions/dwm-mitch.desktop \
+          ; do
+              if ! test -f "$FILE"; then
+                  echo "FAIL: file $FILE is missing"
+                  exit 1
+              fi
+              if ! test -s "$FILE"; then
+                  echo "FAIL: file $FILE is empty"
+                  exit 1
+              fi
+          done
+      - name: Uninstall everything
+        run: |
+          make uninstall PREFIX=/tmp/usr/local PREFIXSHARE=/tmp/usr/share
+      - name: Ensure install paths were completely removed
+        run: |
+          for DIRS in /tmp/usr/{local,share}; do
+              if test -d "$DIRS"; then
+                  echo "FAIL: directory $DIRS should not exist"
+                  exit 1
+              fi
+          done
+      - name: Ensure other Makefile targets work without errors
+        run: |
+          make clean
+          make dist
