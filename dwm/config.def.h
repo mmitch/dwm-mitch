@@ -64,6 +64,12 @@ Rule rules[] = {
 /* only relevant with multiple screens */
 #define SNAPLOCALBORDERS
 
+/* when a floting client is within this pixel distance of screen or workplace edges,               */
+/* its border is set to BORDERPX instead of FLOATBORDERPX                                          */
+/* with eg. BORDERPX=0 and FLOATBORDERPX=2 only floting, non-fullscreen clients will have a border */
+/* set to 0 to disable                                                                             */
+#define UNFLOATBORDERSNAP 4
+
 /* status bar timeout in seconds
  * if no update is received for this duration, the status bar is colored in the ERR* colors defined above
  * set to 0 to deactivate */

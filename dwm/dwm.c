@@ -49,6 +49,8 @@
 #define CLEANMASK(mask)		(mask & ~(numlockmask | LockMask))
 #define INTERSECT(C,X,Y,W,H)	( MAX(0, MIN((X)+(W),(C)->x+(C)->w) - MAX((X),(C)->x)) \
 				* MAX(0, MIN((Y)+(H),(C)->y+(C)->h) - MAX((Y),(C)->y)) )
+/* AX,AY: actual position; EX,EY: expected positon; T: threshold) */
+#define ISNEAR(AX,AY,EX,EY,T)   ( (abs((AX)-(EX)) < (T)) && (abs((AY)-(EY)) < (T)) )
 #define ISVISIBLE(C)		((C)->workspace == selws[(C)->screen] || ((C)->workspace && (C)->issticky))
 #define LENGTH(x)		(sizeof x / sizeof x[0])
 #define MOUSEMASK		(BUTTONMASK | PointerMotionMask)
@@ -142,6 +144,7 @@ void buttonpress(XEvent *e);
 void checkscreen(Client *c);
 void checkotherwm(void);
 void cleanup(void);
+Bool clientiseffectivelymaximized(Client *c);
 void clientmessage(XEvent *e);
 void compileregs(void);
 void configure(Client *c);
@@ -453,6 +456,40 @@ cleanup(void) {
 	XFreeCursor(dpy, cursor[CurMove]);
 	XSetInputFocus(dpy, PointerRoot, RevertToPointerRoot, CurrentTime);
 	XSync(dpy, False);
+}
+
+Bool
+clientiseffectivelymaximized(Client *c)
+{
+	unsigned int matches = 0;
+	unsigned int s;
+	int cx, cy;
+
+	/* check top left */
+	cx = c->x;
+	cy = c->y;
+	for(s = 0; s < screenmax; s++)
+		if ( ISNEAR(cx, cy,  sx[s],  sy[s], UNFLOATBORDERSNAP) ||
+		     ISNEAR(cx, cy, wax[s], way[s], UNFLOATBORDERSNAP)) {
+			matches++;
+			break;
+		}
+
+	if (matches < 1)
+		return False;
+
+	/* check bottom right */
+	cx += c->w;
+	cy += c->h;
+
+	for(s = 0; s < screenmax; s++)
+		if ( ISNEAR(cx, cy,  sx[s] +  sw[s],  sy[s] +  sh[s], UNFLOATBORDERSNAP) ||
+		     ISNEAR(cx, cy, wax[s] + waw[s], way[s] + wah[s], UNFLOATBORDERSNAP)) {
+			matches++;
+			break;
+		}
+
+	return matches == 2;
 }
 
 void
@@ -1653,7 +1690,9 @@ setborderbyfloat(Client *c, Bool configurewindow) {
 	XWindowChanges wc;
 	unsigned int newborder;
 
-	newborder = ((c->isfloating && !c->ismax) || (layout[c->screen][selws[c->screen]-1]->arrange == floating)) ? FLOATBORDERPX : BORDERPX;
+	newborder = (((c->isfloating && !c->ismax) || (layout[c->screen][selws[c->screen]-1]->arrange == floating))
+		     && !clientiseffectivelymaximized(c))
+		? FLOATBORDERPX : BORDERPX;
 	if (c->border == newborder)
 		return;
 
