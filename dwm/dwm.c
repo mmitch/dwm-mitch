@@ -2341,7 +2341,9 @@ updatexinerama(void) {
 				x += sw[screenmax];
 				w -= sw[screenmax];
 				getxine = False;
-				split[screenmax] = split[screenmax+1] = True;
+				split[screenmax] = True;
+				if (screenmax +1 < MAXXINERAMASCREENS)
+					split[screenmax+1] = True;
 			} else {
 				sw[screenmax] = w;
 				getxine = True;
