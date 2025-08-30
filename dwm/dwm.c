@@ -2317,6 +2317,11 @@ updatexinerama(void) {
 	getxine = True;
 
 	// fprintf(stderr, "reconfigure Xinerama screens:\n");
+
+	// reset splitting (we handle multiple screens at once, so it cannot be part of the other big loop)
+	for(i = 0; i < MAXXINERAMASCREENS; i++)
+		split[i] = False;
+
 	for(i = 0; screenmax < MAXXINERAMASCREENS;) {
 		if (getxine) {
 			if (i >= xinescreencount)
